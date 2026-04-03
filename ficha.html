@@ -59,6 +59,86 @@
         
         .footer { position: fixed; bottom: 0; width: 100%; background: rgba(255,255,255,0.9); backdrop-filter: blur(10px); padding: 15px 0 25px 0; border-top: 1px solid #e2e8f0; text-align: center; box-shadow: 0 -10px 20px rgba(0,0,0,0.05); }
         .btn-env { background: linear-gradient(135deg, var(--blue-dark), var(--blue)); color: white; border: none; padding: 18px; width: 90%; max-width: 400px; border-radius: 14px; font-weight: 800; font-size: 16px; font-family: 'Montserrat', sans-serif; text-transform: uppercase; letter-spacing: 1px; box-shadow: 0 8px 20px rgba(0,86,179,0.3); transition: 0.2s; cursor: pointer; }
+
+        
+/* 🔥 SUPER OTIMIZAÇÃO PARA O MODO PAISAGEM MOBILE (Deitado) 🔥 */
+        @media (orientation: landscape) and (max-height: 500px) {
+            /* 1. O cabeçalho azul fica bem mais magro para liberar tela */
+            #app-conteudo .header {
+                padding: 10px 20px;
+            }
+            #app-conteudo .header h1 {
+                font-size: 1.1rem; /* Título menor */
+            }
+            #app-conteudo .bem-vindo-texto {
+                font-size: 10px;
+                margin-top: 2px;
+            }
+            /* Alinha o botão de voltar à nova altura magra */
+            #app-conteudo .header span[onclick="voltarParaHome()"] {
+                top: 10px !important;
+                left: 10px !important;
+                font-size: 20px !important;
+            }
+
+            /* 2. O rodapé branco também fica mais baixo */
+            #app-conteudo .footer {
+                padding: 10px 0 15px 0; /* Menor espaço vertical total */
+                height: auto;
+            }
+            #app-conteudo .btn-env {
+                padding: 12px; /* Botão azul mais baixo */
+                font-size: 14px;
+                border-radius: 10px;
+                margin-bottom: 0;
+            }
+            /* Reduz o padding bottom geral do app pra casar com o rodapé novo */
+            #app-conteudo {
+                padding-bottom: 70px !important;
+            }
+
+            /* 3. Ajuste para os cards de parâmetros não ficarem gigantes */
+            #app-conteudo .card {
+                margin: 10px 15px; /* Reduz margens do card principal de topo */
+                padding: 15px 15px;
+            }
+            #app-conteudo .card label {
+                margin-bottom: 4px; /* Tudo mais compacto */
+            }
+            #app-conteudo .card select, #app-conteudo .card input {
+                margin-bottom: 8px; /* Tudo mais compacto */
+                padding: 10px 12px;
+                font-size: 14px;
+            }
+
+            /* 4. Títulos de seção e itens também ficam mais compactos deitados */
+            #app-conteudo .titulo-secao {
+                margin: 15px 15px 8px 15px;
+                padding: 8px 15px;
+                font-size: 0.8rem;
+            }
+            #app-conteudo .item {
+                margin: 8px 15px;
+                padding: 12px;
+            }
+            .item-texto {
+                font-size: 13px; /* Fonte ligeiramente menor */
+            }
+            .item-unidade {
+                font-size: 10px;
+            }
+            /* Achatamento das inputs de parâmetro e botões de C/NC */
+            .input-valor {
+                padding: 6px !important;
+                font-size: 14px !important;
+                width: 70px !important;
+            }
+            .btn-status {
+                width: 45px;
+                height: 36px;
+                font-size: 13px;
+            }
+        }
     </style>
 </head>
 <body>
@@ -404,6 +484,7 @@
             { t: "Medida Apoio Potton IN (2)", u: "10.2 (+0.3/-0.2 mm)", min: 10.0, max: 10.5 },
             { t: "Medida Apoio Potton IN (3)", u: "8.3 (+0.3/-0.2 mm)", min: 8.1, max: 8.6 },
             { t: "Medida Apoio Potton IN (4)", u: "12.2 (+0.3/-0.2 mm)", min: 12.0, max: 12.5 },
+            { t: "Medida Apoio Potton IN (5)", u: "Reg. Guia Tensor (Isento rebarba)", tipo: "bin" },
             { t: "Medida Macho Potton EX", u: "23.7 (+0.3/-0.2 mm)", min: 23.5, max: 24.0 },
             { t: "Diâmetro Potton EX (1)", u: "26.2 (+0.3/-0.2 mm)", min: 26.0, max: 26.5 },
             { t: "Diâmetro Potton EX (2)", u: "26.2 (+0.3/-0.2 mm)", min: 26.0, max: 26.5 },
