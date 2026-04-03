@@ -1,0 +1,82 @@
+{
+    "MAQ4": {
+        "modelo": "ATV (1)",
+        "status": "X"
+    },
+    "MAQ5": {
+        "modelo": "K1SG (4,5)",
+        "status": "⬜"
+    },
+    "MAQ6": {
+        "modelo": "KVK (10,13)",
+        "status": "O"
+    },
+    "MAQ7": {
+        "modelo": "SATND BY",
+        "status": "O"
+    },
+    "MAQ9": {
+        "modelo": "",
+        "status": "O"
+    },
+    "MAQ11": {
+        "modelo": "",
+        "status": "O"
+    },
+    "MAQ12": {
+        "modelo": "",
+        "status": "O"
+    },
+    "MAQ13": {
+        "modelo": "",
+        "status": "O"
+    },
+    "MAQ14": {
+        "modelo": "",
+        "status": "O"
+    },
+    "MAQ15": {
+        "modelo": "",
+        "status": "O"
+    },
+    "MAQ16": {
+        "modelo": "",
+        "status": "O"
+    },
+    "HTOP1": {
+        "modelo": "",
+        "status": "O"
+    },
+    "HTOP2": {
+        "modelo": "",
+        "status": "O"
+    },
+    "HTOP3": {
+        "modelo": "",
+        "status": "O"
+    },
+    "HTOP4": {
+        "modelo": "",
+        "status": "O"
+    },
+    "HTOP5": {
+        "modelo": "",
+        "status": "O"
+    },
+    "VTOP1": {
+        "modelo": "",
+        "status": "O"
+    },
+    "VTOP2": {
+        "modelo": "",
+        "status": "O"
+    },
+    "VTOP3": {
+        "modelo": "",
+        "status": "O"
+    },
+    "HTOP6": {
+        "modelo": "",
+        "status": "O"
+    }
+}

@@ -1,0 +1,610 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard Honda - Gestão à Vista</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Montserrat:wght@700;900&display=swap" rel="stylesheet">
+    <style>
+        :root { --blue: #0056b3; --blue-dark: #003d82; --success: #10b981; --success-dark: #059669; --danger: #ef4444; --danger-dark: #dc2626; --bg: #f3f4f6; --text-main: #1f2937; }
+        body { font-family: 'Inter', sans-serif; background: var(--bg); margin: 0; padding-bottom: 50px; text-align: center; color: var(--text-main); -webkit-font-smoothing: antialiased; }
+        
+        .header { background: linear-gradient(135deg, var(--blue-dark), var(--blue)); color: white; padding: 35px 20px; box-shadow: 0 10px 25px rgba(0,86,179,0.2); }
+        .header h1 { font-family: 'Montserrat', sans-serif; margin: 0; font-size: 2.5rem; letter-spacing: 2px; text-shadow: 2px 2px 4px rgba(0,0,0,0.2); }
+        .subtitulo-lpdc { margin: 12px 0 0; font-size: 1.2rem; color: #e2e8f0; font-weight: 500; letter-spacing: 1px; }
+        
+        .inicial-maior { font-size: 1.4em; font-weight: 900; color: #fff; font-family: 'Montserrat', sans-serif; }
+        
+        #tela-home { display: flex; justify-content: center; align-items: center; gap: 40px; margin-top: 80px; padding: 0 20px; flex-wrap: wrap; }
+        .btn-setor { background: white; border: 3px solid var(--blue); padding: 50px 80px; border-radius: 24px; cursor: pointer; transition: 0.3s; box-shadow: 0 15px 30px rgba(0,0,0,0.1); width: 350px; }
+        .btn-setor:hover { transform: translateY(-10px); box-shadow: 0 25px 40px rgba(0,86,179,0.2); background: linear-gradient(135deg, var(--blue), var(--blue-dark)); color: white; border-color: transparent; }
+        .btn-setor h2 { font-size: 2.5rem; margin: 0 0 15px 0; font-family: 'Montserrat', sans-serif; }
+        .btn-setor p { font-size: 1.2rem; font-weight: 600; margin: 0; color: #64748b; }
+        .btn-setor:hover p { color: #e2e8f0; }
+
+        #area-dashboard { display: none; }
+
+        .wrapper-quadro { display: flex; justify-content: center; gap: 50px; max-width: 96%; margin: 40px auto; padding: 0 20px; }
+        .coluna-quadro { flex: 1; background: white; padding: 30px; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.05); border: 2px solid var(--blue); }
+        .titulo-coluna { background: var(--blue); color: white; margin: -30px -30px 30px -30px; padding: 20px; border-radius: 16px 16px 0 0; font-family: 'Montserrat', sans-serif; font-size: 1.8rem; letter-spacing: 2px; }
+        
+        .grid-painel { display: flex; gap: 25px; justify-content: center; flex-wrap: wrap; }
+        #painel-unico { max-width: 96%; margin: 40px auto; } 
+        
+        .card-grande { width: 280px; height: 195px; border-radius: 16px; display: flex; flex-direction: column; align-items: center; justify-content: center; color: white; cursor: pointer; background: linear-gradient(135deg, #6b7280, #4b5563); transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); box-shadow: 0 4px 6px rgba(0,0,0,0.1); border: 1px solid rgba(255,255,255,0.1); }
+        .card-grande.Azul { background: linear-gradient(135deg, var(--blue), var(--blue-dark)); box-shadow: 0 8px 15px rgba(0,86,179,0.25); height: 150px; font-size: 24px; font-weight: 700; width: 280px; }
+        .card-grande:hover { transform: translateY(-6px) scale(1.02); box-shadow: 0 15px 25px rgba(0,0,0,0.15); }
+        
+        .nome-maq { font-size: 26px; font-weight: 900; margin-bottom: 8px; letter-spacing: 1px; }
+        .status-container { display: flex; flex-direction: column; gap: 8px; width: 85%; }
+        .status-badge { display: flex; justify-content: space-between; align-items: center; padding: 8px 14px; border-radius: 8px; font-size: 13px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; }
+        .status-ok { background: rgba(16, 185, 129, 0.2); border: 1px solid #34d399; color: #a7f3d0; }
+        .status-nc { background: rgba(239, 68, 68, 0.2); border: 1px solid #f87171; color: #fecaca; }
+
+        .card-dia { width: 80px; height: 80px; border-radius: 12px; display: flex; align-items: center; justify-content: center; color: white; cursor: pointer; font-weight: 700; font-size: 22px; transition: all 0.2s; background: linear-gradient(135deg, #6b7280, #4b5563); box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
+        .card-dia:hover { transform: scale(1.1); box-shadow: 0 8px 15px rgba(0,0,0,0.2); }
+        .Verde { background: linear-gradient(135deg, var(--success), var(--success-dark)); } 
+        .Cinza { background: linear-gradient(135deg, #9ca3af, #6b7280); }
+        
+        .btn-voltar { display: none; margin: 25px auto; padding: 12px 30px; background: linear-gradient(135deg, var(--blue), var(--blue-dark)); color: white; border: none; border-radius: 30px; cursor: pointer; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; box-shadow: 0 4px 10px rgba(0,86,179,0.3); transition: 0.2s; }
+        .btn-voltar:hover { transform: translateY(-2px); box-shadow: 0 6px 15px rgba(0,86,179,0.4); }
+
+        .modal { display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; background: rgba(17, 24, 39, 0.7); overflow-y: auto; backdrop-filter: blur(5px); }
+        .modal-content { background: #ffffff; margin: 40px auto 80px auto; width: 95%; max-width: 850px; border-radius: 24px; overflow: hidden; box-shadow: 0 25px 50px rgba(0,0,0,0.3); text-align: left; animation: slideUp 0.3s ease-out; padding-bottom: 30px; }
+        @keyframes slideUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
+        
+        .modal-header { background: linear-gradient(135deg, var(--blue-dark), var(--blue)); color: white; padding: 25px; text-align: center; position: relative; }
+        .modal-header h2 { font-family: 'Montserrat', sans-serif; margin: 0; font-size: 1.6rem; letter-spacing: 1px; text-transform: uppercase; }
+        .close { position: absolute; right: 25px; top: 20px; color: rgba(255,255,255,0.8); font-size: 30px; cursor: pointer; transition: 0.2s; }
+        .close:hover { color: white; transform: scale(1.1); }
+        .btn-imprimir { position: absolute; right: 75px; top: 25px; color: rgba(255,255,255,0.8); font-size: 24px; cursor: pointer; transition: 0.2s; }
+        
+        .btn-float-quadro { position: fixed; bottom: 35px; right: 35px; background: linear-gradient(135deg, #1e3a8a, var(--blue)); color: white; border: none; padding: 18px 25px; border-radius: 50px; font-family: 'Montserrat', sans-serif; font-size: 15px; font-weight: 800; cursor: pointer; box-shadow: 0 10px 25px rgba(0,86,179,0.4); z-index: 500; transition: 0.3s; letter-spacing: 1px; display: flex; align-items: center; gap: 10px; }
+        .btn-float-quadro:hover { transform: scale(1.05) translateY(-5px); box-shadow: 0 15px 35px rgba(0,86,179,0.5); }
+        
+        .q-container { display: flex; gap: 20px; padding: 20px; background: #e2e8f0; flex-wrap: wrap; }
+        .q-coluna { flex: 1; background: #1e3a8a; padding: 15px; border-radius: 12px; box-shadow: inset 0 0 10px rgba(0,0,0,0.5); min-width: 300px; }
+        .q-cabecalho { display: flex; color: white; font-family: 'Montserrat', sans-serif; font-size: 18px; font-weight: 900; margin-bottom: 15px; border-bottom: 2px solid rgba(255,255,255,0.2); padding-bottom: 10px; text-transform: uppercase;}
+        .q-cab-maq { flex: 1; text-align: center; } .q-cab-mod { flex: 2; text-align: center; } .q-cab-stat { flex: 1; text-align: center; }
+        .q-linha { display: flex; align-items: center; margin-bottom: 8px; gap: 8px; }
+        .q-nome-maq { flex: 1; color: white; font-weight: 800; font-size: 18px; text-align: center; white-space: nowrap; text-transform: uppercase; }
+        .q-input-mod { flex: 2; padding: 10px; border: none; text-align: center; font-weight: 800; font-size: 16px; color: #1e3a8a; text-transform: uppercase; background: white; border-radius: 4px; box-shadow: inset 0 2px 4px rgba(0,0,0,0.1); }
+        .q-select-stat { flex: 1; padding: 10px; border: none; text-align: center; font-weight: 900; font-size: 20px; color: #1e3a8a; cursor: pointer; background: white; border-radius: 4px; appearance: none; }
+        
+        .q-legenda-box { background: white; margin-top: 15px; padding: 15px; border-radius: 8px; font-weight: 700; color: #1e3a8a; text-align: left; font-size: 14px; display: inline-block; line-height: 1.6; }
+        .btn-salvar-quadro { background: var(--success); color: white; border: none; padding: 15px 30px; font-family: 'Montserrat', sans-serif; font-size: 16px; font-weight: 800; border-radius: 8px; cursor: pointer; transition: 0.2s; box-shadow: 0 5px 15px rgba(16,185,129,0.3); margin-top: 15px; width: 100%;}
+
+        .grid-turnos { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; padding: 30px; }
+        .coluna-turno { background: #f8fafc; padding: 20px; border-radius: 16px; border: 1px solid #e2e8f0; text-align: center; }
+        .titulo-turno { font-weight: 800; color: var(--blue-dark); margin-bottom: 20px; font-size: 18px; text-transform: uppercase; }
+        .btn-insp { width: 100%; padding: 15px; margin-bottom: 12px; border-radius: 10px; font-weight: 700; cursor: pointer; border: none; transition: 0.2s; color: white; display: flex; justify-content: space-between; align-items: center; font-size: 15px; }
+        .btn-feito { background: linear-gradient(135deg, var(--success), var(--success-dark)); }
+        .btn-pendente { background: linear-gradient(135deg, var(--danger), var(--danger-dark)); }
+        
+        .bloco-topo { display: flex; justify-content: space-between; align-items: stretch; margin: 20px; gap: 20px; flex-wrap: wrap; }
+        .info-ficha { background: #f8fafc; padding: 20px; border-radius: 12px; border: 1px solid #e2e8f0; display: grid; grid-template-columns: 1fr 1fr; gap: 15px; font-size: 15px; box-shadow: inset 0 2px 4px rgba(0,0,0,0.02); flex: 1; min-width: 300px; }
+        .info-ficha b { color: var(--blue-dark); }
+        
+        .chefia-container { flex: 1; display: flex; background: white; border: 2px solid var(--text-main); border-radius: 8px; overflow: hidden; min-width: 350px; }
+        .chefia-box { flex: 1; border-right: 1px solid var(--text-main); text-align: center; display: flex; flex-direction: column; }
+        .chefia-box:last-child { border-right: none; }
+        .chefia-tit { background: #e5e7eb; padding: 8px 5px; font-size: 10px; font-weight: 900; color: var(--text-main); border-bottom: 1px solid var(--text-main); height: 26px; display: flex; align-items: center; justify-content: center; }
+        .chefia-val { padding: 10px; flex: 1; display: flex; align-items: center; justify-content: center; min-height: 40px; }
+        
+        .btn-assinar { background: white; color: var(--danger); border: 1.5px dashed var(--danger); padding: 6px 12px; border-radius: 6px; font-size: 12px; font-weight: 700; cursor: pointer; transition: 0.2s; }
+        .btn-assinar:hover { background: var(--danger); color: white; }
+        .assinado-texto { font-family: 'Montserrat', sans-serif; font-size: 13px; font-weight: 800; color: var(--success-dark); text-transform: uppercase; text-align: center; line-height: 1.2; word-wrap: break-word;}
+
+        .modal-secao { padding: 12px 25px; font-weight: 800; color: var(--blue-dark); background: #eff6ff; margin-top: 10px; border-left: 6px solid var(--blue); text-transform: uppercase; font-size: 14px; letter-spacing: 0.5px; }
+        .item-view-container { border-bottom: 1px solid #f1f5f9; padding-bottom: 5px; transition: background 0.2s; }
+        .item-view-container:hover { background: #f8fafc; }
+        .item-main { display: flex; justify-content: space-between; align-items: center; padding: 15px 25px; }
+        .texto-item { font-size: 15px; color: var(--text-main); flex: 1; padding-right: 20px; font-weight: 500; }
+        .modal-controle-container { display: flex; justify-content: center; align-items: center; min-width: 120px; }
+        .valor-lido { background: #f3f4f6; color: #4b5563; padding: 8px 20px; border-radius: 8px; font-weight: 700; font-size: 16px; min-width: 60px; text-align: center; border: 1px solid rgba(0,0,0,0.05); }
+        .v-ok { background: linear-gradient(135deg, var(--success), var(--success-dark)) !important; color: white !important; border: none; box-shadow: 0 4px 10px rgba(16, 185, 129, 0.3); }
+        .v-nc { background: linear-gradient(135deg, var(--danger), var(--danger-dark)) !important; color: white !important; border: none; box-shadow: 0 4px 10px rgba(239, 68, 68, 0.3); }
+        .botoes-visual-wrapper { display: flex; gap: 8px; }
+        .btn-v { width: 48px; height: 40px; border-radius: 8px; border: 1px solid #e2e8f0; font-weight: 700; background: #f8fafc; color: #cbd5e1; display: flex; align-items: center; justify-content: center; pointer-events: none; }
+        .box-nc { background: #fef2f2; border-left: 5px solid var(--danger); margin: 0 25px 20px 25px; padding: 15px 20px; border-radius: 8px; font-size: 14px; box-shadow: 0 4px 6px rgba(239, 68, 68, 0.05); }
+        .box-nc-desc { margin-bottom: 10px; color: #991b1b; line-height: 1.4; }
+        .box-nc-trat { color: #065f46; line-height: 1.4; }
+
+        .login-input { width: 100%; padding: 12px; margin-bottom: 12px; border-radius: 8px; border: 1.5px solid #e2e8f0; font-size: 14px; box-sizing: border-box; background: #f8fafc; outline: none; }
+        .login-input:focus { border-color: var(--blue); background: white; }
+        .btn-acao { width: 100%; padding: 12px; background: linear-gradient(135deg, var(--blue-dark), var(--blue)); color: white; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; transition: 0.2s; }
+        .btn-acao:hover { opacity: 0.9; }
+
+        .print-duas-colunas { display: block; }
+        .print-coluna { flex: 1; }
+
+        @media (max-width: 768px) { .wrapper-quadro { flex-direction: column; } .grid-turnos { grid-template-columns: 1fr; } .info-ficha { grid-template-columns: 1fr; } }
+        
+        @media print {
+            @page { size: A4 portrait; margin: 1cm; }
+            body * { visibility: hidden; }
+            #modalFicha, #modalFicha * { visibility: visible; }
+            
+            #modalFicha { position: absolute; left: 0; top: 0; width: 100%; background: white; display: block !important; overflow: visible !important; }
+            .modal-content { width: 100%; max-width: 100%; box-shadow: none; margin: 0; padding: 0; border: none; border-radius: 0; display: flex !important; flex-direction: column !important; min-height: 25.5cm !important; }
+            
+            .close, .btn-imprimir { display: none !important; }
+            * { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
+            .btn-float-quadro { display: none !important; }
+
+            .modal-header { padding: 12px !important; background: linear-gradient(135deg, var(--blue-dark), var(--blue)) !important; color: white !important; border-radius: 8px 8px 0 0 !important; }
+            .modal-header h2 { font-size: 15px !important; margin: 0 !important; font-weight: bold !important; }
+            
+            .bloco-topo { margin: 15px 0 !important; gap: 15px !important; align-items: stretch !important;}
+            .info-ficha { padding: 10px 15px !important; font-size: 10px !important; grid-template-columns: 1fr 1fr !important; gap: 8px !important; border: 1.5px solid #cbd5e1 !important; border-radius: 8px !important; background: #f8fafc !important; }
+            
+            .chefia-container { min-width: auto !important; border: 1.5px solid #cbd5e1 !important; border-radius: 8px !important; background: white !important; }
+            .chefia-tit { font-size: 8px !important; padding: 5px !important; height: auto !important; background: #e2e8f0 !important; border-bottom: 1.5px solid #cbd5e1 !important; color: var(--blue-dark) !important; font-weight: bold !important; }
+            .chefia-box { border-right: 1.5px solid #cbd5e1 !important; }
+            .chefia-box:last-child { border-right: none !important; }
+            .chefia-val { min-height: 45px !important; padding: 5px !important; display: flex !important; flex-direction: column !important; justify-content: center !important; align-items: center !important;}
+            .btn-assinar { display: none !important; } 
+            
+            .chefia-val img { max-height: 35px !important; margin-bottom: 3px !important; }
+            .chefia-val span { font-size: 8px !important; color: #334155 !important; line-height: 1.1 !important; text-align: center !important; display: block !important; word-wrap: break-word !important; }
+
+            .print-duas-colunas { display: flex !important; gap: 15px !important; width: 100% !important; align-items: flex-start; flex: 1 !important; }
+            
+            .modal-secao { padding: 6px 12px !important; margin-top: 5px !important; font-size: 10px !important; background: #eff6ff !important; border-left: 4px solid var(--blue) !important; color: var(--blue-dark) !important; border-radius: 0 4px 4px 0 !important; }
+            .item-view-container { border-bottom: 1px solid #e2e8f0 !important; padding-bottom: 4px !important; margin-bottom: 0 !important; } 
+            .item-main { padding: 4px 8px !important; }
+            .texto-item { font-size: 10px !important; color: #1e293b !important; }
+            
+            .valor-lido { width: auto !important; height: auto !important; font-size: 9px !important; padding: 2px 8px !important; min-width: 30px !important; border-radius: 4px !important; font-weight: bold !important; border: none !important; }
+            .v-ok { background: var(--success) !important; color: white !important; }
+            .v-nc { background: var(--danger) !important; color: white !important; }
+            
+            .btn-v { width: 24px !important; height: 18px !important; font-size: 9px !important; padding: 0 !important; min-width: auto !important; box-shadow: none !important; border: 1px solid #cbd5e1 !important; color: #94a3b8 !important; background: #f8fafc !important; border-radius: 4px !important;}
+            .botoes-visual-wrapper { gap: 4px !important; }
+            .box-nc { padding: 6px 10px !important; margin: 2px 5px 6px 5px !important; font-size: 9px !important; border: 1px solid #fca5a5 !important; background: #fef2f2 !important; border-radius: 6px !important; border-left: 4px solid var(--danger) !important; }
+            
+            #assinaturas-container { margin-top: auto !important; width: 100%; page-break-inside: avoid !important; }
+            #assinaturas-container > div:nth-child(2) { padding: 10px !important; margin: 10px 0 0 0 !important; border: 1.5px solid #cbd5e1 !important; background: #f8fafc !important; border-radius: 8px !important; }
+            #assinaturas-container > div:nth-child(2) > div { border-right: 1.5px solid #cbd5e1 !important; }
+            #assinaturas-container > div:nth-child(2) > div:last-child { border-right: none !important; }
+            #assinaturas-container > div:nth-child(2) > div > div:nth-child(2) { font-size: 11px !important; color: #1e293b !important; font-weight: bold !important; }
+            #assinaturas-container > div:nth-child(2) > div > div:nth-child(1) { font-size: 8px !important; color: #64748b !important; }
+
+            .rodape-auditoria { margin: 10px 5px 0 5px !important; padding-top: 5px !important; font-size: 9px !important; color: #64748b !important; border-top-color: #cbd5e1 !important; page-break-inside: avoid !important; }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1 id="h1">HONDA</h1>
+        <div id="sub" class="subtitulo-lpdc">GESTÃO À VISTA</div>
+    </div>
+    
+    <div id="tela-home">
+        <div class="btn-setor" onclick="abrirSetor('LPDC')">
+            <h2>LPDC</h2>
+            <p>Low Press Die Cast</p>
+        </div>
+        <div class="btn-setor" onclick="abrirSetor('HPDC')">
+            <h2>HPDC</h2>
+            <p>High Pressure Die Cast</p>
+        </div>
+    </div>
+
+    <div id="area-dashboard">
+        <button id="btnV" class="btn-voltar" onclick="voltarTela()">⬅ Voltar</button>
+        
+        <div class="wrapper-quadro" id="wrapper-quadro">
+            <div class="coluna-quadro" id="col-esq">
+                <div class="titulo-coluna" id="tit-col-esq">LPDC</div>
+                <div class="grid-painel" id="painel-esq"></div>
+            </div>
+            <div class="coluna-quadro" id="col-dir" style="display:none;">
+                <div class="titulo-coluna">MACHEIRA</div>
+                <div class="grid-painel" id="painel-dir"></div>
+            </div>
+        </div>
+
+        <div class="grid-painel" id="painel-unico" style="display: none;"></div>
+        <button class="btn-float-quadro" onclick="abrirModalQuadroFisico()">📋 ATUALIZAR QUADRO</button>
+    </div>
+
+    <div id="modalAssinaChefe" class="modal" style="z-index: 2000;">
+        <div class="modal-content" style="max-width: 400px; padding: 25px; margin: 10% auto; text-align: center;">
+            <span class="close" onclick="fecharModalChefe()" style="top: 10px; right: 15px; color: #94a3b8;">&times;</span>
+            <h3 id="tit-assina-chefe" style="color: var(--blue-dark); margin-top: 0; text-transform: uppercase;">Autorizar Ficha</h3>
+            
+            <div id="box-login-chefe">
+                <p style="font-size: 13px; color: #64748b; margin-bottom: 15px;">Insira suas credenciais para assinar eletronicamente.</p>
+                <input type="number" id="mat-chefe" class="login-input" placeholder="Sua Matrícula">
+                <input type="password" id="senha-chefe" class="login-input" placeholder="Sua Senha">
+                <button class="btn-acao" onclick="validarChefe()">AUTENTICAR</button>
+                <div style="margin-top: 15px; font-size: 11px; color: #10b981; cursor: pointer; font-weight: bold;" onclick="mostrarCadastroChefe()">Primeiro acesso? Cadastre-se aqui</div>
+            </div>
+
+            <div id="box-cad-chefe" style="display: none;">
+                <p style="font-size: 13px; color: #64748b; margin-bottom: 15px;">Crie seu acesso de Chefia/Analista.</p>
+                <input type="text" id="cad-nome-chefe" class="login-input" placeholder="Nome Completo">
+                <input type="number" id="cad-mat-chefe" class="login-input" placeholder="Nova Matrícula">
+                <input type="password" id="cad-senha-chefe" class="login-input" placeholder="Crie uma Senha">
+                <button class="btn-acao" style="background: var(--success);" onclick="cadastrarChefe()">CRIAR ACESSO</button>
+                <div style="margin-top: 15px; font-size: 11px; color: var(--blue); cursor: pointer; font-weight: bold;" onclick="mostrarLoginChefe()">⬅ Voltar para Login</div>
+            </div>
+
+            <div id="box-canvas-chefe" style="display: none;">
+                <p style="font-size: 12px; color: #ef4444; font-weight: bold;">Primeiro acesso detectado!</p>
+                <p style="font-size: 11px; color: #64748b;">Desenhe sua assinatura abaixo. Ela será vinculada à sua matrícula permanentemente.</p>
+                <canvas id="pad-chefe" width="300" height="120" style="border: 2px dashed #cbd5e1; border-radius: 8px; width: 100%; background: #f8fafc; touch-action: none; cursor: crosshair;"></canvas>
+                <div style="display: flex; gap: 10px; margin-top: 15px;">
+                    <button class="btn-acao" style="background: #94a3b8; flex: 1;" onclick="limparCanvasChefe()">Limpar</button>
+                    <button class="btn-acao" style="background: var(--success); flex: 2;" onclick="gravarEAssinarChefe()">SALVAR E ASSINAR</button>
+                </div>
+            </div>
+
+            <div id="box-confirma-chefe" style="display: none;">
+                <p style="font-size: 12px; color: #10b981; font-weight: bold;">Identidade Confirmada!</p>
+                <p style="font-size: 11px; color: #64748b;">Sua assinatura vinculada será aplicada na ficha:</p>
+                <img id="preview-img-chefe" style="max-height: 80px; mix-blend-mode: multiply; border: 1px solid #e2e8f0; padding: 10px; border-radius: 8px; margin: 10px 0;">
+                <button class="btn-acao" style="background: var(--success);" onclick="aplicarAssinaturaExistente()">CONFIRMAR ASSINATURA</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="modalQuadroFisico" class="modal">
+        <div class="modal-content" style="max-width: 1200px; background: #cbd5e1;">
+            <div class="modal-header" style="background: #1e3a8a;">
+                <span class="close" onclick="document.getElementById('modalQuadroFisico').style.display='none'">&times;</span>
+                <h2 id="mq-tit">QUADRO DE PRODUÇÃO E STATUS</h2>
+            </div>
+            <div class="q-container" id="q-container-linhas"></div>
+            <div style="padding: 0 20px 20px 20px;">
+                <div class="q-legenda-box">
+                    <span style="color:black">LEGENDA:</span><br>
+                    <span style="color:#10b981;">O</span> : PRODUÇÃO NORMAL | 
+                    <span style="color:#fde047;">⬜</span> : SETUP | 
+                    <span style="color:#3b82f6;">△</span> : TRY OUT | 
+                    <span style="color:#ef4444;">X</span> : STAND BY
+                </div>
+                <button class="btn-salvar-quadro" onclick="salvarQuadroFisico()">GRAVAR NO PAINEL</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="modalTurnos" class="modal">
+        <div class="modal-content" style="max-width: 900px;">
+            <div class="modal-header">
+                <span class="close" onclick="document.getElementById('modalTurnos').style.display='none'">&times;</span>
+                <h2 id="mt-tit">Resumo do Dia</h2>
+            </div>
+            <div class="grid-turnos" id="grid-turnos-corpo"></div>
+        </div>
+    </div>
+
+    <div id="modalFicha" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <span class="close" onclick="document.getElementById('modalFicha').style.display='none'">&times;</span>
+                <span class="btn-imprimir" onclick="window.print()" title="Imprimir Ficha">🖨️</span>
+                <h2 id="m-tit">Ficha de Inspeção</h2>
+            </div>
+            
+            <div class="bloco-topo" id="bloco-topo-ficha"></div>
+            
+            <div class="print-duas-colunas">
+                <div class="print-coluna"><div class="modal-secao" id="titulo-esq">Processo</div><div id="p1"></div></div>
+                <div class="print-coluna"><div class="modal-secao" id="titulo-dir">Peça</div><div id="p2"></div></div>
+            </div>
+            
+            <div id="assinaturas-container"></div>
+            <div style="height: 20px;"></div> 
+        </div>
+    </div>
+
+<script>
+    const headers = { "ngrok-skip-browser-warning": "69420", 'Cache-Control': 'no-cache' };
+    function getUrlLimpa(url) { return url + '?nocache=' + new Date().getTime(); }
+
+    const maqLpdcLista = [4, 5, 6, 7, 9, 11, 12, 13, 14, 15, 16]; 
+    const maqMachLista = ["H-TOP 1", "H-TOP 2", "H-TOP 3", "H-TOP 4", "H-TOP 5", "V-TOP 1", "V-TOP 2", "V-TOP 3", "H-TOP 6"];
+    const maqHpdcLista = [2, 7, 8, 9, 12, 13, 15, 16, 17, 18, 19, 20, 21, 22];
+
+    let setorAtivo = ""; 
+    let telaAtual = "HOME"; 
+    let turnoDoSistemaVisualizacao = 3;
+
+    function definirTurnoParaVisualizacao() {
+        const agora = new Date();
+        const horaAtual = agora.getHours();
+        if (horaAtual >= 7 && horaAtual < 15) turnoDoSistemaVisualizacao = 1;
+        else if (horaAtual >= 15 && horaAtual < 23) turnoDoSistemaVisualizacao = 2;
+        else turnoDoSistemaVisualizacao = 3;
+    }
+
+    function abrirSetor(setor) {
+        setorAtivo = setor; telaAtual = "DASHBOARD";
+        document.getElementById('tela-home').style.display = "none";
+        document.getElementById('area-dashboard').style.display = "block";
+        document.getElementById('btnV').style.display = "block";
+
+        if(setor === "LPDC") {
+            document.getElementById('h1').textContent = "VISÃO GERAL";
+            document.getElementById('sub').innerHTML = `<span class="inicial-maior">L</span>OW <span class="inicial-maior">P</span>RESS <span class="inicial-maior">D</span>IE <span class="inicial-maior">C</span>AST`;
+            document.getElementById('col-dir').style.display = "block"; 
+            document.getElementById('tit-col-esq').textContent = "LPDC";
+            document.getElementById('col-esq').style.display = "block";
+        } else {
+            document.getElementById('h1').textContent = "VISÃO GERAL";
+            document.getElementById('sub').innerHTML = `<span class="inicial-maior">H</span>IGH <span class="inicial-maior">P</span>RESSURE <span class="inicial-maior">D</span>IE <span class="inicial-maior">C</span>AST`;
+            document.getElementById('col-dir').style.display = "none"; 
+            document.getElementById('col-esq').style.display = "block";
+            document.getElementById('tit-col-esq').textContent = "HPDC";
+        }
+        definirTurnoParaVisualizacao(); carregarMaquinas();
+    }
+
+    function voltarTela() {
+        if(telaAtual === "HISTORICO") { abrirSetor(setorAtivo); } 
+        else if(telaAtual === "DASHBOARD") {
+            telaAtual = "HOME"; setorAtivo = "";
+            document.getElementById('h1').textContent = "HONDA";
+            document.getElementById('sub').innerHTML = "GESTÃO À VISTA";
+            document.getElementById('area-dashboard').style.display = "none"; document.getElementById('tela-home').style.display = "flex";
+        }
+    }
+
+    function carregarMaquinas() {
+        document.getElementById('wrapper-quadro').style.display = "flex"; document.getElementById('painel-unico').style.display = "none";
+        document.getElementById('painel-esq').innerHTML = ""; document.getElementById('painel-dir').innerHTML = "";
+        
+        Promise.all([ fetch(getUrlLimpa('/maquinas'), {headers}).then(r=>r.json()), fetch(getUrlLimpa('/obter-quadro'), {headers}).then(r=>r.json()) ]).then(([maquinas, quadroSalvo]) => {
+            maquinas.forEach(m => {
+                if (setorAtivo === "LPDC" && m.setor === "HPDC") return;
+                if (setorAtivo === "HPDC" && m.setor !== "HPDC") return;
+
+                const div = document.createElement('div'); div.className = "card-grande"; 
+                const status1 = m.insp1 ? `<div class="status-badge status-ok"><span>1ª INSP.</span><span>✅ OK</span></div>` : `<div class="status-badge status-nc"><span>1ª INSP.</span><span>❌ PENDENTE</span></div>`;
+                const status2 = m.insp2 ? `<div class="status-badge status-ok"><span>2ª INSP.</span><span>✅ OK</span></div>` : `<div class="status-badge status-nc"><span>2ª INSP.</span><span>❌ PENDENTE</span></div>`;
+                
+                let chave = m.id; 
+                if (m.setor === "LPDC") chave = `MAQ${m.id}`; 
+                
+                let qMod = (quadroSalvo[chave] && quadroSalvo[chave].modelo) ? quadroSalvo[chave].modelo : '---';
+                let qStat = (quadroSalvo[chave] && quadroSalvo[chave].status) ? quadroSalvo[chave].status : 'O';
+                let corStat = "#fff"; if(qStat === 'O') corStat = "#34d399"; else if(qStat === 'X') corStat = "#f87171"; else if(qStat === '⬜') corStat = "#fde047"; else if(qStat === '△') corStat = "#60a5fa"; 
+
+                div.innerHTML = `
+                    <div class="nome-maq">${m.nome}</div>
+                    <div style="display: flex; align-items: center; justify-content: center; gap: 8px; margin-bottom: 12px; width: 90%;">
+                        <div style="background: rgba(0,0,0,0.25); border: 1px solid rgba(255,255,255,0.1); padding: 4px 8px; border-radius: 6px; font-size: 14px; font-weight: 800; color: #e2e8f0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 160px;" title="${qMod}">${qMod}</div>
+                        <div style="font-size: 22px; font-weight: 900; color: ${corStat}; text-shadow: 1px 1px 2px rgba(0,0,0,0.5);">${qStat}</div>
+                    </div>
+                    <div style="font-size:11px; margin-bottom:8px; color:#d1d5db; font-weight: bold;">(TURNO ATUAL: ${turnoDoSistemaVisualizacao})</div>
+                    <div class="status-container">${status1}${status2}</div>
+                `;
+                div.onclick=()=>carregarMeses(m.id,m.nome); 
+                
+                if(m.setor === "LPDC" || m.setor === "HPDC") document.getElementById('painel-esq').appendChild(div);
+                else if(m.setor === "MACHEIRA") document.getElementById('painel-dir').appendChild(div);
+            })
+        });
+    }
+
+    function criarLinhaQuadro(nomeExibicao, idInput, valorModelo, valorStatus) { return `<div class="q-linha"><div class="q-nome-maq">${nomeExibicao}</div><input type="text" class="q-input-mod" id="q-mod-${idInput}" value="${valorModelo}" placeholder="..."><select class="q-select-stat" id="q-stat-${idInput}"><option value="O" ${valorStatus==='O'?'selected':''}>O</option><option value="X" ${valorStatus==='X'?'selected':''}>X</option><option value="⬜" ${valorStatus==='⬜'?'selected':''}>⬜</option><option value="△" ${valorStatus==='△'?'selected':''}>△</option></select></div>`; }
+
+    function abrirModalQuadroFisico() {
+        document.getElementById('modalQuadroFisico').style.display = 'block';
+        fetch(getUrlLimpa('/obter-quadro'), {headers}).then(r=>r.json()).then(quadroSalvo => {
+            const container = document.getElementById('q-container-linhas'); container.innerHTML = "";
+            
+            if(setorAtivo === "LPDC") {
+                let htmlLpdc = '<div class="q-coluna"><div class="q-cabecalho"><div class="q-cab-maq">LPDC</div><div class="q-cab-mod">MODELO/MATRIZ</div><div class="q-cab-stat">STATUS</div></div>';
+                maqLpdcLista.forEach(m => { let id = `MAQ${m}`; htmlLpdc += criarLinhaQuadro(`MAQ ${m}`, id, quadroSalvo[id]?.modelo || '', quadroSalvo[id]?.status || 'O'); }); htmlLpdc += '</div>';
+                let htmlMach = '<div class="q-coluna"><div class="q-cabecalho"><div class="q-cab-maq">MACHEIRA</div><div class="q-cab-mod">MOLDE/MATRIZ</div><div class="q-cab-stat">STATUS</div></div>';
+                maqMachLista.forEach(m => { 
+                    let id = m.replace(" ", "").replace("-", ""); 
+                    htmlMach += criarLinhaQuadro(m, id, quadroSalvo[id]?.modelo || '', quadroSalvo[id]?.status || 'O'); 
+                }); htmlMach += '</div>';
+                container.innerHTML = htmlLpdc + htmlMach;
+            } else if(setorAtivo === "HPDC") {
+                let htmlHpdc = '<div class="q-coluna" style="max-width: 600px; margin: 0 auto;"><div class="q-cabecalho"><div class="q-cab-maq">HPDC</div><div class="q-cab-mod">MOLDE/MATRIZ</div><div class="q-cab-stat">STATUS</div></div>';
+                maqHpdcLista.forEach(m => { let id = `HPDC${m}`; htmlHpdc += criarLinhaQuadro(`INJ. ${m}`, id, quadroSalvo[id]?.modelo || '', quadroSalvo[id]?.status || 'O'); }); htmlHpdc += '</div>';
+                container.innerHTML = htmlHpdc;
+            }
+        });
+    }
+
+    function salvarQuadroFisico() {
+        let dados = {};
+        if(setorAtivo === "LPDC") {
+            maqLpdcLista.forEach(m => { let id = `MAQ${m}`; dados[id] = { modelo: document.getElementById(`q-mod-${id}`).value, status: document.getElementById(`q-stat-${id}`).value }; });
+            maqMachLista.forEach(m => { 
+                let id = m.replace(" ", "").replace("-", ""); 
+                dados[id] = { modelo: document.getElementById(`q-mod-${id}`).value, status: document.getElementById(`q-stat-${id}`).value }; 
+            });
+        } else if(setorAtivo === "HPDC") {
+            maqHpdcLista.forEach(m => { let id = `HPDC${m}`; dados[id] = { modelo: document.getElementById(`q-mod-${id}`).value, status: document.getElementById(`q-stat-${id}`).value }; });
+        }
+
+        fetch('/salvar-quadro', { method: 'POST', headers: { 'Content-Type': 'application/json', 'ngrok-skip-browser-warning': '69420' }, body: JSON.stringify(dados) })
+        .then(r => r.json()).then(res => { alert("✅ Quadro de Gestão atualizado com sucesso!"); document.getElementById('modalQuadroFisico').style.display = 'none'; carregarMaquinas(); }).catch(e => alert("❌ Erro ao salvar o quadro."));
+    }
+
+    function carregarMeses(idM, nomeM) {
+        telaAtual = "HISTORICO"; document.getElementById('h1').textContent="HISTÓRICO"; document.getElementById('sub').textContent=nomeM; document.getElementById('wrapper-quadro').style.display="none"; document.getElementById('painel-unico').style.display="flex"; document.getElementById('painel-unico').innerHTML="";
+        fetch(getUrlLimpa(`/maquinas/${idM}/meses`), {headers}).then(r=>r.json()).then(d=>{ d.forEach(m=>{
+            const div=document.createElement('div'); div.className="card-grande Azul"; div.textContent=m.nome;
+            div.onclick=()=>carregarDias(idM,nomeM,m.id_mes,m.nome); document.getElementById('painel-unico').appendChild(div);
+        })});
+    }
+
+    function carregarDias(idM, nomeM, idMes, nomeMes) {
+        document.getElementById('h1').textContent=nomeMes; document.getElementById('sub').textContent=nomeM; document.getElementById('painel-unico').innerHTML="";
+        fetch(getUrlLimpa(`/maquinas/${idM}/meses/${idMes}/dias`), {headers}).then(r=>r.json()).then(d=>{ d.forEach(it=>{
+            const div=document.createElement('div'); div.className=`card-dia ${it.status_ficha}`; div.textContent=it.dia;
+            div.onclick=()=> abrirPainelTurnos(idM, nomeM, idMes, it.dia); document.getElementById('painel-unico').appendChild(div);
+        })});
+    }
+
+    function abrirPainelTurnos(idM, nomeM, idMes, dia) {
+        document.getElementById('mt-tit').textContent = `${nomeM} - Dia ${dia}/${idMes}`; const grid = document.getElementById('grid-turnos-corpo'); grid.innerHTML = "Carregando..."; document.getElementById('modalTurnos').style.display = "block";
+        fetch(getUrlLimpa(`/maquinas/${idM}/meses/${idMes}/dias/${dia}/resumo`), {headers}).then(r=>r.json()).then(resumo => {
+            grid.innerHTML = "";
+            for(let t = 1; t <= 3; t++) {
+                const dadosTurno = resumo[t.toString()];
+                let btn1 = dadosTurno.insp1 ? `<button class="btn-insp btn-feito" onclick="buscarEabrirFicha('${idM}', ${idMes}, ${dia}, ${t}, 1)"><span>1ª Inspeção</span><span>✅ Ver</span></button>` : `<button class="btn-insp btn-pendente" onclick="alert('❌ Esta inspeção ainda não foi preenchida.')"><span>1ª Inspeção</span><span>Pendente</span></button>`;
+                let btn2 = dadosTurno.insp2 ? `<button class="btn-insp btn-feito" onclick="buscarEabrirFicha('${idM}', ${idMes}, ${dia}, ${t}, 2)"><span>2ª Inspeção</span><span>✅ Ver</span></button>` : `<button class="btn-insp btn-pendente" onclick="alert('❌ Esta inspeção ainda não foi preenchida.')"><span>2ª Inspeção</span><span>Pendente</span></button>`;
+                grid.innerHTML += `<div class="coluna-turno"><div class="titulo-turno">${t}º Turno</div>${btn1}${btn2}</div>`;
+            }
+        });
+    }
+
+    let chefiaAcao = { chave: "", cargo: "", titulo: "", mat: "", senha: "", base64: "" };
+
+    const canvasC = document.getElementById('pad-chefe'); const ctxC = canvasC.getContext('2d'); let desenhandoC = false; ctxC.lineWidth = 3; ctxC.lineCap = 'round'; ctxC.strokeStyle = '#003d82';
+    function getPosC(e) { const rect = canvasC.getBoundingClientRect(); const scaleX = canvasC.width / rect.width; const scaleY = canvasC.height / rect.height; const clientX = e.touches ? e.touches[0].clientX : e.clientX; const clientY = e.touches ? e.touches[0].clientY : e.clientY; return { x: (clientX - rect.left) * scaleX, y: (clientY - rect.top) * scaleY }; }
+    canvasC.addEventListener('mousedown', (e) => { desenhandoC = true; ctxC.beginPath(); ctxC.moveTo(getPosC(e).x, getPosC(e).y); }); canvasC.addEventListener('mousemove', (e) => { if(desenhandoC){ ctxC.lineTo(getPosC(e).x, getPosC(e).y); ctxC.stroke(); }}); canvasC.addEventListener('mouseup', () => desenhandoC = false); canvasC.addEventListener('mouseout', () => desenhandoC = false);
+    canvasC.addEventListener('touchstart', (e) => { e.preventDefault(); desenhandoC = true; ctxC.beginPath(); ctxC.moveTo(getPosC(e).x, getPosC(e).y); }, {passive: false}); canvasC.addEventListener('touchmove', (e) => { e.preventDefault(); if(desenhandoC){ ctxC.lineTo(getPosC(e).x, getPosC(e).y); ctxC.stroke(); }}, {passive: false}); canvasC.addEventListener('touchend', () => desenhandoC = false);
+    function limparCanvasChefe() { ctxC.clearRect(0, 0, canvasC.width, canvasC.height); }
+
+    function iniciarAssinaturaChefe(chave, cargo, titulo) {
+        chefiaAcao = { chave: chave, cargo: cargo, titulo: titulo, mat: "", senha: "", base64: "" }; document.getElementById('tit-assina-chefe').textContent = `Acesso: ${titulo}`; document.getElementById('mat-chefe').value = ""; document.getElementById('senha-chefe').value = "";
+        mostrarLoginChefe(); document.getElementById('modalAssinaChefe').style.display = 'block';
+    }
+
+    function mostrarLoginChefe() { document.getElementById('box-login-chefe').style.display = 'block'; document.getElementById('box-cad-chefe').style.display = 'none'; document.getElementById('box-canvas-chefe').style.display = 'none'; document.getElementById('box-confirma-chefe').style.display = 'none'; }
+    function mostrarCadastroChefe() { document.getElementById('box-login-chefe').style.display = 'none'; document.getElementById('box-cad-chefe').style.display = 'block'; }
+    function fecharModalChefe() { document.getElementById('modalAssinaChefe').style.display = 'none'; }
+
+    function cadastrarChefe() {
+        const nome = document.getElementById('cad-nome-chefe').value; const mat = document.getElementById('cad-mat-chefe').value; const senha = document.getElementById('cad-senha-chefe').value;
+        if(!nome || !mat || !senha) return alert("Preencha todos os campos!");
+        fetch('/cadastrar', { method: 'POST', headers: { 'Content-Type': 'application/json', 'ngrok-skip-browser-warning': '69420' }, body: JSON.stringify({nome, matricula: mat, senha}) })
+        .then(async r => { const res = await r.json(); if(r.ok) { alert("✅ Cadastro realizado! Autentique-se agora para assinar."); mostrarLoginChefe(); } else alert("❌ " + (res.erro || JSON.stringify(res.detail))); }).catch(e => alert("Erro de conexão."));
+    }
+
+    function validarChefe() {
+        const mat = document.getElementById('mat-chefe').value; const senha = document.getElementById('senha-chefe').value;
+        if(!mat || !senha) return alert("Preencha matrícula e senha!");
+        fetch('/login', { method: 'POST', headers: { 'Content-Type': 'application/json', 'ngrok-skip-browser-warning': '69420' }, body: JSON.stringify({matricula: mat, senha}) })
+        .then(async r => {
+            const res = await r.json();
+            if(r.ok) {
+                chefiaAcao.mat = mat; chefiaAcao.senha = senha;
+                if(res.assinatura && res.assinatura.length > 100) { document.getElementById('box-login-chefe').style.display = 'none'; document.getElementById('preview-img-chefe').src = res.assinatura; document.getElementById('box-confirma-chefe').style.display = 'block'; } 
+                else { document.getElementById('box-login-chefe').style.display = 'none'; limparCanvasChefe(); document.getElementById('box-canvas-chefe').style.display = 'block'; }
+            } else alert("❌ Erro: " + (res.erro || JSON.stringify(res.detail)));
+        }).catch(e => alert("Erro de conexão."));
+    }
+
+    function gravarEAssinarChefe() { chefiaAcao.base64 = canvasC.toDataURL(); executarChamadaAssinatura(); }
+    function aplicarAssinaturaExistente() { chefiaAcao.base64 = ""; executarChamadaAssinatura(); }
+
+    function executarChamadaAssinatura() {
+        fetch('/assinar-ficha', { method: 'POST', headers: { 'Content-Type': 'application/json', 'ngrok-skip-browser-warning': '69420' }, body: JSON.stringify({ chave: chefiaAcao.chave, cargo: chefiaAcao.cargo, matricula: chefiaAcao.mat, senha: chefiaAcao.senha, assinatura: chefiaAcao.base64 }) })
+        .then(r => r.json()).then(res => {
+            if(res.status === 'ok') { alert("✅ Assinatura carimbada na ficha!"); fecharModalChefe(); document.getElementById('modalFicha').style.display = 'none'; } 
+            else { alert("❌ Erro: " + (res.erro || JSON.stringify(res.detail) || "Falha do servidor")); }
+        }).catch(e => alert("❌ Erro de conexão com o servidor."));
+    }
+
+    function renderAssinaturaCaixa(objData, cargo, titulo, chaveFicha) {
+        if (objData && typeof objData === 'object' && objData.assinatura) {
+            return `
+                <div style="display:flex; flex-direction:column; align-items:center; justify-content:center; padding: 5px;">
+                    <img src="${objData.assinatura}" style="max-height: 45px; mix-blend-mode: multiply;">
+                    <span style="font-size: 10px; font-weight: bold; color: #64748b; margin-top: 2px;">${objData.nome.toUpperCase()}</span>
+                </div>`;
+        } else if (objData && typeof objData === 'string') {
+            return `<span class="assinado-texto">${objData}</span>`; 
+        } else {
+            return `<button class="btn-assinar" onclick="iniciarAssinaturaChefe('${chaveFicha}', '${cargo}', '${titulo}')">🔒 ASSINAR</button>`;
+        }
+    }
+
+    function buscarEabrirFicha(idM, idMes, dia, turno, insp) {
+        fetch(getUrlLimpa(`/ver-ficha/${idM}/${idMes}/${dia}/${turno}/${insp}`), {headers})
+        .then(r=>r.json()).then(f=>{ if(f.erro || f.detail) { alert("❌ Erro ao buscar a ficha."); } else if (!f.modelo) { alert("⚠️ Ficha corrompida."); } else { abrirModal(f); } });
+    }
+
+    function abrirModal(f) {
+        document.getElementById('m-tit').textContent = `Inspeção ${f.modelo} - ${f.turno}º Turno (${f.inspecao}ª Insp.)`;
+        const horarioSalvo = f.horario ? f.horario : "Não registrado";
+        const chaveFicha = `${f.injetora}-${f.mes}-${f.dia}-${f.turno}-${f.inspecao}`;
+        
+        const objInspetor = f.assinatura_inspetor ? { nome: f.inspetor, assinatura: f.assinatura_inspetor } : f.inspetor;
+        const b_insp = renderAssinaturaCaixa(objInspetor, 'inspetor', 'Inspetor', chaveFicha);
+        const b_ana = renderAssinaturaCaixa(f.analista, 'analista', 'Analista', chaveFicha);
+        const b_cq = renderAssinaturaCaixa(f.chefe_cq, 'chefe_cq', 'Chefe C.Q.', chaveFicha);
+
+        document.getElementById('bloco-topo-ficha').innerHTML = `
+            <div class="info-ficha">
+                <div><b>Modelo:</b> ${f.modelo}</div><div><b>Máquina:</b> ${f.injetora.includes('TOP') ? f.injetora.replace('HTOP', 'H-TOP ').replace('VTOP', 'V-TOP ') : 'INJ ' + f.injetora.replace('HPDC','')}</div>
+                <div><b>Data:</b> ${f.dia}/${f.mes}/2026</div><div><b>Horário:</b> ${horarioSalvo}</div>
+                <div><b>Turno:</b> ${f.turno}º Turno</div><div><b>Inspeção:</b> ${f.inspecao}ª do Turno</div>
+            </div>
+            <div class="chefia-container">
+                <div class="chefia-box"><div class="chefia-tit">INSPETOR</div><div class="chefia-val" style="padding:0;">${b_insp}</div></div>
+                <div class="chefia-box"><div class="chefia-tit">ANALISTA</div><div class="chefia-val" style="padding:0;">${b_ana}</div></div>
+                <div class="chefia-box"><div class="chefia-tit">CHEFE C.Q.</div><div class="chefia-val" style="padding:0;">${b_cq}</div></div>
+            </div>
+        `;
+
+        const p1=document.getElementById('p1'); const p2=document.getElementById('p2'); p1.innerHTML=""; p2.innerHTML="";
+        
+        if(f.injetora.includes('TOP')) {
+            document.getElementById('titulo-esq').textContent = "Parâmetros do Macho";
+            document.getElementById('titulo-dir').textContent = "Qualidade Dimensional";
+        } else {
+            document.getElementById('titulo-esq').textContent = "Parâmetros de Processo";
+            document.getElementById('titulo-dir').textContent = "Checagem Visual";
+        }
+
+        const chavesItens = Object.keys(f.itens_detalhados || {});
+        const metade = Math.ceil(chavesItens.length / 2);
+
+        chavesItens.forEach((key, index) => {
+            const dado = f.itens_detalhados[key];
+            const nomeExibicao = dado.nome || `Parâmetro ${parseInt(key)+1}`; 
+            
+            let controleHtml = ""; let boxNcHtml = "";
+            if (dado.valor !== undefined && dado.valor !== null) {
+                const cor = (dado.status === "C") ? "v-ok" : "v-nc";
+                controleHtml = `<div class="valor-lido ${cor}">${dado.valor}</div>`;
+            } else {
+                controleHtml = `<div class="botoes-visual-wrapper"><div class="btn-v ${dado.status=='C'?'v-ok':''}">C</div><div class="btn-v ${dado.status=='NC'?'v-nc':''}">NC</div></div>`;
+            }
+            if (dado.status === "NC") { boxNcHtml = `<div class="box-nc"><div class="box-nc-desc"><b>❌ PROBLEMA:</b> ${dado.descricao}</div><div class="box-nc-trat"><b>✅ SOLUÇÃO:</b> ${dado.tratativa}</div></div>`; }
+            
+            const html = `<div class="item-view-container"><div class="item-main"><span class="texto-item"><b>${index+1}.</b> ${nomeExibicao}</span><div class="modal-controle-container">${controleHtml}</div></div>${boxNcHtml}</div>`;
+            
+            if(index < metade) p1.innerHTML += html; else p2.innerHTML += html;
+        });
+
+        const op1 = (f.operador1 && f.operador1.trim() !== "") ? f.operador1 : "Não Informado";
+        const op2 = (f.operador2 && f.operador2.trim() !== "") ? f.operador2 : "---";
+        
+        document.getElementById('assinaturas-container').innerHTML = `
+            <div class="modal-secao">Operadores do Processo</div>
+            <div style="display: flex; gap: 15px; padding: 20px 25px; text-align: center; background: #f8fafc; margin: 15px 25px; border-radius: 12px; border: 1px solid #cbd5e1; box-shadow: inset 0 2px 4px rgba(0,0,0,0.02);">
+                <div style="flex: 1; border-right: 1px solid #cbd5e1; padding-right: 10px;">
+                    <div style="font-size: 11px; color: #64748b; font-weight: bold; text-transform: uppercase; margin-bottom: 8px;">Operador Principal</div>
+                    <div style="font-weight: 700; color: #334155; font-size: 16px;">${op1}</div>
+                </div>
+                <div style="flex: 1;">
+                    <div style="font-size: 11px; color: #64748b; font-weight: bold; text-transform: uppercase; margin-bottom: 8px;">Operador Auxiliar</div>
+                    <div style="font-weight: 700; color: #334155; font-size: 16px;">${op2}</div>
+                </div>
+            </div>
+            
+            <div class="rodape-auditoria" style="display: flex; justify-content: space-between; font-size: 11px; color: #64748b; margin: 25px 35px 15px 35px; padding-top: 15px; border-top: 1px solid #cbd5e1; font-family: monospace; font-weight: bold;">
+                <span>PERÍODO DE RETENÇÃO: 5 ANOS</span>
+                <span>FD 15010 R17-00</span>
+            </div>
+        `;
+        document.getElementById('modalFicha').style.display="block";
+    }
+
+    function fechar() { document.getElementById('modalFicha').style.display="none"; }
+</script>
+</body>
+</html>
