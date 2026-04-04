@@ -21,18 +21,19 @@
         
         body { font-family: 'Roboto', sans-serif; background: var(--bg); margin: 0; color: var(--text); -webkit-font-smoothing: antialiased; }
         
-        /* 🔥 Tela de Login Ultra Profissional */
+        /* 🔥 Tela de Login Ultra Profissional (Corrigida) */
         #tela-login { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(135deg, #111, #333); z-index: 9999; display: flex; justify-content: center; align-items: center; padding: 20px; box-sizing: border-box;}
         .login-box { background: var(--card-bg); padding: 40px 30px; border-radius: 12px; box-shadow: 0 20px 40px rgba(0,0,0,0.5); width: 100%; max-width: 380px; text-align: center; border-top: 5px solid var(--honda-red); }
         .login-box h2 { color: var(--honda-dark); margin: 0 0 10px 0; font-weight: 700; text-transform: uppercase; font-size: 1.4rem; letter-spacing: 1px;}
         .login-box p { color: #666; font-size: 14px; margin: 0 0 25px 0; }
         
-        .input-group { position: relative; margin-bottom: 18px; text-align: left; }
-        .input-group .material-icons { position: absolute; left: 15px; top: 15px; color: #999; font-size: 20px; }
-        .login-input { width: 100%; padding: 15px 15px 15px 50px; border-radius: 8px; border: 1.5px solid #E0E0E0; font-size: 16px; box-sizing: border-box; outline: none; background: #FAFAFA; transition: 0.2s;}
-        .login-input:focus { border-color: var(--honda-red); background: white; }
+        /* Correção do ícone invadindo o texto */
+        .input-group { display: flex; align-items: center; margin-bottom: 18px; background: #FAFAFA; border: 1.5px solid #E0E0E0; border-radius: 8px; padding-left: 15px; transition: 0.2s; overflow: hidden; }
+        .input-group:focus-within { border-color: var(--honda-red); background: #FFF; }
+        .input-group .material-icons { color: #999; font-size: 22px; margin-right: 10px; }
+        .login-input { width: 100%; padding: 15px 15px 15px 0; border: none; font-size: 16px; outline: none; background: transparent; color: var(--text); }
         
-        .btn-logar { width: 100%; padding: 16px; background: var(--honda-red); color: white; border: none; border-radius: 8px; font-weight: 700; font-size: 16px; cursor: pointer; text-transform: uppercase; letter-spacing: 1px; transition: 0.2s; }
+        .btn-logar { width: 100%; padding: 16px; background: var(--honda-red); color: white; border: none; border-radius: 8px; font-weight: 700; font-size: 16px; cursor: pointer; text-transform: uppercase; letter-spacing: 1px; transition: 0.2s; margin-top: 10px;}
         .btn-logar:hover { background: #AA0000; }
         .btn-logar:active { transform: translateY(1px); }
         .link-cadastro { margin-top: 20px; display: block; font-size: 14px; color: var(--honda-red); text-decoration: none; font-weight: 600; cursor: pointer; }
@@ -48,37 +49,42 @@
         /* 🔥 App Conteúdo (Ficha) */
         #app-conteudo { display: none; padding-bottom: 100px; }
         
-        /* Cabeçalho "Padrão Honda" */
+        /* Cabeçalho */
         .header { background: var(--honda-dark); color: white; padding: 20px; text-align: center; position: sticky; top: 0; z-index: 50; box-shadow: 0 4px 10px rgba(0,0,0,0.2); border-bottom: 3px solid var(--honda-red); display: flex; align-items: center; justify-content: center; }
         .header h1 { margin: 0; font-size: 1.2rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; }
         .header .btn-back { position: absolute; left: 15px; color: white; cursor: pointer; background: none; border: none; padding: 5px; }
         .bem-vindo-texto { font-size: 10px; color: #AAA; position: absolute; bottom: 5px; width: 100%; text-align: center; font-weight: 400;}
         
-        /* Cards e Inputs */
+        /* Cards e Inputs Gerais */
         .card { background: var(--card-bg); margin: 15px; padding: 20px; border-radius: 12px; box-shadow: 0 5px 15px rgba(0,0,0,0.03); border: 1px solid #EEEEEE; }
         .label-group { display: flex; align-items: center; gap: 8px; font-size: 11px; font-weight: 700; color: #777; margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.5px; }
         .label-group .material-icons { font-size: 14px; color: var(--honda-red); }
         
         select, input[type="text"], input[type="number"] { width: 100%; padding: 12px 15px; margin-bottom: 12px; border-radius: 8px; border: 1.5px solid #E0E0E0; font-size: 16px; font-family: 'Roboto', sans-serif; background: #FAFAFA; color: var(--text); box-sizing: border-box; outline: none; transition: 0.2s; }
         select:focus, input:focus { border-color: var(--honda-red); background: #FFF; }
+        select:disabled, input:disabled { background: #EAEAEA; color: #888; font-weight:bold; border-color:#CCC; cursor:not-allowed;}
         
         .titulo-secao { padding: 10px 15px; font-weight: 700; color: white; background: #444; margin: 25px 15px 10px 15px; border-radius: 6px; text-transform: uppercase; font-size: 0.8rem; letter-spacing: 1px;}
         
-        /* Itens da Ficha */
+        /* 🔥 Correção: Itens da Ficha Alinhados à Direita */
         .item { background: var(--card-bg); margin: 10px 15px; padding: 15px; border-radius: 10px; border-left: 4px solid #E0E0E0; box-shadow: 0 2px 5px rgba(0,0,0,0.02); }
+        .item-header { display: flex; justify-content: space-between; align-items: center; gap: 15px; }
+        .botoes { display: flex; gap: 8px; }
+        
         .item-texto { font-size: 14px; font-weight: 500; color: #222; line-height: 1.3; }
         .item-unidade { display: block; font-size: 11px; color: #888; font-weight: 400; margin-top: 3px; }
         
         .input-valor { width: 85px !important; text-align: center; font-weight: 700; margin-bottom: 0 !important; background: #FFF !important; padding: 10px !important; border-color: #CCC !important;}
-        .active-c { background: var(--ok) !important; color: white !important; border-color: var(--ok) !important; font-weight: 700;}
-        .active-nc { background: var(--nc) !important; color: white !important; border-color: var(--nc) !important; font-weight: 700;}
+        .btn-status { width: 50px; height: 42px; border: 2px solid #E0E0E0; border-radius: 8px; font-weight: 700; background: #FAFAFA; cursor: pointer; color: #888; transition: 0.2s; font-family: 'Roboto', sans-serif; font-size: 14px; }
+        .active-c { background: var(--ok) !important; color: white !important; border-color: var(--ok) !important; }
+        .active-nc { background: var(--nc) !important; color: white !important; border-color: var(--nc) !important; }
         
-        .providencia-box { display: none; margin-top: 12px; padding: 12px; background: #FFF1F1; border-radius: 8px; border: 1px solid #FFCCCC; }
+        .providencia-box { display: none; margin-top: 15px; padding: 12px; background: #FFF1F1; border-radius: 8px; border: 1px solid #FFCCCC; }
         .label-nc { font-size: 10px; font-weight: 700; color: #B91C1C; margin-bottom: 4px; text-transform: uppercase; display: block;}
         .input-nc { border: 1.5px solid #FCA5A5 !important; background: #FFF !important; margin-bottom: 8px !important; font-size: 14px !important; padding: 8px !important;}
         
         /* Rodapé Fixo */
-        .footer { position: fixed; bottom: 0; width: 100%; background: white; padding: 15px 0 20px 0; border-top: 1px solid #EEE; text-align: center; box-shadow: 0 -1px 15px rgba(0,0,0,0.05); }
+        .footer { position: fixed; bottom: 0; width: 100%; background: white; padding: 15px 0 20px 0; border-top: 1px solid #EEE; text-align: center; box-shadow: 0 -1px 15px rgba(0,0,0,0.05); z-index:100; }
         .btn-env { background: var(--honda-red); color: white; border: none; padding: 16px; width: 90%; max-width: 380px; border-radius: 8px; font-weight: 700; font-size: 16px; text-transform: uppercase; letter-spacing: 1px; transition: 0.2s; cursor: pointer; }
         .btn-env:hover { background: #AA0000; }
 
@@ -108,15 +114,15 @@
         <div class="login-box" id="box-login">
             <h2 style="color:#000; font-family:'Montserrat', sans-serif;">HONDA</h2>
             <h2 style="font-size:1.1rem; margin-bottom:5px;">SISTEMA DE QUALIDADE</h2>
-            <p>Insira suas credenciais para acessar a ficha.</p>
+            <p>Insira suas credenciais para acessar.</p>
             
             <div class="input-group">
                 <span class="material-icons">badge</span>
-                <input type="number" id="login-mat" class="login-input" placeholder="Matrícula" required>
+                <input type="number" id="login-mat" class="login-input" placeholder="Sua Matrícula" required>
             </div>
             <div class="input-group">
                 <span class="material-icons">lock</span>
-                <input type="password" id="login-senha" class="login-input" placeholder="Senha" required>
+                <input type="password" id="login-senha" class="login-input" placeholder="Sua Senha" required>
             </div>
             
             <button class="btn-logar" onclick="fazerLogin()">Entrar</button>
@@ -133,16 +139,16 @@
             </div>
             <div class="input-group">
                 <span class="material-icons">badge</span>
-                <input type="number" id="cad-mat" class="login-input" placeholder="Matrícula" required>
+                <input type="number" id="cad-mat" class="login-input" placeholder="Sua Matrícula" required>
             </div>
             <div class="input-group">
                 <span class="material-icons">password</span>
                 <input type="password" id="cad-senha" class="login-input" placeholder="Crie uma Senha" required>
             </div>
             
-            <div class="input-group">
-                <span class="material-icons">domain</span>
-                <select id="cad-setor" class="login-input" required style="padding-left:50px; color:#222; font-weight:500;">
+            <div class="input-group" style="padding:0;">
+                <span class="material-icons" style="position:absolute; left:15px;">domain</span>
+                <select id="cad-setor" class="login-input" required style="padding-left:50px; color:#222; font-weight:500; height:50px;">
                     <option value="" disabled selected>Selecione sua Área...</option>
                     <option value="LPDC">Setor: LPDC</option>
                     <option value="HPDC">Setor: HPDC</option>
@@ -255,7 +261,7 @@
     let setorAutorizadoDoInspetor = "";
 
     const canvas = document.getElementById('pad-assinatura'); const ctx = canvas.getContext('2d'); let desenhando = false;
-    ctx.lineWidth = 3; ctx.lineCap = 'round'; ctx.strokeStyle = '#000000'; // Assinatura Preta agora
+    ctx.lineWidth = 3; ctx.lineCap = 'round'; ctx.strokeStyle = '#000000';
     function getPos(e) {
         const rect = canvas.getBoundingClientRect(); const scaleX = canvas.width / rect.width; const scaleY = canvas.height / rect.height;
         const clientX = e.touches ? e.touches[0].clientX : e.clientX; const clientY = e.touches ? e.touches[0].clientY : e.clientY;
@@ -288,7 +294,6 @@
         else { document.getElementById('area-canvas').style.display = 'block'; document.getElementById('area-imagem-salva').style.display = 'none'; limparCanvas(); }
     }
 
-    // 🔥 LOGIN COM SWEETALERT
     function fazerLogin() {
         const mat = document.getElementById('login-mat').value; const senha = document.getElementById('login-senha').value;
         if(!mat || !senha) return Swal.fire({ icon: 'warning', title: 'Atenção', text: 'Preencha matrícula e senha!', confirmButtonColor: '#CC0000' });
@@ -297,7 +302,6 @@
         .then(async r => { const res = await r.json(); Swal.close(); if(r.ok) { res.matricula = mat; sucessoLogin(res); } else Swal.fire({ icon: 'error', title: 'Falha no Login', text: res.erro, confirmButtonColor: '#CC0000' }); }).catch(e => { Swal.close(); Swal.fire({ icon: 'error', title: 'Erro de Conexão', text: 'Não foi possível contatar o servidor.' }); });
     }
 
-    // 🔥 CADASTRO COM SWEETALERT
     function fazerCadastro() {
         const nome = document.getElementById('cad-nome').value; const mat = document.getElementById('cad-mat').value; 
         const senha = document.getElementById('cad-senha').value; const setor = document.getElementById('cad-setor').value;
@@ -362,7 +366,23 @@
             if (it.min !== undefined) ctrl = `<input type="number" class="input-valor" placeholder="Val." oninput="validar(${c},this,${it.min},${it.max})">`;
             else if (it.tipo === "txt") ctrl = `<input type="text" class="input-valor" placeholder="..." oninput="res[${c}].valor=this.value; res[${c}].status='C'">`;
             else ctrl = `<div class="botoes"><button class="btn-status" id="c-${c}" onclick="setBin(${c},'C')">C</button><button class="btn-status" id="nc-${c}" onclick="setBin(${c},'NC')">NC</button></div>`;
-            corpo.innerHTML += `<div class="item" id="card-${c}"><div class="item-header"><div style="flex:1;"><div class="item-texto">${c+1}. ${it.t}</div><span class="item-unidade">${it.u}</span></div>${ctrl}</div><div class="providencia-box" id="prov-box-${c}"><label class="label-nc">Problema Encontrado:</label><input type="text" class="input-nc" id="desc-${c}" placeholder="..."><label class="label-nc" style="color:#059669;">Ação Corretiva:</label><input type="text" class="input-nc" id="trat-${c}" placeholder="..." style="border-color:#10b981!important;"></div></div>`;
+            
+            corpo.innerHTML += `
+                <div class="item" id="card-${c}">
+                    <div class="item-header">
+                        <div style="flex:1;">
+                            <div class="item-texto">${c+1}. ${it.t}</div>
+                            <span class="item-unidade">${it.u}</span>
+                        </div>
+                        ${ctrl}
+                    </div>
+                    <div class="providencia-box" id="prov-box-${c}">
+                        <label class="label-nc">Problema Encontrado:</label>
+                        <input type="text" class="input-nc" id="desc-${c}" placeholder="...">
+                        <label class="label-nc" style="color:#059669;">Ação Corretiva:</label>
+                        <input type="text" class="input-nc" id="trat-${c}" placeholder="..." style="border-color:#10b981!important;">
+                    </div>
+                </div>`;
             c++;
         });
         checarLiberacao();
@@ -384,7 +404,6 @@
         document.getElementById(`card-${i}`).style.borderLeftColor = (s=='NC') ? "var(--nc)" : "var(--ok)";
     }
 
-    // 🔥 SALVAR COM SWEETALERT
     function enviar() {
         try {
             const op1 = document.getElementById('op1').value; if (!op1) return Swal.fire({ icon: 'warning', title: 'Operador Faltando', text: 'O nome do Operador Principal é obrigatório!' });
