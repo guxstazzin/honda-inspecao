@@ -36,12 +36,11 @@
         .card-grande:hover { transform: translateY(-6px) scale(1.02); box-shadow: 0 15px 25px rgba(0,0,0,0.15); }
         
         .nome-maq { font-size: 26px; font-weight: 900; margin-bottom: 8px; letter-spacing: 1px; }
-        .status-container { display: flex; flex-direction: column; gap: 8px; width: 85%; }
+        .status-container { display: flex; flex-direction: row; gap: 8px; width: 90%; justify-content: center; margin-top: 5px;}
         
-        /* 🔥 CORES VIBRANTES E SÓLIDAS PARA MÁXIMO CONTRASTE 🔥 */
-        .status-badge { display: flex; justify-content: space-between; align-items: center; padding: 8px 14px; border-radius: 8px; font-size: 13px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; border: 1px solid rgba(0,0,0,0.1); }
-        .status-ok { background: var(--success); color: white; box-shadow: 0 4px 6px rgba(16,185,129,0.3); }
-        .status-nc { background: var(--danger); color: white; box-shadow: 0 4px 6px rgba(239,68,68,0.3); }
+        /* 🔥 CORES VIBRANTES PARA INSPEÇÃO 🔥 */
+        .s-ok { background: var(--success); color: white; padding: 8px; border-radius: 6px; text-align: center; font-weight: 900; font-size: 12px; flex: 1; box-shadow: 0 3px 6px rgba(16,185,129,0.4); text-transform: uppercase; letter-spacing: 0.5px;}
+        .s-nc { background: var(--danger); color: white; padding: 8px; border-radius: 6px; text-align: center; font-weight: 900; font-size: 12px; flex: 1; box-shadow: 0 3px 6px rgba(239,68,68,0.4); text-transform: uppercase; letter-spacing: 0.5px;}
 
         .card-dia { width: 80px; height: 80px; border-radius: 12px; display: flex; align-items: center; justify-content: center; color: white; cursor: pointer; font-weight: 700; font-size: 22px; transition: all 0.2s; background: linear-gradient(135deg, #6b7280, #4b5563); box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
         .card-dia:hover { transform: scale(1.1); box-shadow: 0 8px 15px rgba(0,0,0,0.2); }
@@ -60,7 +59,6 @@
         .close { position: absolute; right: 25px; top: 20px; color: rgba(255,255,255,0.8); font-size: 30px; cursor: pointer; transition: 0.2s; }
         .close:hover { color: white; transform: scale(1.1); }
         .btn-imprimir { position: absolute; right: 75px; top: 25px; color: rgba(255,255,255,0.8); font-size: 24px; cursor: pointer; transition: 0.2s; }
-        /* 🔥 BOTÃO EDITAR VOLTOU */
         .btn-editar { position: absolute; right: 120px; top: 26px; color: #f59e0b; font-size: 22px; cursor: pointer; transition: 0.2s; }
         .btn-editar:hover { transform: scale(1.1); color: #d97706; }
         
@@ -74,7 +72,9 @@
         .q-linha { display: flex; align-items: center; margin-bottom: 8px; gap: 8px; }
         .q-nome-maq { flex: 1; color: white; font-weight: 800; font-size: 18px; text-align: center; white-space: nowrap; text-transform: uppercase; }
         .q-input-mod { flex: 2; padding: 10px; border: none; text-align: center; font-weight: 800; font-size: 16px; color: #1e3a8a; text-transform: uppercase; background: white; border-radius: 4px; box-shadow: inset 0 2px 4px rgba(0,0,0,0.1); }
-        .q-select-stat { flex: 1; padding: 10px; border: none; text-align: center; font-weight: 900; font-size: 20px; color: #1e3a8a; cursor: pointer; background: white; border-radius: 4px; appearance: none; }
+        
+        /* 🔥 SELECT DO QUADRO COLORIDO 🔥 */
+        .q-select-stat { flex: 1; padding: 10px; border: none; text-align: center; font-weight: 900; font-size: 20px; cursor: pointer; background: white; border-radius: 4px; appearance: none; }
         
         .q-legenda-box { background: white; margin-top: 15px; padding: 15px; border-radius: 8px; font-weight: 700; color: #1e3a8a; text-align: left; font-size: 14px; display: inline-block; line-height: 1.6; }
         .btn-salvar-quadro { background: var(--success); color: white; border: none; padding: 15px 30px; font-family: 'Montserrat', sans-serif; font-size: 16px; font-weight: 800; border-radius: 8px; cursor: pointer; transition: 0.2s; box-shadow: 0 5px 15px rgba(16,185,129,0.3); margin-top: 15px; width: 100%;}
@@ -113,7 +113,7 @@
         .btn-v { width: 48px; height: 40px; border-radius: 8px; border: 1px solid #e2e8f0; font-weight: 700; background: #f8fafc; color: #cbd5e1; display: flex; align-items: center; justify-content: center; pointer-events: none; }
         .box-nc { background: #fef2f2; border-left: 5px solid var(--danger); margin: 0 25px 20px 25px; padding: 15px 20px; border-radius: 8px; font-size: 14px; box-shadow: 0 4px 6px rgba(239, 68, 68, 0.05); }
         .box-nc-desc { margin-bottom: 10px; color: #991b1b; line-height: 1.4; }
-        .box-nc-trat = color: #065f46; line-height: 1.4; }
+        .box-nc-trat { color: #065f46; line-height: 1.4; }
 
         .login-input { width: 100%; padding: 12px; margin-bottom: 12px; border-radius: 8px; border: 1.5px solid #e2e8f0; font-size: 14px; box-sizing: border-box; background: #f8fafc; outline: none; }
         .login-input:focus { border-color: var(--blue); background: white; }
@@ -214,6 +214,7 @@
         <button class="btn-float-quadro" onclick="abrirModalQuadroFisico()">📋 ATUALIZAR QUADRO</button>
     </div>
 
+    <!-- Modais omitidos no HTML base para focar no conteúdo principal, mantidos como antes -->
     <div id="modalAssinaChefe" class="modal" style="z-index: 2000;">
         <div class="modal-content" style="max-width: 400px; padding: 25px; margin: 10% auto; text-align: center;">
             <span class="close" onclick="fecharModalChefe()" style="top: 10px; right: 15px; color: #94a3b8;">&times;</span>
@@ -265,10 +266,10 @@
             <div style="padding: 0 20px 20px 20px;">
                 <div class="q-legenda-box">
                     <span style="color:black">LEGENDA:</span><br>
-                    <span style="color:#10b981;">O</span> : PRODUÇÃO NORMAL | 
-                    <span style="color:#fde047;">⬜</span> : SETUP | 
-                    <span style="color:#3b82f6;">△</span> : TRY OUT | 
-                    <span style="color:#ef4444;">X</span> : STAND BY
+                    <span style="color:#10b981; font-weight: 900;">O</span> : PRODUÇÃO NORMAL | 
+                    <span style="color:#facc15; font-weight: 900;">⬜</span> : SETUP (Contorno) | 
+                    <span style="color:#3b82f6; font-weight: 900;">△</span> : TRY OUT | 
+                    <span style="color:#ef4444; font-weight: 900;">X</span> : STAND BY
                 </div>
                 <button class="btn-salvar-quadro" onclick="salvarQuadroFisico()">GRAVAR NO PAINEL</button>
             </div>
@@ -310,13 +311,21 @@
     const headers = { "ngrok-skip-browser-warning": "69420", 'Cache-Control': 'no-cache' };
     function getUrlLimpa(url) { return url + '?nocache=' + new Date().getTime(); }
 
-    // 🔥 MÁQUINAS ATUALIZADAS
     const maqLpdcLista = [4, 5, 6, 7, 9, 11, 12, 13, 14, 15, 16]; 
     const maqMachLista = ["H-TOP 2", "H-TOP 3", "H-TOP 4", "H-TOP 5", "H-TOP 6", "H-TOP 7", "V-TOP 1", "V-TOP 2", "V-TOP 3"];
     const maqHpdcLista = [2, 7, 8, 9, 12, 13, 15, 16, 17, 18, 19, 20, 21, 22];
 
     let setorAtivo = ""; 
     let telaAtual = "HOME"; 
+    let turnoDoSistemaVisualizacao = 3;
+
+    function definirTurnoParaVisualizacao() {
+        const agora = new Date();
+        const horaAtual = agora.getHours();
+        if (horaAtual >= 7 && horaAtual < 15) turnoDoSistemaVisualizacao = 1;
+        else if (horaAtual >= 15 && horaAtual < 23) turnoDoSistemaVisualizacao = 2;
+        else turnoDoSistemaVisualizacao = 3;
+    }
 
     function abrirSetor(setor) {
         setorAtivo = setor; telaAtual = "DASHBOARD";
@@ -337,7 +346,7 @@
             document.getElementById('col-esq').style.display = "block";
             document.getElementById('tit-col-esq').textContent = "HPDC";
         }
-        carregarMaquinas();
+        definirTurnoParaVisualizacao(); carregarMaquinas();
     }
 
     function voltarTela() {
@@ -350,18 +359,39 @@
         }
     }
 
+    // 🔥 FUNÇÃO AUXILIAR PARA COR E FORMATO DOS ÍCONES (Mantendo tamanho EXATO)
+    function getIconHTML(status) {
+        // Uma caixa de tamanho fixo para todos (30x30)
+        let baseStyle = "width: 30px; height: 30px; display: flex; align-items: center; justify-content: center; text-shadow: 1px 1px 2px rgba(0,0,0,0.5);";
+        
+        if (status === '⬜') {
+            // Quadrado amarelo VAZADO (apenas borda) do exato mesmo tamanho
+            return `<div style="${baseStyle}"><div style="width: 18px; height: 18px; border: 4px solid #facc15; border-radius: 3px; background: transparent;"></div></div>`;
+        } else if (status === 'O') {
+            return `<div style="${baseStyle} font-size: 26px; font-weight: 900; color: #10b981; line-height: 1;">O</div>`;
+        } else if (status === 'X') {
+            return `<div style="${baseStyle} font-size: 26px; font-weight: 900; color: #ef4444; line-height: 1;">X</div>`;
+        } else if (status === '△') {
+            return `<div style="${baseStyle} font-size: 26px; font-weight: 900; color: #3b82f6; line-height: 1;">△</div>`;
+        }
+        // Fallback
+        return `<div style="${baseStyle} font-size: 26px; font-weight: 900; color: #fff; line-height: 1;">${status}</div>`;
+    }
+
+    // Retorna apenas o código HEX da cor (usado no select)
+    function getCorStatus(status) {
+        if (status === 'O') return '#10b981';
+        if (status === 'X') return '#ef4444';
+        if (status === '⬜') return '#eab308'; // Amarelo
+        if (status === '△') return '#3b82f6';
+        return '#1e3a8a';
+    }
+
     function carregarMaquinas() {
         document.getElementById('wrapper-quadro').style.display = "flex"; document.getElementById('painel-unico').style.display = "none";
         document.getElementById('painel-esq').innerHTML = ""; document.getElementById('painel-dir').innerHTML = "";
         
         let mesHoje = new Date().getMonth() + 1; let diaHoje = new Date().getDate();
-
-        // 🔥 CALCULANDO O TURNO ATUAL DO SISTEMA
-        let agora = new Date();
-        let horaAtual = agora.getHours();
-        let turnoDoSistema = 3;
-        if (horaAtual >= 7 && horaAtual < 15) turnoDoSistema = 1;
-        else if (horaAtual >= 15 && horaAtual < 23) turnoDoSistema = 2;
 
         Promise.all([ fetch(getUrlLimpa('/maquinas'), {headers}).then(r=>r.json()), fetch(getUrlLimpa('/obter-quadro'), {headers}).then(r=>r.json()) ]).then(([maquinas, quadroSalvo]) => {
             maquinas.forEach(m => {
@@ -369,8 +399,9 @@
                 if (setorAtivo === "HPDC" && m.setor !== "HPDC") return;
 
                 const div = document.createElement('div'); div.className = "card-grande"; 
-                const status1 = m.insp1 ? `<div class="status-badge status-ok"><span>1ª INSP.</span><span>✅ OK</span></div>` : `<div class="status-badge status-nc"><span>1ª INSP.</span><span>❌ PENDENTE</span></div>`;
-                const status2 = m.insp2 ? `<div class="status-badge status-ok"><span>2ª INSP.</span><span>✅ OK</span></div>` : `<div class="status-badge status-nc"><span>2ª INSP.</span><span>❌ PENDENTE</span></div>`;
+                // Cores vibrantes aplicadas aqui via s-ok e s-nc
+                const status1 = m.insp1 ? `<div class="s-ok"><span>✅ 1ª INSP OK</span></div>` : `<div class="s-nc"><span>❌ 1ª INSP PEND</span></div>`;
+                const status2 = m.insp2 ? `<div class="s-ok"><span>✅ 2ª INSP OK</span></div>` : `<div class="s-nc"><span>❌ 2ª INSP PEND</span></div>`;
                 
                 let chave = m.id; 
                 if (m.setor === "LPDC") chave = `MAQ${m.id}`; 
@@ -378,29 +409,15 @@
                 let qMod = (quadroSalvo[chave] && quadroSalvo[chave].modelo) ? quadroSalvo[chave].modelo.toUpperCase() : '---';
                 let qStat = (quadroSalvo[chave] && quadroSalvo[chave].status) ? quadroSalvo[chave].status : 'O';
                 
-                let corStat = "#fff"; 
-                if(qStat === 'O') corStat = "#34d399"; 
-                else if(qStat === 'X') corStat = "#f87171"; 
-                else if(qStat === '⬜') corStat = "#fde047"; 
-                else if(qStat === '△') corStat = "#60a5fa"; 
-
-                // 🔥 LÓGICA DO QUADRADO VAZADO (CONTORNO)
-                let iconHtml = "";
-                if(qStat === '⬜') {
-                    // Quadrado Amarelo Vazado
-                    iconHtml = `<div style="width: 22px; height: 22px; border: 3px solid #fde047; border-radius: 4px; box-shadow: 1px 1px 2px rgba(0,0,0,0.5);"></div>`;
-                } else {
-                    // Outros Preenchidos
-                    iconHtml = `<div style="font-size: 22px; font-weight: 900; color: ${corStat}; text-shadow: 1px 1px 2px rgba(0,0,0,0.5);">${qStat}</div>`;
-                }
+                let iconHtml = getIconHTML(qStat);
 
                 div.innerHTML = `
                     <div class="nome-maq">${m.nome}</div>
-                    <div style="display: flex; align-items: center; justify-content: center; gap: 8px; margin-bottom: 8px; width: 90%;">
+                    <div style="display: flex; align-items: center; justify-content: center; gap: 8px; margin-bottom: 12px; width: 90%;">
                         <div style="background: rgba(0,0,0,0.25); border: 1px solid rgba(255,255,255,0.1); padding: 4px 8px; border-radius: 6px; font-size: 14px; font-weight: 800; color: #e2e8f0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 160px;" title="${qMod}">${qMod}</div>
                         ${iconHtml}
                     </div>
-                    <div style="font-size:11px; margin-bottom:4px; color:#d1d5db; font-weight: bold;">(${turnoDoSistema}º TURNO)</div>
+                    <div style="font-size:11px; margin-bottom:4px; color:#d1d5db; font-weight: bold;">(TURNO ATUAL: ${turnoDoSistemaVisualizacao}º)</div>
                     <div style="font-size:11px; margin-bottom:10px; color:#d1d5db; font-weight: bold;">INSPETOR: <span id="insp-nome-${m.id}" style="color:#fff;">Buscando...</span></div>
                     <div class="status-container">${status1}${status2}</div>
                 `;
@@ -409,13 +426,12 @@
                 if(m.setor === "LPDC" || m.setor === "HPDC") document.getElementById('painel-esq').appendChild(div);
                 else if(m.setor === "MACHEIRA") document.getElementById('painel-dir').appendChild(div);
 
-                // Fetch do Inspetor Automático
                 fetch(getUrlLimpa(`/maquinas/${m.id}/meses/${mesHoje}/dias/${diaHoje}/resumo`), {headers}).then(r=>r.json()).then(resumo => {
-                    const dadosTurno = resumo[turnoDoSistema.toString()];
+                    const dadosTurno = resumo[turnoDoSistemaVisualizacao.toString()];
                     let inspetorElem = document.getElementById(`insp-nome-${m.id}`);
                     if(dadosTurno) {
-                        if(dadosTurno.insp2) { fetch(getUrlLimpa(`/ver-ficha/${m.id}/${mesHoje}/${diaHoje}/${turnoDoSistema}/2`), {headers}).then(r=>r.json()).then(f => inspetorElem.textContent = f.inspetor.toUpperCase()); } 
-                        else if(dadosTurno.insp1) { fetch(getUrlLimpa(`/ver-ficha/${m.id}/${mesHoje}/${diaHoje}/${turnoDoSistema}/1`), {headers}).then(r=>r.json()).then(f => inspetorElem.textContent = f.inspetor.toUpperCase()); } 
+                        if(dadosTurno.insp2) { fetch(getUrlLimpa(`/ver-ficha/${m.id}/${mesHoje}/${diaHoje}/${turnoDoSistemaVisualizacao}/2`), {headers}).then(r=>r.json()).then(f => inspetorElem.textContent = f.inspetor.toUpperCase()); } 
+                        else if(dadosTurno.insp1) { fetch(getUrlLimpa(`/ver-ficha/${m.id}/${mesHoje}/${diaHoje}/${turnoDoSistemaVisualizacao}/1`), {headers}).then(r=>r.json()).then(f => inspetorElem.textContent = f.inspetor.toUpperCase()); } 
                         else { inspetorElem.textContent = "Aguardando..."; }
                     } else { inspetorElem.textContent = "Aguardando..."; }
                 }).catch(()=> document.getElementById(`insp-nome-${m.id}`).textContent = "---");
@@ -423,9 +439,20 @@
         });
     }
 
-    // 🔥 FORÇADOR DE MAIÚSCULA NO QUADRO
+    // 🔥 SELECT COLORIDO E COM MAIÚSCULA FORÇADA
     function criarLinhaQuadro(nomeExibicao, idInput, valorModelo, valorStatus) { 
-        return `<div class="q-linha"><div class="q-nome-maq">${nomeExibicao}</div><input type="text" class="q-input-mod" id="q-mod-${idInput}" value="${valorModelo}" placeholder="..." oninput="this.value = this.value.toUpperCase()"><select class="q-select-stat" id="q-stat-${idInput}"><option value="O" ${valorStatus==='O'?'selected':''}>O</option><option value="X" ${valorStatus==='X'?'selected':''}>X</option><option value="⬜" ${valorStatus==='⬜'?'selected':''}>⬜</option><option value="△" ${valorStatus==='△'?'selected':''}>△</option></select></div>`; 
+        let corAtual = getCorStatus(valorStatus);
+        return `
+        <div class="q-linha">
+            <div class="q-nome-maq">${nomeExibicao}</div>
+            <input type="text" class="q-input-mod" id="q-mod-${idInput}" value="${valorModelo}" placeholder="..." oninput="this.value = this.value.toUpperCase()">
+            <select class="q-select-stat" id="q-stat-${idInput}" style="color: ${corAtual};" onchange="this.style.color = getCorStatus(this.value)">
+                <option value="O" style="color:#10b981;" ${valorStatus==='O'?'selected':''}>O</option>
+                <option value="X" style="color:#ef4444;" ${valorStatus==='X'?'selected':''}>X</option>
+                <option value="⬜" style="color:#eab308;" ${valorStatus==='⬜'?'selected':''}>⬜</option>
+                <option value="△" style="color:#3b82f6;" ${valorStatus==='△'?'selected':''}>△</option>
+            </select>
+        </div>`; 
     }
 
     function abrirModalQuadroFisico() {
@@ -436,6 +463,7 @@
             if(setorAtivo === "LPDC") {
                 let htmlLpdc = '<div class="q-coluna"><div class="q-cabecalho"><div class="q-cab-maq">LPDC</div><div class="q-cab-mod">MODELO/MATRIZ</div><div class="q-cab-stat">STATUS</div></div>';
                 maqLpdcLista.forEach(m => { let id = `MAQ${m}`; htmlLpdc += criarLinhaQuadro(`MAQ ${m}`, id, quadroSalvo[id]?.modelo || '', quadroSalvo[id]?.status || 'O'); }); htmlLpdc += '</div>';
+                
                 let htmlMach = '<div class="q-coluna"><div class="q-cabecalho"><div class="q-cab-maq">MACHEIRA</div><div class="q-cab-mod">MOLDE/MATRIZ</div><div class="q-cab-stat">STATUS</div></div>';
                 maqMachLista.forEach(m => { 
                     let id = m.replace(" ", "").replace("-", ""); 
@@ -453,13 +481,13 @@
     function salvarQuadroFisico() {
         let dados = {};
         if(setorAtivo === "LPDC") {
-            maqLpdcLista.forEach(m => { let id = `MAQ${m}`; dados[id] = { modelo: document.getElementById(`q-mod-${id}`).value.toUpperCase(), status: document.getElementById(`q-stat-${id}`).value }; });
+            maqLpdcLista.forEach(m => { let id = `MAQ${m}`; dados[id] = { modelo: document.getElementById(`q-mod-${id}`).value, status: document.getElementById(`q-stat-${id}`).value }; });
             maqMachLista.forEach(m => { 
                 let id = m.replace(" ", "").replace("-", ""); 
-                dados[id] = { modelo: document.getElementById(`q-mod-${id}`).value.toUpperCase(), status: document.getElementById(`q-stat-${id}`).value }; 
+                dados[id] = { modelo: document.getElementById(`q-mod-${id}`).value, status: document.getElementById(`q-stat-${id}`).value }; 
             });
         } else if(setorAtivo === "HPDC") {
-            maqHpdcLista.forEach(m => { let id = `HPDC${m}`; dados[id] = { modelo: document.getElementById(`q-mod-${id}`).value.toUpperCase(), status: document.getElementById(`q-stat-${id}`).value }; });
+            maqHpdcLista.forEach(m => { let id = `HPDC${m}`; dados[id] = { modelo: document.getElementById(`q-mod-${id}`).value, status: document.getElementById(`q-stat-${id}`).value }; });
         }
 
         fetch('/salvar-quadro', { method: 'POST', headers: { 'Content-Type': 'application/json', 'ngrok-skip-browser-warning': '69420' }, body: JSON.stringify(dados) })
@@ -533,7 +561,6 @@
         }).catch(e => alert("Erro de conexão."));
     }
 
-    // 🔥 GRAVANDO ASSINATURA AUTOMÁTICA DO CHEFE NO MÊS
     function gravarEAssinarChefe() { chefiaAcao.base64 = canvasC.toDataURL(); executarChamadaAssinatura(); }
     function aplicarAssinaturaExistente() { chefiaAcao.base64 = ""; executarChamadaAssinatura(); }
 
@@ -541,9 +568,8 @@
         fetch('/assinar-ficha', { method: 'POST', headers: { 'Content-Type': 'application/json', 'ngrok-skip-browser-warning': '69420' }, body: JSON.stringify({ chave: chefiaAcao.chave, cargo: chefiaAcao.cargo, matricula: chefiaAcao.mat, senha: chefiaAcao.senha, assinatura: chefiaAcao.base64 }) })
         .then(r => r.json()).then(res => {
             if(res.status === 'ok') { 
-                // Se for Chefe CQ e desenhou nova assinatura, grava no LocalStorage
                 if(chefiaAcao.cargo === 'chefe_cq' && chefiaAcao.base64) {
-                    const mes = chefiaAcao.chave.split('-')[1]; // Puxa o mês da chave da ficha
+                    const mes = chefiaAcao.chave.split('-')[1];
                     localStorage.setItem('assinatura_chefe_mes_' + mes, chefiaAcao.base64);
                 }
                 alert("✅ Assinatura carimbada na ficha!"); fecharModalChefe(); document.getElementById('modalFicha').style.display = 'none'; 
@@ -552,7 +578,6 @@
         }).catch(e => alert("❌ Erro de conexão com o servidor."));
     }
 
-    // 🔥 LÓGICA DE RENDERIZAÇÃO DA ASSINATURA AUTOMÁTICA
     function renderAssinaturaCaixa(objData, cargo, titulo, chaveFicha, mes) {
         if (objData && typeof objData === 'object' && objData.assinatura) {
             return `
@@ -563,7 +588,6 @@
         } else if (objData && typeof objData === 'string') {
             return `<span class="assinado-texto">${objData}</span>`; 
         } else {
-            // 🔥 Verificação de assinatura automática do Chefe CQ
             if (cargo === 'chefe_cq') {
                 let assinaturaSalva = localStorage.getItem('assinatura_chefe_mes_' + mes);
                 if(assinaturaSalva) {
@@ -589,7 +613,6 @@
         const chaveFicha = `${f.injetora}-${f.mes}-${f.dia}-${f.turno}-${f.inspecao}`;
         
         const objInspetor = f.assinatura_inspetor ? { nome: f.inspetor, assinatura: f.assinatura_inspetor } : f.inspetor;
-        // Passando o mês para a lógica de assinatura automática
         const b_insp = renderAssinaturaCaixa(objInspetor, 'inspetor', 'Inspetor', chaveFicha, f.mes);
         const b_ana = renderAssinaturaCaixa(f.analista, 'analista', 'Analista', chaveFicha, f.mes);
         const b_cq = renderAssinaturaCaixa(f.chefe_cq, 'chefe_cq', 'Chefe C.Q.', chaveFicha, f.mes);
@@ -664,7 +687,6 @@
 
     function fechar() { document.getElementById('modalFicha').style.display="none"; }
 
-    // 🔥 FUNÇÃO DE EDITAR FICHA
     function editarFichaChefe() {
         let senha = prompt("🔒 Área Restrita\nInsira a senha da Chefia para editar esta ficha:");
         if (senha === 'admin' || senha === 'chefe') {
