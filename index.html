@@ -38,9 +38,24 @@
         .nome-maq { font-size: 26px; font-weight: 900; margin-bottom: 8px; letter-spacing: 1px; }
         .status-container { display: flex; flex-direction: row; gap: 8px; width: 90%; justify-content: center; margin-top: 5px;}
         
-        /* 🔥 CORES VIBRANTES PARA INSPEÇÃO 🔥 */
-        .s-ok { background: var(--success); color: white; padding: 8px; border-radius: 6px; text-align: center; font-weight: 900; font-size: 12px; flex: 1; box-shadow: 0 3px 6px rgba(16,185,129,0.4); text-transform: uppercase; letter-spacing: 0.5px;}
-        .s-nc { background: var(--danger); color: white; padding: 8px; border-radius: 6px; text-align: center; font-weight: 900; font-size: 12px; flex: 1; box-shadow: 0 3px 6px rgba(239,68,68,0.4); text-transform: uppercase; letter-spacing: 0.5px;}
+        /* 🔥 BOTÕES DE INSPEÇÃO CORRIGIDOS (ALINHAMENTO E TAMANHO) 🔥 */
+        .s-ok, .s-nc {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 8px 6px;
+            border-radius: 6px;
+            font-weight: 900;
+            font-size: 11px;
+            flex: 1;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            line-height: 1;
+            color: white;
+            white-space: nowrap; /* Impede a quebra de linha */
+        }
+        .s-ok { background: var(--success); box-shadow: 0 3px 6px rgba(16,185,129,0.4); }
+        .s-nc { background: var(--danger); box-shadow: 0 3px 6px rgba(239,68,68,0.4); }
 
         .card-dia { width: 80px; height: 80px; border-radius: 12px; display: flex; align-items: center; justify-content: center; color: white; cursor: pointer; font-weight: 700; font-size: 22px; transition: all 0.2s; background: linear-gradient(135deg, #6b7280, #4b5563); box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
         .card-dia:hover { transform: scale(1.1); box-shadow: 0 8px 15px rgba(0,0,0,0.2); }
@@ -72,9 +87,7 @@
         .q-linha { display: flex; align-items: center; margin-bottom: 8px; gap: 8px; }
         .q-nome-maq { flex: 1; color: white; font-weight: 800; font-size: 18px; text-align: center; white-space: nowrap; text-transform: uppercase; }
         .q-input-mod { flex: 2; padding: 10px; border: none; text-align: center; font-weight: 800; font-size: 16px; color: #1e3a8a; text-transform: uppercase; background: white; border-radius: 4px; box-shadow: inset 0 2px 4px rgba(0,0,0,0.1); }
-        
-        /* 🔥 SELECT DO QUADRO COLORIDO 🔥 */
-        .q-select-stat { flex: 1; padding: 10px; border: none; text-align: center; font-weight: 900; font-size: 20px; cursor: pointer; background: white; border-radius: 4px; appearance: none; }
+        .q-select-stat { flex: 1; padding: 10px; border: none; text-align: center; font-weight: 900; font-size: 20px; color: #1e3a8a; cursor: pointer; background: white; border-radius: 4px; appearance: none; }
         
         .q-legenda-box { background: white; margin-top: 15px; padding: 15px; border-radius: 8px; font-weight: 700; color: #1e3a8a; text-align: left; font-size: 14px; display: inline-block; line-height: 1.6; }
         .btn-salvar-quadro { background: var(--success); color: white; border: none; padding: 15px 30px; font-family: 'Montserrat', sans-serif; font-size: 16px; font-weight: 800; border-radius: 8px; cursor: pointer; transition: 0.2s; box-shadow: 0 5px 15px rgba(16,185,129,0.3); margin-top: 15px; width: 100%;}
@@ -214,7 +227,6 @@
         <button class="btn-float-quadro" onclick="abrirModalQuadroFisico()">📋 ATUALIZAR QUADRO</button>
     </div>
 
-    <!-- Modais omitidos no HTML base para focar no conteúdo principal, mantidos como antes -->
     <div id="modalAssinaChefe" class="modal" style="z-index: 2000;">
         <div class="modal-content" style="max-width: 400px; padding: 25px; margin: 10% auto; text-align: center;">
             <span class="close" onclick="fecharModalChefe()" style="top: 10px; right: 15px; color: #94a3b8;">&times;</span>
@@ -266,10 +278,10 @@
             <div style="padding: 0 20px 20px 20px;">
                 <div class="q-legenda-box">
                     <span style="color:black">LEGENDA:</span><br>
-                    <span style="color:#10b981; font-weight: 900;">O</span> : PRODUÇÃO NORMAL | 
-                    <span style="color:#facc15; font-weight: 900;">⬜</span> : SETUP (Contorno) | 
-                    <span style="color:#3b82f6; font-weight: 900;">△</span> : TRY OUT | 
-                    <span style="color:#ef4444; font-weight: 900;">X</span> : STAND BY
+                    <span style="display:inline-block; vertical-align:middle; text-align:center; width:16px; height:16px; color:#10b981; font-weight: 900; font-size:16px; line-height:1;">O</span> : PRODUÇÃO NORMAL | 
+                    <span style="display:inline-block; vertical-align:middle; width:12px; height:12px; border:3px solid #facc15; border-radius:2px;"></span> : SETUP | 
+                    <span style="display:inline-block; vertical-align:middle; text-align:center; width:16px; height:16px; color:#3b82f6; font-weight: 900; font-size:16px; line-height:1;">△</span> : TRY OUT | 
+                    <span style="display:inline-block; vertical-align:middle; text-align:center; width:16px; height:16px; color:#ef4444; font-weight: 900; font-size:16px; line-height:1;">X</span> : STAND BY
                 </div>
                 <button class="btn-salvar-quadro" onclick="salvarQuadroFisico()">GRAVAR NO PAINEL</button>
             </div>
@@ -359,30 +371,28 @@
         }
     }
 
-    // 🔥 FUNÇÃO AUXILIAR PARA COR E FORMATO DOS ÍCONES (Mantendo tamanho EXATO)
+    // 🔥 FUNÇÃO AUXILIAR PARA COR E FORMATO DOS ÍCONES (Trava de Tamanho 32x32) 🔥
     function getIconHTML(status) {
-        // Uma caixa de tamanho fixo para todos (30x30)
-        let baseStyle = "width: 30px; height: 30px; display: flex; align-items: center; justify-content: center; text-shadow: 1px 1px 2px rgba(0,0,0,0.5);";
+        // A caixa base que garante que todos fiquem do exato mesmo tamanho e alinhamento
+        let baseStyle = "width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; font-size: 28px; font-weight: 900; line-height: 1;";
         
         if (status === '⬜') {
-            // Quadrado amarelo VAZADO (apenas borda) do exato mesmo tamanho
-            return `<div style="${baseStyle}"><div style="width: 18px; height: 18px; border: 4px solid #facc15; border-radius: 3px; background: transparent;"></div></div>`;
+            // O Quadrado Vazado (SÓ O CONTORNO) 
+            return `<div style="${baseStyle}"><div style="width: 20px; height: 20px; border: 4px solid #facc15; border-radius: 2px; background: transparent; box-shadow: 1px 1px 2px rgba(0,0,0,0.5);"></div></div>`;
         } else if (status === 'O') {
-            return `<div style="${baseStyle} font-size: 26px; font-weight: 900; color: #10b981; line-height: 1;">O</div>`;
+            return `<div style="${baseStyle} color: #10b981; text-shadow: 1px 1px 2px rgba(0,0,0,0.5);">O</div>`;
         } else if (status === 'X') {
-            return `<div style="${baseStyle} font-size: 26px; font-weight: 900; color: #ef4444; line-height: 1;">X</div>`;
+            return `<div style="${baseStyle} color: #ef4444; text-shadow: 1px 1px 2px rgba(0,0,0,0.5);">X</div>`;
         } else if (status === '△') {
-            return `<div style="${baseStyle} font-size: 26px; font-weight: 900; color: #3b82f6; line-height: 1;">△</div>`;
+            return `<div style="${baseStyle} color: #3b82f6; text-shadow: 1px 1px 2px rgba(0,0,0,0.5);">△</div>`;
         }
-        // Fallback
-        return `<div style="${baseStyle} font-size: 26px; font-weight: 900; color: #fff; line-height: 1;">${status}</div>`;
+        return `<div style="${baseStyle} color: #fff;">${status}</div>`;
     }
 
-    // Retorna apenas o código HEX da cor (usado no select)
     function getCorStatus(status) {
         if (status === 'O') return '#10b981';
         if (status === 'X') return '#ef4444';
-        if (status === '⬜') return '#eab308'; // Amarelo
+        if (status === '⬜') return '#eab308';
         if (status === '△') return '#3b82f6';
         return '#1e3a8a';
     }
@@ -399,7 +409,7 @@
                 if (setorAtivo === "HPDC" && m.setor !== "HPDC") return;
 
                 const div = document.createElement('div'); div.className = "card-grande"; 
-                // Cores vibrantes aplicadas aqui via s-ok e s-nc
+                // Botões de inspeção com CSS ajustado para não quebrar linha
                 const status1 = m.insp1 ? `<div class="s-ok"><span>✅ 1ª INSP OK</span></div>` : `<div class="s-nc"><span>❌ 1ª INSP PEND</span></div>`;
                 const status2 = m.insp2 ? `<div class="s-ok"><span>✅ 2ª INSP OK</span></div>` : `<div class="s-nc"><span>❌ 2ª INSP PEND</span></div>`;
                 
@@ -439,7 +449,6 @@
         });
     }
 
-    // 🔥 SELECT COLORIDO E COM MAIÚSCULA FORÇADA
     function criarLinhaQuadro(nomeExibicao, idInput, valorModelo, valorStatus) { 
         let corAtual = getCorStatus(valorStatus);
         return `
