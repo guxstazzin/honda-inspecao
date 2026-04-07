@@ -179,20 +179,17 @@
         <div class="footer"><button id="btn-salvar" class="btn-env" onclick="enviar()">SALVAR INSPEÇÃO</button></div>
     </div>
 
-    <!-- 🔥 MODAL DE FOTO ATUALIZADO COM O CROQUI REAL 🔥 -->
+    <!-- 🔥 MODAL DE FOTO (Puxando a imagem do GitHub) 🔥 -->
     <div id="modalVisualizadorItem" style="display: none; position: fixed; z-index: 99999; left: 0; top: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); align-items: center; justify-content: center; backdrop-filter: blur(4px);">
         <div style="background: white; width: 95%; max-width: 500px; border-radius: 12px; overflow: hidden; box-shadow: 0 10px 40px rgba(0,0,0,0.5);">
             <div style="background: linear-gradient(135deg, var(--blue-dark), var(--blue)); color: white; padding: 15px 20px; display: flex; justify-content: space-between; align-items: center;">
                 <h3 id="titulo-foto-item" style="margin: 0; font-size: 14px; font-weight: 700; text-transform: uppercase;">Padrão Visual</h3>
                 <span style="cursor:pointer; font-size: 20px; font-weight: bold;" onclick="fecharFotoItem()">X</span>
             </div>
-            
             <div style="padding: 15px; text-align: center;">
-                <!-- Aqui entra o seu Croqui com rolagem e zoom -->
                 <div style="width: 100%; max-height: 60vh; overflow: auto; background: #f3f4f6; border: 1px solid #cbd5e1; border-radius: 8px;">
                     <img src="https://raw.githubusercontent.com/guxstazzin/honda-inspecao/main/croqui.jpg.png" alt="Croqui Honda" style="width: 100%; display: block;">
                 </div>
-                
                 <p style="font-size: 12px; color: #64748b; margin-top: 10px;">Dica: Faça movimento de pinça na tela para dar zoom na imagem.</p>
                 <button onclick="fecharFotoItem()" style="margin-top:10px; width:100%; padding:12px; border-radius:6px; border:none; background:#e2e8f0; color:#1f2937; font-weight:800; cursor:pointer;">FECHAR</button>
             </div>
@@ -259,18 +256,9 @@
         document.getElementById('tela-home-inspetor').style.display = 'none'; document.getElementById('app-conteudo').style.display = 'block'; document.getElementById('titulo-ficha-header').textContent = `Ficha - ${setorClicado}`;
         const selectInj = document.getElementById('inj'); selectInj.innerHTML = "";
         
-        // 🔥 AQUI REMOVEU AS MÁQUINAS 8 E 10, E TROCOU A H-TOP 1 PELA H-TOP 7
         if(setorClicado === "LPDC") {
-            let optLpdc = '<optgroup label="LPDC">'; 
-            const lpdcs = [4, 5, 6, 7, 9, 11, 12, 13, 14, 15, 16];
-            lpdcs.forEach(i => optLpdc += `<option value="${i}">LPDC - MAQ ${i}</option>`); 
-            optLpdc += '</optgroup>';
-            
-            let optMach = '<optgroup label="MACHEIRA (H-TOP / V-TOP)">'; 
-            const machs = ['HTOP2','HTOP3','HTOP4','HTOP5','HTOP6','HTOP7','VTOP1','VTOP2','VTOP3']; 
-            machs.forEach(m => optMach += `<option value="${m}">${m.replace('HTOP','H-TOP ').replace('VTOP','V-TOP ')} (Macheira)</option>`); 
-            optMach += '</optgroup>';
-            
+            let optLpdc = '<optgroup label="LPDC">'; const lpdcs = [4, 5, 6, 7, 9, 11, 12, 13, 14, 15, 16]; lpdcs.forEach(i => optLpdc += `<option value="${i}">LPDC - MAQ ${i}</option>`); optLpdc += '</optgroup>';
+            let optMach = '<optgroup label="MACHEIRA (H-TOP / V-TOP)">'; const machs = ['HTOP2','HTOP3','HTOP4','HTOP5','HTOP6','HTOP7','VTOP1','VTOP2','VTOP3']; machs.forEach(m => optMach += `<option value="${m}">${m.replace('HTOP','H-TOP ').replace('VTOP','V-TOP ')} (Macheira)</option>`); optMach += '</optgroup>';
             selectInj.innerHTML = optLpdc + optMach;
         } else {
             let optHpdc = '<optgroup label="HPDC">'; const hpdcs = [2,7,8,9,12,13,15,16,17,18,19,20,21,22]; hpdcs.forEach(i => optHpdc += `<option value="HPDC${i}">INJ. ${i}</option>`); optHpdc += '</optgroup>';
@@ -292,10 +280,9 @@
         });
     }
 
-    function abrirFotoItem(nomeDoItem) { document.getElementById('titulo-foto-item').textContent = nomeDoItem; document.getElementById('modalVisualizadorItem').style.display = 'flex'; }
+    function abrirFotoItem(nomeDoItem) { document.getElementById('titulo-foto-item').textContent = "Visualização do Item"; document.getElementById('modalVisualizadorItem').style.display = 'flex'; }
     function fecharFotoItem() { document.getElementById('modalVisualizadorItem').style.display = 'none'; }
 
-    // 🔥 O "Aspecto Geral" foi movido para ser o ÚLTIMO ITEM, e "Parâmetros de Processo da Injetora" atualizado!
     const TEMPLATES = {
         LPDC_PADRAO: [ { sec: "Parâmetros de Processo da Injetora" }, { t: "Temperatura do Molde", u: "330-390°C", min: 330, max: 390 }, { t: "Temperatura do Banho", u: "685-710°C", min: 685, max: 710 }, { t: "Tempo de Abertura", u: "15-20 seg", min: 15, max: 20 }, { t: "Tempo de Pressurização", u: "190-210 seg", min: 190, max: 210 }, { t: "Refrigeração Base Inferior", u: "5 ±1 Kgf/cm²", min: 4, max: 6 }, { t: "Refrigeração Base Superior", u: "3 ±1 Kgf/cm²", min: 2, max: 4 }, { t: "Mangueiras da Refrigeração", u: "Visual (Sem obstrução)", tipo: "bin" }, { t: "Gráfico de Injeção", u: "Painel da Máquina", tipo: "bin" }, { t: "Programa", u: "Painel (Ex: A-1, B-3)", tipo: "txt" }, { t: "Teste Tridimensional", u: "Visual / CNC", tipo: "bin" }, { t: "Desumidificador", u: "Tela Limpa / Área Verde", tipo: "bin" }, { t: "Checar Forno e Banho", u: "Visual", tipo: "bin" }, { sec: "Checagem Visual (Peça)" }, { t: "Guias de Fundição", u: "Sem deformações", tipo: "bin" }, { t: "Pré-Furo do Prisioneiro", u: "Sem deformações", tipo: "bin" }, { t: "Referência de Usinagem", u: "Sem falhas/aderências", tipo: "bin" }, { t: "Aloj. Guias e Sedes de Válvula", u: "Sem rebarbas", tipo: "bin" }, { t: "Canais de Admissão/Escape", u: "Sem macho quebrado", tipo: "bin" }, { t: "Câmara de Combustão", u: "Sem rechupe", tipo: "bin" }, { t: "Fechamento Molde com Macho", u: "Visual", tipo: "bin" }, { t: "Pontos Fixação Escapamento", u: "Visual", tipo: "bin" }, { t: "Machos de Areia", u: "Sem deformações", tipo: "bin" }, { t: "Código de Fabricação", u: "Registrar", tipo: "txt" }, { t: "Pintura do Massalote", u: "Visual", tipo: "bin" }, { t: "Logotipo HONDA", u: "Legível", tipo: "bin" }, { t: "Aspecto Geral", u: "Visual", tipo: "bin" } ],
         LPDC_KVK: [ { sec: "Parâmetros KVK (Com Paquímetro)" }, { t: "Temperatura do Molde", u: "330-390°C", min: 330, max: 390 }, { t: "Temperatura do Banho", u: "690-710°C", min: 690, max: 710 }, { t: "Tempo de Abertura", u: "15 seg", min: 14, max: 16 }, { t: "Tempo de Pressurização", u: "230 seg", min: 220, max: 240 }, { t: "Refrigeração Base Inferior", u: "5 ±1 Kgf/cm²", min: 4, max: 6 }, { t: "Refrigeração Base Superior", u: "3 ±1 Kgf/cm²", min: 2, max: 4 }, { t: "Mangueiras e Gráfico", u: "Visual", tipo: "bin" }, { t: "Programa", u: "Ex: D2", tipo: "txt" }, { sec: "Checagem Dimensional e Visual" }, { t: "Passagem Guia e Tensor Corrente", u: "Rebarba Grossa > 0.4mm", tipo: "bin" }, { t: "Aloj. Guias e Sedes Válvula", u: "Isento excesso", tipo: "bin" }, { t: "Canais Admissão/Escape", u: "Isento macho quebrado", tipo: "bin" }, { t: "Espessura Parede Assentamento", u: "Paquímetro (6.0 ± 1mm)", min: 5.0, max: 7.0 }, { t: "Canais Passagem Óleo", u: "Uniforme", tipo: "bin" }, { t: "Canal de Arrefecimento", u: "Sem Obstrução", tipo: "bin" }, { t: "Código de Fabricação", u: "Ex: 1 D T 3", tipo: "txt" }, { t: "Aspecto Geral", u: "Visual", tipo: "bin" } ],
@@ -312,10 +299,20 @@
         if (inj.includes('HTOP')) templateAtivo = (mod === 'K68L') ? TEMPLATES.MACHEIRA_JACKET_K68L : TEMPLATES.MACHEIRA_JACKET_PADRAO;
         else if (inj.includes('VTOP')) templateAtivo = (mod === 'K68L') ? TEMPLATES.MACHEIRA_POTTON_K68L : TEMPLATES.MACHEIRA_POTTON_PADRAO;
         else templateAtivo = (mod === 'KVK') ? TEMPLATES.LPDC_KVK : TEMPLATES.LPDC_PADRAO;
+        
         corpo.innerHTML = ""; res = {}; let c = 0;
+        let isVisual = false; // FLAG INTELIGENTE PARA AUTO-NC
+
         templateAtivo.forEach((it) => {
-            if (it.sec) { corpo.innerHTML += `<div class="titulo-secao">${it.sec}</div>`; return; }
-            res[c] = { nome: it.t, status: "Pendente" };
+            if (it.sec) { 
+                corpo.innerHTML += `<div class="titulo-secao">${it.sec}</div>`; 
+                // Se a seção NÃO tem a palavra "Parâmetros", liga a flag de item visual
+                if (!it.sec.includes("Parâmetros")) isVisual = true;
+                return; 
+            }
+            
+            res[c] = { nome: it.t, status: "Pendente", isVisual: isVisual };
+            
             let ctrl = "";
             if (it.min !== undefined) ctrl = `<input type="number" class="input-valor" placeholder="Val." oninput="validar(${c},this,${it.min},${it.max})">`;
             else if (it.tipo === "txt") ctrl = `<input type="text" class="input-valor" placeholder="..." oninput="res[${c}].valor=this.value; res[${c}].status='C'; verificarAutoNC(${c});">`;
@@ -351,28 +348,24 @@
         checarLiberacao();
     }
 
-    // 🔥 REGRA DO AUTO-NC NO ASPECTO GERAL
+    // 🔥 REGRA DO AUTO-NC INTELIGENTE (Somente para itens da Peça)
     function verificarAutoNC(idModificado) {
-        let idAspecto = -1; let temNCAntes = false;
+        let idAspecto = -1; let temNCVisual = false;
+        
         for(let k in res) {
             if(res[k].nome === "Aspecto Geral") idAspecto = parseInt(k);
-            else if(res[k].status === "NC") temNCAntes = true;
+            // Só ativa se o item reprovado estiver com a flag "isVisual"
+            else if(res[k].status === "NC" && res[k].isVisual) temNCVisual = true;
         }
 
         if(idAspecto !== -1 && idModificado !== idAspecto) {
-            if(temNCAntes) {
+            if(temNCVisual) {
                 res[idAspecto].status = 'NC';
                 document.getElementById(`c-${idAspecto}`).className = 'btn-status';
                 document.getElementById(`nc-${idAspecto}`).className = 'btn-status active-nc';
                 document.getElementById(`prov-box-${idAspecto}`).style.display = "block";
                 document.getElementById(`card-${idAspecto}`).style.borderLeftColor = "var(--nc)";
-                
-                if(!document.getElementById(`oq-${idAspecto}`).value) {
-                    document.getElementById(`oq-${idAspecto}`).value = "Reprovação automática por NC detectada em etapa anterior.";
-                    document.getElementById(`pq-${idAspecto}`).value = "Verificar justificativas nos itens reprovados acima.";
-                    document.getElementById(`cm-${idAspecto}`).value = "N/A";
-                    document.getElementById(`qm-${idAspecto}`).value = "Sistema";
-                }
+                // Caixas de texto agora abrem limpas para o inspetor preencher!
             }
         }
     }
