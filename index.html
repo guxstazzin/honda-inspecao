@@ -37,9 +37,11 @@
         
         .nome-maq { font-size: 26px; font-weight: 900; margin-bottom: 8px; letter-spacing: 1px; }
         .status-container { display: flex; flex-direction: column; gap: 8px; width: 85%; }
-        .status-badge { display: flex; justify-content: space-between; align-items: center; padding: 8px 14px; border-radius: 8px; font-size: 13px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; }
-        .status-ok { background: rgba(16, 185, 129, 0.2); border: 1px solid #34d399; color: #a7f3d0; }
-        .status-nc { background: rgba(239, 68, 68, 0.2); border: 1px solid #f87171; color: #fecaca; }
+        
+        /* 🔥 CORES VIBRANTES E SÓLIDAS PARA MÁXIMO CONTRASTE 🔥 */
+        .status-badge { display: flex; justify-content: space-between; align-items: center; padding: 8px 14px; border-radius: 8px; font-size: 13px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; border: 1px solid rgba(0,0,0,0.1); }
+        .status-ok { background: var(--success); color: white; box-shadow: 0 4px 6px rgba(16,185,129,0.3); }
+        .status-nc { background: var(--danger); color: white; box-shadow: 0 4px 6px rgba(239,68,68,0.3); }
 
         .card-dia { width: 80px; height: 80px; border-radius: 12px; display: flex; align-items: center; justify-content: center; color: white; cursor: pointer; font-weight: 700; font-size: 22px; transition: all 0.2s; background: linear-gradient(135deg, #6b7280, #4b5563); box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
         .card-dia:hover { transform: scale(1.1); box-shadow: 0 8px 15px rgba(0,0,0,0.2); }
@@ -58,6 +60,7 @@
         .close { position: absolute; right: 25px; top: 20px; color: rgba(255,255,255,0.8); font-size: 30px; cursor: pointer; transition: 0.2s; }
         .close:hover { color: white; transform: scale(1.1); }
         .btn-imprimir { position: absolute; right: 75px; top: 25px; color: rgba(255,255,255,0.8); font-size: 24px; cursor: pointer; transition: 0.2s; }
+        /* 🔥 BOTÃO EDITAR VOLTOU */
         .btn-editar { position: absolute; right: 120px; top: 26px; color: #f59e0b; font-size: 22px; cursor: pointer; transition: 0.2s; }
         .btn-editar:hover { transform: scale(1.1); color: #d97706; }
         
@@ -110,7 +113,7 @@
         .btn-v { width: 48px; height: 40px; border-radius: 8px; border: 1px solid #e2e8f0; font-weight: 700; background: #f8fafc; color: #cbd5e1; display: flex; align-items: center; justify-content: center; pointer-events: none; }
         .box-nc { background: #fef2f2; border-left: 5px solid var(--danger); margin: 0 25px 20px 25px; padding: 15px 20px; border-radius: 8px; font-size: 14px; box-shadow: 0 4px 6px rgba(239, 68, 68, 0.05); }
         .box-nc-desc { margin-bottom: 10px; color: #991b1b; line-height: 1.4; }
-        .box-nc-trat { color: #065f46; line-height: 1.4; }
+        .box-nc-trat = color: #065f46; line-height: 1.4; }
 
         .login-input { width: 100%; padding: 12px; margin-bottom: 12px; border-radius: 8px; border: 1.5px solid #e2e8f0; font-size: 14px; box-sizing: border-box; background: #f8fafc; outline: none; }
         .login-input:focus { border-color: var(--blue); background: white; }
@@ -287,7 +290,6 @@
             <div class="modal-header">
                 <span class="close" onclick="document.getElementById('modalFicha').style.display='none'">&times;</span>
                 <span class="btn-imprimir" onclick="window.print()" title="Imprimir Ficha">🖨️</span>
-                <!-- 🔥 BOTÃO EDITAR ADICIONADO AQUI -->
                 <span class="btn-editar" onclick="editarFichaChefe()" title="Editar Ficha">✏️</span>
                 <h2 id="m-tit">Ficha de Inspeção</h2>
             </div>
@@ -354,6 +356,13 @@
         
         let mesHoje = new Date().getMonth() + 1; let diaHoje = new Date().getDate();
 
+        // 🔥 CALCULANDO O TURNO ATUAL DO SISTEMA
+        let agora = new Date();
+        let horaAtual = agora.getHours();
+        let turnoDoSistema = 3;
+        if (horaAtual >= 7 && horaAtual < 15) turnoDoSistema = 1;
+        else if (horaAtual >= 15 && horaAtual < 23) turnoDoSistema = 2;
+
         Promise.all([ fetch(getUrlLimpa('/maquinas'), {headers}).then(r=>r.json()), fetch(getUrlLimpa('/obter-quadro'), {headers}).then(r=>r.json()) ]).then(([maquinas, quadroSalvo]) => {
             maquinas.forEach(m => {
                 if (setorAtivo === "LPDC" && m.setor === "HPDC") return;
@@ -368,16 +377,30 @@
                 
                 let qMod = (quadroSalvo[chave] && quadroSalvo[chave].modelo) ? quadroSalvo[chave].modelo.toUpperCase() : '---';
                 let qStat = (quadroSalvo[chave] && quadroSalvo[chave].status) ? quadroSalvo[chave].status : 'O';
-                let corStat = "#fff"; if(qStat === 'O') corStat = "#34d399"; else if(qStat === 'X') corStat = "#f87171"; else if(qStat === '⬜') corStat = "#fde047"; else if(qStat === '△') corStat = "#60a5fa"; 
+                
+                let corStat = "#fff"; 
+                if(qStat === 'O') corStat = "#34d399"; 
+                else if(qStat === 'X') corStat = "#f87171"; 
+                else if(qStat === '⬜') corStat = "#fde047"; 
+                else if(qStat === '△') corStat = "#60a5fa"; 
 
-                // 🔥 FORMATO DO TURNO E BUSCA DO INSPETOR INCLUÍDOS NO CARD RAIZ
+                // 🔥 LÓGICA DO QUADRADO VAZADO (CONTORNO)
+                let iconHtml = "";
+                if(qStat === '⬜') {
+                    // Quadrado Amarelo Vazado
+                    iconHtml = `<div style="width: 22px; height: 22px; border: 3px solid #fde047; border-radius: 4px; box-shadow: 1px 1px 2px rgba(0,0,0,0.5);"></div>`;
+                } else {
+                    // Outros Preenchidos
+                    iconHtml = `<div style="font-size: 22px; font-weight: 900; color: ${corStat}; text-shadow: 1px 1px 2px rgba(0,0,0,0.5);">${qStat}</div>`;
+                }
+
                 div.innerHTML = `
                     <div class="nome-maq">${m.nome}</div>
                     <div style="display: flex; align-items: center; justify-content: center; gap: 8px; margin-bottom: 8px; width: 90%;">
                         <div style="background: rgba(0,0,0,0.25); border: 1px solid rgba(255,255,255,0.1); padding: 4px 8px; border-radius: 6px; font-size: 14px; font-weight: 800; color: #e2e8f0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 160px;" title="${qMod}">${qMod}</div>
-                        <div style="font-size: 22px; font-weight: 900; color: ${corStat}; text-shadow: 1px 1px 2px rgba(0,0,0,0.5);">${qStat}</div>
+                        ${iconHtml}
                     </div>
-                    <div style="font-size:11px; margin-bottom:4px; color:#d1d5db; font-weight: bold;">${m.turno_atual}º TURNO</div>
+                    <div style="font-size:11px; margin-bottom:4px; color:#d1d5db; font-weight: bold;">(${turnoDoSistema}º TURNO)</div>
                     <div style="font-size:11px; margin-bottom:10px; color:#d1d5db; font-weight: bold;">INSPETOR: <span id="insp-nome-${m.id}" style="color:#fff;">Buscando...</span></div>
                     <div class="status-container">${status1}${status2}</div>
                 `;
@@ -388,11 +411,11 @@
 
                 // Fetch do Inspetor Automático
                 fetch(getUrlLimpa(`/maquinas/${m.id}/meses/${mesHoje}/dias/${diaHoje}/resumo`), {headers}).then(r=>r.json()).then(resumo => {
-                    const dadosTurno = resumo[m.turno_atual.toString()];
+                    const dadosTurno = resumo[turnoDoSistema.toString()];
                     let inspetorElem = document.getElementById(`insp-nome-${m.id}`);
                     if(dadosTurno) {
-                        if(dadosTurno.insp2) { fetch(getUrlLimpa(`/ver-ficha/${m.id}/${mesHoje}/${diaHoje}/${m.turno_atual}/2`), {headers}).then(r=>r.json()).then(f => inspetorElem.textContent = f.inspetor.toUpperCase()); } 
-                        else if(dadosTurno.insp1) { fetch(getUrlLimpa(`/ver-ficha/${m.id}/${mesHoje}/${diaHoje}/${m.turno_atual}/1`), {headers}).then(r=>r.json()).then(f => inspetorElem.textContent = f.inspetor.toUpperCase()); } 
+                        if(dadosTurno.insp2) { fetch(getUrlLimpa(`/ver-ficha/${m.id}/${mesHoje}/${diaHoje}/${turnoDoSistema}/2`), {headers}).then(r=>r.json()).then(f => inspetorElem.textContent = f.inspetor.toUpperCase()); } 
+                        else if(dadosTurno.insp1) { fetch(getUrlLimpa(`/ver-ficha/${m.id}/${mesHoje}/${diaHoje}/${turnoDoSistema}/1`), {headers}).then(r=>r.json()).then(f => inspetorElem.textContent = f.inspetor.toUpperCase()); } 
                         else { inspetorElem.textContent = "Aguardando..."; }
                     } else { inspetorElem.textContent = "Aguardando..."; }
                 }).catch(()=> document.getElementById(`insp-nome-${m.id}`).textContent = "---");
@@ -400,7 +423,7 @@
         });
     }
 
-    // 🔥 FORÇADOR DE MAIÚSCULA
+    // 🔥 FORÇADOR DE MAIÚSCULA NO QUADRO
     function criarLinhaQuadro(nomeExibicao, idInput, valorModelo, valorStatus) { 
         return `<div class="q-linha"><div class="q-nome-maq">${nomeExibicao}</div><input type="text" class="q-input-mod" id="q-mod-${idInput}" value="${valorModelo}" placeholder="..." oninput="this.value = this.value.toUpperCase()"><select class="q-select-stat" id="q-stat-${idInput}"><option value="O" ${valorStatus==='O'?'selected':''}>O</option><option value="X" ${valorStatus==='X'?'selected':''}>X</option><option value="⬜" ${valorStatus==='⬜'?'selected':''}>⬜</option><option value="△" ${valorStatus==='△'?'selected':''}>△</option></select></div>`; 
     }
@@ -510,7 +533,7 @@
         }).catch(e => alert("Erro de conexão."));
     }
 
-    // 🔥 GRAVANDO ASSINATURA NO MÊS
+    // 🔥 GRAVANDO ASSINATURA AUTOMÁTICA DO CHEFE NO MÊS
     function gravarEAssinarChefe() { chefiaAcao.base64 = canvasC.toDataURL(); executarChamadaAssinatura(); }
     function aplicarAssinaturaExistente() { chefiaAcao.base64 = ""; executarChamadaAssinatura(); }
 
@@ -518,6 +541,7 @@
         fetch('/assinar-ficha', { method: 'POST', headers: { 'Content-Type': 'application/json', 'ngrok-skip-browser-warning': '69420' }, body: JSON.stringify({ chave: chefiaAcao.chave, cargo: chefiaAcao.cargo, matricula: chefiaAcao.mat, senha: chefiaAcao.senha, assinatura: chefiaAcao.base64 }) })
         .then(r => r.json()).then(res => {
             if(res.status === 'ok') { 
+                // Se for Chefe CQ e desenhou nova assinatura, grava no LocalStorage
                 if(chefiaAcao.cargo === 'chefe_cq' && chefiaAcao.base64) {
                     const mes = chefiaAcao.chave.split('-')[1]; // Puxa o mês da chave da ficha
                     localStorage.setItem('assinatura_chefe_mes_' + mes, chefiaAcao.base64);
@@ -528,7 +552,7 @@
         }).catch(e => alert("❌ Erro de conexão com o servidor."));
     }
 
-    // 🔥 RENDERIZAÇÃO DA ASSINATURA AUTOMÁTICA
+    // 🔥 LÓGICA DE RENDERIZAÇÃO DA ASSINATURA AUTOMÁTICA
     function renderAssinaturaCaixa(objData, cargo, titulo, chaveFicha, mes) {
         if (objData && typeof objData === 'object' && objData.assinatura) {
             return `
@@ -539,6 +563,7 @@
         } else if (objData && typeof objData === 'string') {
             return `<span class="assinado-texto">${objData}</span>`; 
         } else {
+            // 🔥 Verificação de assinatura automática do Chefe CQ
             if (cargo === 'chefe_cq') {
                 let assinaturaSalva = localStorage.getItem('assinatura_chefe_mes_' + mes);
                 if(assinaturaSalva) {
@@ -564,6 +589,7 @@
         const chaveFicha = `${f.injetora}-${f.mes}-${f.dia}-${f.turno}-${f.inspecao}`;
         
         const objInspetor = f.assinatura_inspetor ? { nome: f.inspetor, assinatura: f.assinatura_inspetor } : f.inspetor;
+        // Passando o mês para a lógica de assinatura automática
         const b_insp = renderAssinaturaCaixa(objInspetor, 'inspetor', 'Inspetor', chaveFicha, f.mes);
         const b_ana = renderAssinaturaCaixa(f.analista, 'analista', 'Analista', chaveFicha, f.mes);
         const b_cq = renderAssinaturaCaixa(f.chefe_cq, 'chefe_cq', 'Chefe C.Q.', chaveFicha, f.mes);
