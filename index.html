@@ -38,22 +38,8 @@
         .nome-maq { font-size: 26px; font-weight: 900; margin-bottom: 8px; letter-spacing: 1px; }
         .status-container { display: flex; flex-direction: row; gap: 8px; width: 90%; justify-content: center; margin-top: 5px;}
         
-        /* 🔥 BOTÕES DE INSPEÇÃO CORRIGIDOS (ALINHAMENTO E TAMANHO) 🔥 */
-        .s-ok, .s-nc {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 8px 6px;
-            border-radius: 6px;
-            font-weight: 900;
-            font-size: 11px;
-            flex: 1;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            line-height: 1;
-            color: white;
-            white-space: nowrap; /* Impede a quebra de linha */
-        }
+        /* 🔥 BOTÕES DE INSPEÇÃO ALINHADOS E CORES VIBRANTES 🔥 */
+        .s-ok, .s-nc { display: flex; align-items: center; justify-content: center; padding: 8px 6px; border-radius: 6px; font-weight: 900; font-size: 11px; flex: 1; text-transform: uppercase; letter-spacing: 0.5px; line-height: 1; color: white; white-space: nowrap; }
         .s-ok { background: var(--success); box-shadow: 0 3px 6px rgba(16,185,129,0.4); }
         .s-nc { background: var(--danger); box-shadow: 0 3px 6px rgba(239,68,68,0.4); }
 
@@ -89,7 +75,7 @@
         .q-input-mod { flex: 2; padding: 10px; border: none; text-align: center; font-weight: 800; font-size: 16px; color: #1e3a8a; text-transform: uppercase; background: white; border-radius: 4px; box-shadow: inset 0 2px 4px rgba(0,0,0,0.1); }
         .q-select-stat { flex: 1; padding: 10px; border: none; text-align: center; font-weight: 900; font-size: 20px; color: #1e3a8a; cursor: pointer; background: white; border-radius: 4px; appearance: none; }
         
-        .q-legenda-box { background: white; margin-top: 15px; padding: 15px; border-radius: 8px; font-weight: 700; color: #1e3a8a; text-align: left; font-size: 14px; display: inline-block; line-height: 1.6; }
+        .q-legenda-box { background: white; margin-top: 15px; padding: 15px; border-radius: 8px; font-weight: 700; color: #1e3a8a; text-align: center; font-size: 14px; display: inline-block; line-height: 1.6; }
         .btn-salvar-quadro { background: var(--success); color: white; border: none; padding: 15px 30px; font-family: 'Montserrat', sans-serif; font-size: 16px; font-weight: 800; border-radius: 8px; cursor: pointer; transition: 0.2s; box-shadow: 0 5px 15px rgba(16,185,129,0.3); margin-top: 15px; width: 100%;}
 
         .grid-turnos { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; padding: 30px; }
@@ -278,10 +264,10 @@
             <div style="padding: 0 20px 20px 20px;">
                 <div class="q-legenda-box">
                     <span style="color:black">LEGENDA:</span><br>
-                    <span style="display:inline-block; vertical-align:middle; text-align:center; width:16px; height:16px; color:#10b981; font-weight: 900; font-size:16px; line-height:1;">O</span> : PRODUÇÃO NORMAL | 
-                    <span style="display:inline-block; vertical-align:middle; width:12px; height:12px; border:3px solid #facc15; border-radius:2px;"></span> : SETUP | 
-                    <span style="display:inline-block; vertical-align:middle; text-align:center; width:16px; height:16px; color:#3b82f6; font-weight: 900; font-size:16px; line-height:1;">△</span> : TRY OUT | 
-                    <span style="display:inline-block; vertical-align:middle; text-align:center; width:16px; height:16px; color:#ef4444; font-weight: 900; font-size:16px; line-height:1;">X</span> : STAND BY
+                    <span style="display:inline-block; font-family:'Inter', sans-serif; font-size:18px; font-weight:900; color:#10b981;">O</span> : PRODUÇÃO NORMAL | 
+                    <span style="display:inline-block; font-family:'Inter', sans-serif; font-size:24px; font-weight:900; color:#facc15; position:relative; top:2px;">□</span> : SETUP | 
+                    <span style="display:inline-block; font-family:'Inter', sans-serif; font-size:18px; font-weight:900; color:#3b82f6;">△</span> : TRY OUT | 
+                    <span style="display:inline-block; font-family:'Inter', sans-serif; font-size:18px; font-weight:900; color:#ef4444;">X</span> : STAND BY
                 </div>
                 <button class="btn-salvar-quadro" onclick="salvarQuadroFisico()">GRAVAR NO PAINEL</button>
             </div>
@@ -371,14 +357,13 @@
         }
     }
 
-    // 🔥 FUNÇÃO AUXILIAR PARA COR E FORMATO DOS ÍCONES (Trava de Tamanho 32x32) 🔥
+    // 🔥 ÍCONES DO MESMO TAMANHO USANDO TEXTO PURO (SEM EMOJI DE SISTEMA) 🔥
     function getIconHTML(status) {
-        // A caixa base que garante que todos fiquem do exato mesmo tamanho e alinhamento
-        let baseStyle = "width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; font-size: 28px; font-weight: 900; line-height: 1;";
+        let baseStyle = "width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; font-size: 28px; font-weight: 900; line-height: 1; font-family: 'Inter', sans-serif;";
         
-        if (status === '⬜') {
-            // O Quadrado Vazado (SÓ O CONTORNO) 
-            return `<div style="${baseStyle}"><div style="width: 20px; height: 20px; border: 4px solid #facc15; border-radius: 2px; background: transparent; box-shadow: 1px 1px 2px rgba(0,0,0,0.5);"></div></div>`;
+        if (status === '□') {
+            // O caractere U+25A1 (Quadrado Branco Geométrico - Apenas contorno)
+            return `<div style="${baseStyle} color: #facc15; font-size: 38px; position:relative; top:-2px; text-shadow: 1px 1px 2px rgba(0,0,0,0.5);">□</div>`;
         } else if (status === 'O') {
             return `<div style="${baseStyle} color: #10b981; text-shadow: 1px 1px 2px rgba(0,0,0,0.5);">O</div>`;
         } else if (status === 'X') {
@@ -392,7 +377,7 @@
     function getCorStatus(status) {
         if (status === 'O') return '#10b981';
         if (status === 'X') return '#ef4444';
-        if (status === '⬜') return '#eab308';
+        if (status === '□') return '#eab308'; // Amarelo Contorno
         if (status === '△') return '#3b82f6';
         return '#1e3a8a';
     }
@@ -409,7 +394,6 @@
                 if (setorAtivo === "HPDC" && m.setor !== "HPDC") return;
 
                 const div = document.createElement('div'); div.className = "card-grande"; 
-                // Botões de inspeção com CSS ajustado para não quebrar linha
                 const status1 = m.insp1 ? `<div class="s-ok"><span>✅ 1ª INSP OK</span></div>` : `<div class="s-nc"><span>❌ 1ª INSP PEND</span></div>`;
                 const status2 = m.insp2 ? `<div class="s-ok"><span>✅ 2ª INSP OK</span></div>` : `<div class="s-nc"><span>❌ 2ª INSP PEND</span></div>`;
                 
@@ -419,6 +403,9 @@
                 let qMod = (quadroSalvo[chave] && quadroSalvo[chave].modelo) ? quadroSalvo[chave].modelo.toUpperCase() : '---';
                 let qStat = (quadroSalvo[chave] && quadroSalvo[chave].status) ? quadroSalvo[chave].status : 'O';
                 
+                // Proteção contra o emoji branco velho do BD
+                if (qStat === '⬜') qStat = '□'; 
+
                 let iconHtml = getIconHTML(qStat);
 
                 div.innerHTML = `
@@ -449,17 +436,19 @@
         });
     }
 
+    // 🔥 O SELECT COLORIDO (ATUALIZADO PARA O TEXTO GEOMÉTRICO) 🔥
     function criarLinhaQuadro(nomeExibicao, idInput, valorModelo, valorStatus) { 
+        if (valorStatus === '⬜') valorStatus = '□'; // Conversão de segurança
         let corAtual = getCorStatus(valorStatus);
         return `
         <div class="q-linha">
             <div class="q-nome-maq">${nomeExibicao}</div>
             <input type="text" class="q-input-mod" id="q-mod-${idInput}" value="${valorModelo}" placeholder="..." oninput="this.value = this.value.toUpperCase()">
-            <select class="q-select-stat" id="q-stat-${idInput}" style="color: ${corAtual};" onchange="this.style.color = getCorStatus(this.value)">
-                <option value="O" style="color:#10b981;" ${valorStatus==='O'?'selected':''}>O</option>
-                <option value="X" style="color:#ef4444;" ${valorStatus==='X'?'selected':''}>X</option>
-                <option value="⬜" style="color:#eab308;" ${valorStatus==='⬜'?'selected':''}>⬜</option>
-                <option value="△" style="color:#3b82f6;" ${valorStatus==='△'?'selected':''}>△</option>
+            <select class="q-select-stat" id="q-stat-${idInput}" style="color: ${corAtual}; font-family: 'Inter', sans-serif;" onchange="this.style.color = getCorStatus(this.value)">
+                <option value="O" style="color:#10b981; font-weight:900;" ${valorStatus==='O'?'selected':''}>O</option>
+                <option value="X" style="color:#ef4444; font-weight:900;" ${valorStatus==='X'?'selected':''}>X</option>
+                <option value="□" style="color:#eab308; font-weight:900; font-size:18px;" ${valorStatus==='□'?'selected':''}>□</option>
+                <option value="△" style="color:#3b82f6; font-weight:900;" ${valorStatus==='△'?'selected':''}>△</option>
             </select>
         </div>`; 
     }
