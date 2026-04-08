@@ -4,7 +4,7 @@ from fastapi.responses import JSONResponse
 from pydantic import BaseModel
 import requests
 from typing import Dict, Any, Optional
-from datetime import datetime
+from datetime import datetime, timedelta, timezone
 import calendar
 
 app = FastAPI()
@@ -20,6 +20,11 @@ app.add_middleware(
 # 🔥 CHAVE DO SEU COFRE FIREBASE
 FIREBASE_URL = "https://honda-qualidade-default-rtdb.firebaseio.com/"
 
+# --- RELÓGIO DE MANAUS (UTC -4) ---
+def hora_manaus():
+    """Força o servidor a usar o fuso horário exato de Manaus"""
+    return datetime.now(timezone(timedelta(hours=-4)))
+
 # --- FUNÇÕES DE COMUNICAÇÃO COM O COFRE (FIREBASE) ---
 
 def salvar_no_cofre(caminho: str, dados: Any):
@@ -31,7 +36,7 @@ def ler_do_cofre(caminho: str):
     response = requests.get(url)
     dados = response.json()
     
-    # 🛡️ VACINA: Se o Firebase transformar números de matrícula em Listas, isso reverte pra Dicionário
+    # 🛡️ VACINA: Se o Firebase transformar números de matrícula em Listas
     if isinstance(dados, list):
         return {str(i): v for i, v in enumerate(dados) if v is not None}
     
@@ -60,7 +65,7 @@ class AssinaturaRequest(BaseModel):
 
 @app.get("/")
 def home():
-    return {"status": "Jarvis Online", "database": "Conectado ao Firebase Cloud"}
+    return {"status": "Jarvis Online", "database": "Conectado ao Firebase Cloud", "hora_local": str(hora_manaus())}
 
 @app.post("/cadastrar")
 def cadastrar(u: Usuario):
@@ -94,7 +99,8 @@ def login(req: LoginRequest):
 
 @app.get("/maquinas")
 def listar_maquinas():
-    hoje = datetime.now()
+    # 🔥 AGORA ELE USA A HORA DE MANAUS PARA SABER O TURNO E O DIA
+    hoje = hora_manaus()
     dia, mes = str(hoje.day), str(hoje.month)
     
     plantas = [
@@ -164,7 +170,6 @@ def salvar_inspecao(dados: Dict[str, Any]):
             
     return {"status": "ok", "chave": chave}
 
-# 🔥 NOVO: Mostra o calendário completo de 12 meses
 @app.get("/maquinas/{id_m}/meses")
 def listar_meses(id_m: str):
     nomes_meses = {1:"Janeiro", 2:"Fevereiro", 3:"Março", 4:"Abril", 5:"Maio", 6:"Junho", 7:"Julho", 8:"Agosto", 9:"Setembro", 10:"Outubro", 11:"Novembro", 12:"Dezembro"}
@@ -173,19 +178,17 @@ def listar_meses(id_m: str):
         res.append({"id_mes": m, "nome": nomes_meses[m]})
     return res
 
-# 🔥 NOVO: Mostra todos os dias do mês, pintando de Verde se tiver ficha e de Cinza se não tiver
 @app.get("/maquinas/{id_m}/meses/{id_mes}/dias")
 def listar_dias(id_m: str, id_mes: int):
     banco = ler_do_cofre("banco_inspecoes")
     dias_com_ficha = set()
     
-    # Procura quais dias têm fichas salvas
     for chave in banco:
         partes = chave.split('-')
         if partes[0] == id_m and partes[1] == str(id_mes):
             dias_com_ficha.add(int(partes[2]))
             
-    hoje = datetime.now()
+    hoje = hora_manaus()
     try:
         _, num_dias = calendar.monthrange(hoje.year, id_mes)
     except:
