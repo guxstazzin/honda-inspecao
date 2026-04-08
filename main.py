@@ -1,219 +1,241 @@
-from fastapi import FastAPI
-from fastapi.responses import FileResponse, JSONResponse
+from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
-import calendar
+from pydantic import BaseModel
+import requests
 import json
-import os
-from datetime import datetime, timedelta
+from typing import Dict, Any, Optional
 
 app = FastAPI()
-app.add_middleware(CORSMiddleware, allow_origins=["*"], allow_methods=["*"], allow_headers=["*"])
 
-ARQUIVO_BD = "banco_dados.json"
-ARQUIVO_USUARIOS = "usuarios.json"
-ARQUIVO_QUADRO = "quadro_producao.json"
+# Configuração de CORS para permitir acesso do GitHub Pages/Celular
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
-def carregar_dados(arquivo):
-    if os.path.exists(arquivo):
-        with open(arquivo, "r", encoding="utf-8") as f:
-            try: return json.load(f)
-            except: return {}
-    return {}
+# 🔥 CHAVE DO SEU COFRE FIREBASE
+FIREBASE_URL = "https://honda-qualidade-default-rtdb.firebaseio.com/"
 
-def salvar_dados(dados, arquivo):
-    with open(arquivo, "w", encoding="utf-8") as f:
-        json.dump(dados, f, indent=4, ensure_ascii=False)
+# --- FUNÇÕES DE COMUNICAÇÃO COM O COFRE (FIREBASE) ---
 
-historico_inspecoes = carregar_dados(ARQUIVO_BD)
-banco_usuarios = carregar_dados(ARQUIVO_USUARIOS)
-quadro_producao = carregar_dados(ARQUIVO_QUADRO)
+def salvar_no_cofre(caminho: str, dados: Any):
+    """Envia os dados para o Firebase"""
+    url = f"{FIREBASE_URL}{caminho}.json"
+    response = requests.put(url, json=dados)
+    return response.json()
 
-def limpar_chave(k):
-    return str(k).upper().replace(" ", "").replace("-", "").replace("_", "")
+def ler_do_cofre(caminho: str):
+    """Busca os dados no Firebase"""
+    url = f"{FIREBASE_URL}{caminho}.json"
+    response = requests.get(url)
+    dados = response.json()
+    return dados if dados is not None else {}
 
-def obter_hora_manaus():
-    return datetime.utcnow() - timedelta(hours=4)
+# --- MODELOS DE DADOS ---
+
+class Usuario(BaseModel):
+    nome: str
+    matricula: str
+    senha: str
+    setor: Optional[str] = "LPDC"
+
+class LoginRequest(BaseModel):
+    matricula: str
+    senha: str
+
+class AssinaturaRequest(BaseModel):
+    chave: str # injetora-mes-dia-turno-insp
+    cargo: str # inspetor, analista ou chefe_cq
+    matricula: str
+    senha: str
+    assinatura: str # base64
+
+# --- ROTAS DO SISTEMA ---
 
 @app.get("/")
-async def abrir_dashboard(): return FileResponse("index.html")
-
-@app.get("/inspecao")
-async def abrir_ficha(): return FileResponse("ficha.html")
+def home():
+    return {"status": "Jarvis Online", "database": "Conectado ao Firebase Cloud"}
 
 @app.post("/cadastrar")
-async def cadastrar(dados: dict):
-    matricula = str(dados.get("matricula", ""))
-    if matricula in banco_usuarios:
-        return JSONResponse(content={"erro": "Esta matrícula já está cadastrada!"}, status_code=400)
+def cadastrar(u: Usuario):
+    usuarios = ler_do_cofre("usuarios")
+    if u.matricula in usuarios:
+        raise HTTPException(status_code=400, detail="Matrícula já cadastrada!")
     
-    # 🔥 AGORA SALVA O SETOR DO INSPETOR NA HORA DO CADASTRO 🔥
-    banco_usuarios[matricula] = {
-        "nome": dados.get("nome"), 
-        "senha": dados.get("senha"),
-        "setor": dados.get("setor", "LPDC") # Salva se é LPDC ou HPDC
+    usuarios[u.matricula] = {
+        "nome": u.nome,
+        "senha": u.senha,
+        "setor": u.setor,
+        "assinatura": ""
     }
-    salvar_dados(banco_usuarios, ARQUIVO_USUARIOS)
-    return {"status": "ok", "nome": dados.get("nome"), "setor": dados.get("setor")}
+    salvar_no_cofre("usuarios", usuarios)
+    return {"status": "ok"}
 
 @app.post("/login")
-async def login(dados: dict):
-    matricula = str(dados.get("matricula", ""))
-    senha = str(dados.get("senha", ""))
-    usuario = banco_usuarios.get(matricula)
-    
-    if not usuario or str(usuario.get("senha", "")) != senha:
-        return JSONResponse(content={"erro": "Matrícula ou senha incorretos!"}, status_code=401)
-        
-    # Se o usuário for antigo e não tiver setor, o sistema define como LPDC pra não dar erro
-    setor_usuario = usuario.get("setor", "LPDC")
-        
+def login(req: LoginRequest):
+    usuarios = ler_do_cofre("usuarios")
+    u = usuarios.get(req.matricula)
+    if not u or u["senha"] != req.senha:
+        return {"erro": "Matrícula ou senha incorretos"}
     return {
-        "status": "ok", 
-        "nome": usuario.get("nome", "Usuário"), 
-        "assinatura": usuario.get("assinatura", ""),
-        "setor": setor_usuario
+        "nome": u["nome"], 
+        "assinatura": u.get("assinatura", ""),
+        "setor": u.get("setor", "LPDC"),
+        "ok": True
     }
 
 @app.get("/maquinas")
-async def listar_maquinas():
-    agora = obter_hora_manaus()
-    dia_atual = agora.day
-    mes_atual = agora.month
-    hora = agora.hour
+def listar_maquinas():
+    # Retorna o status das máquinas baseado nas fichas de hoje
+    from datetime import datetime
+    hoje = datetime.now()
+    dia, mes = str(hoje.day), str(hoje.month)
     
-    if 7 <= hora < 15: turno_atual = 1
-    elif 15 <= hora < 23: turno_atual = 2
-    else: turno_atual = 3
-
-    maquinas_lista = []
+    # Lista fixa das máquinas da planta atualizada
+    plantas = [
+        {"id": "4", "nome": "MAQ 4", "setor": "LPDC"},
+        {"id": "5", "nome": "MAQ 5", "setor": "LPDC"},
+        {"id": "6", "nome": "MAQ 6", "setor": "LPDC"},
+        {"id": "7", "nome": "MAQ 7", "setor": "LPDC"},
+        {"id": "9", "nome": "MAQ 9", "setor": "LPDC"},
+        {"id": "11", "nome": "MAQ 11", "setor": "LPDC"},
+        {"id": "12", "nome": "MAQ 12", "setor": "LPDC"},
+        {"id": "13", "nome": "MAQ 13", "setor": "LPDC"},
+        {"id": "14", "nome": "MAQ 14", "setor": "LPDC"},
+        {"id": "15", "nome": "MAQ 15", "setor": "LPDC"},
+        {"id": "16", "nome": "MAQ 16", "setor": "LPDC"},
+        {"id": "HTOP2", "nome": "H-TOP 2", "setor": "MACHEIRA"},
+        {"id": "HTOP3", "nome": "H-TOP 3", "setor": "MACHEIRA"},
+        {"id": "HTOP4", "nome": "H-TOP 4", "setor": "MACHEIRA"},
+        {"id": "HTOP5", "nome": "H-TOP 5", "setor": "MACHEIRA"},
+        {"id": "HTOP6", "nome": "H-TOP 6", "setor": "MACHEIRA"},
+        {"id": "HTOP7", "nome": "H-TOP 7", "setor": "MACHEIRA"},
+        {"id": "VTOP1", "nome": "V-TOP 1", "setor": "MACHEIRA"},
+        {"id": "VTOP2", "nome": "V-TOP 2", "setor": "MACHEIRA"},
+        {"id": "VTOP3", "nome": "V-TOP 3", "setor": "MACHEIRA"},
+        {"id": "HPDC2", "nome": "INJ. 2", "setor": "HPDC"},
+        {"id": "HPDC7", "nome": "INJ. 7", "setor": "HPDC"},
+        {"id": "HPDC8", "nome": "INJ. 8", "setor": "HPDC"},
+        {"id": "HPDC9", "nome": "INJ. 9", "setor": "HPDC"},
+        {"id": "HPDC12", "nome": "INJ. 12", "setor": "HPDC"},
+        {"id": "HPDC13", "nome": "INJ. 13", "setor": "HPDC"},
+        {"id": "HPDC15", "nome": "INJ. 15", "setor": "HPDC"},
+        {"id": "HPDC16", "nome": "INJ. 16", "setor": "HPDC"},
+        {"id": "HPDC17", "nome": "INJ. 17", "setor": "HPDC"},
+        {"id": "HPDC18", "nome": "INJ. 18", "setor": "HPDC"},
+        {"id": "HPDC19", "nome": "INJ. 19", "setor": "HPDC"},
+        {"id": "HPDC20", "nome": "INJ. 20", "setor": "HPDC"},
+        {"id": "HPDC21", "nome": "INJ. 21", "setor": "HPDC"},
+        {"id": "HPDC22", "nome": "INJ. 22", "setor": "HPDC"}
+    ]
     
-    for i in range(4, 17):
-        maquinas_lista.append({"id": str(i), "nome": f"MAQ {i}", "setor": "LPDC"})
-    
-    macheiras = ["H-TOP 1", "H-TOP 2", "H-TOP 3", "H-TOP 4", "H-TOP 5", "V-TOP 1", "V-TOP 2", "V-TOP 3", "H-TOP 6"]
-    for m in macheiras:
-        id_macheira = m.replace(" ", "").replace("-", "")
-        maquinas_lista.append({"id": id_macheira, "nome": m, "setor": "MACHEIRA"})
+    banco = ler_do_cofre("banco_inspecoes")
+    turno_atual = 3
+    if 7 <= hoje.hour < 15: turno_atual = 1
+    elif 15 <= hoje.hour < 23: turno_atual = 2
 
-    hpdc_nums = [2, 7, 8, 9, 12, 13, 15, 16, 17, 18, 19, 20, 21, 22]
-    for i in hpdc_nums:
-        maquinas_lista.append({"id": f"HPDC{i}", "nome": f"INJ. {i}", "setor": "HPDC"})
-
-    maquinas_status = []
-    for maq in maquinas_lista:
-        m_id = maq["id"]
-        chave1 = limpar_chave(f"{m_id}{mes_atual}{dia_atual}{turno_atual}1")
-        chave2 = limpar_chave(f"{m_id}{mes_atual}{dia_atual}{turno_atual}2")
+    for m in plantas:
+        m["turno_atual"] = turno_atual
+        # Verifica se tem inspeção hoje no turno atual
+        chave1 = f"{m['id']}-{mes}-{dia}-{turno_atual}-1"
+        chave2 = f"{m['id']}-{mes}-{dia}-{turno_atual}-2"
+        m["insp1"] = chave1 in banco
+        m["insp2"] = chave2 in banco
         
-        insp1 = any(limpar_chave(k) == chave1 for k in historico_inspecoes.keys())
-        insp2 = any(limpar_chave(k) == chave2 for k in historico_inspecoes.keys())
-        
-        maquinas_status.append({
-            "id": m_id, "nome": maq["nome"], "setor": maq["setor"],
-            "turno_atual": turno_atual, "insp1": insp1, "insp2": insp2
-        })
-    return maquinas_status
-
-@app.get("/maquinas/{id}/meses")
-async def listar_meses(id: str):
-    nomes = ["Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho", "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro"]
-    return [{"id_mes": i+1, "nome": n} for i, n in enumerate(nomes)]
-
-@app.get("/maquinas/{id}/meses/{id_mes}/dias")
-async def listar_dias(id: str, id_mes: int):
-    _, ultimo = calendar.monthrange(2026, id_mes)
-    dias = []
-    for d in range(1, ultimo + 1):
-        prefixo = limpar_chave(f"{id}{id_mes}{d}")
-        tem_ficha = any(limpar_chave(k).startswith(prefixo) for k in historico_inspecoes.keys())
-        dias.append({"dia": d, "status_ficha": "Verde" if tem_ficha else "Cinza"})
-    return dias
-
-@app.get("/maquinas/{id}/meses/{id_mes}/dias/{dia}/resumo")
-async def resumo_dia(id: str, id_mes: int, dia: int):
-    resumo = {}
-    for turno in [1, 2, 3]:
-        c1 = limpar_chave(f"{id}{id_mes}{dia}{turno}1")
-        c2 = limpar_chave(f"{id}{id_mes}{dia}{turno}2")
-        achou1 = any(limpar_chave(k) == c1 for k in historico_inspecoes.keys())
-        achou2 = any(limpar_chave(k) == c2 for k in historico_inspecoes.keys())
-        resumo[str(turno)] = {"insp1": achou1, "insp2": achou2}
-    return resumo
-
-@app.get("/ver-ficha/{maquina}/{mes}/{dia}/{turno}/{inspecao}")
-async def buscar_ficha(maquina: str, mes: int, dia: int, turno: int, inspecao: int):
-    chave_esperada = limpar_chave(f"{maquina}{mes}{dia}{turno}{inspecao}")
-    for k, v in historico_inspecoes.items():
-        if limpar_chave(k) == chave_esperada:
-            return v
-    return JSONResponse(content={"erro": "Ficha não encontrada."}, status_code=404)
+    return plantas
 
 @app.post("/salvar-inspecao")
-async def salvar(dados: dict):
-    try:
-        injetora = limpar_chave(dados.get('injetora', ''))
-        mes = str(dados.get('mes', ''))
-        dia = str(dados.get('dia', ''))
-        turno = str(dados.get('turno', ''))
-        inspecao = str(dados.get('inspecao', ''))
-        
-        chave_oficial = f"{injetora}-{mes}-{dia}-{turno}-{inspecao}"
-        
-        chave_busca = limpar_chave(chave_oficial)
-        if any(limpar_chave(k) == chave_busca for k in historico_inspecoes.keys()):
-            return JSONResponse(content={"erro": "Ficha já salva! O inspetor não pode regravar inspeções concluídas."}, status_code=403)
-        
-        historico_inspecoes[chave_oficial] = dados
-        salvar_dados(historico_inspecoes, ARQUIVO_BD)
+def salvar_inspecao(dados: Dict[str, Any]):
+    # Formato da chave: IDMAQUINA-MES-DIA-TURNO-INSPECAO
+    chave = f"{dados['injetora']}-{dados['mes']}-{dados['dia']}-{dados['turno']}-{dados['inspecao']}"
+    
+    banco = ler_do_cofre("banco_inspecoes")
+    banco[chave] = dados
+    salvar_no_cofre("banco_inspecoes", banco)
+    
+    # Salva assinatura no perfil do usuário se enviada
+    if dados.get("assinatura_inspetor") and dados.get("matricula_inspetor"):
+        usuarios = ler_do_cofre("usuarios")
+        mat = dados["matricula_inspetor"]
+        if mat in usuarios:
+            usuarios[mat]["assinatura"] = dados["assinatura_inspetor"]
+            salvar_no_cofre("usuarios", usuarios)
+            
+    return {"status": "ok", "chave": chave}
 
-        mat = str(dados.get("matricula_inspetor", ""))
-        ass = dados.get("assinatura_inspetor", "")
-        if mat and ass and mat in banco_usuarios:
-            if not banco_usuarios[mat].get("assinatura"):
-                banco_usuarios[mat]["assinatura"] = ass
-                salvar_dados(banco_usuarios, ARQUIVO_USUARIOS)
+@app.get("/maquinas/{id_m}/meses")
+def listar_meses(id_m: str):
+    return [{"id_mes": 4, "nome": "Abril"}] # Simplificado para o teste
 
-        return {"status": "ok"}
-    except Exception as e:
-        return JSONResponse(content={"erro": f"Erro interno: {str(e)}"}, status_code=500)
+@app.get("/maquinas/{id_m}/meses/{id_mes}/dias")
+def listar_dias(id_m: str, id_mes: int):
+    banco = ler_do_cofre("banco_inspecoes")
+    dias_encontrados = []
+    # Filtra as fichas existentes para essa máquina e mês
+    for chave in banco:
+        partes = chave.split('-')
+        if partes[0] == id_m and partes[1] == str(id_mes):
+            d = int(partes[2])
+            if d not in dias_encontrados: dias_encontrados.append(d)
+    
+    res = []
+    for d in sorted(dias_encontrados):
+        res.append({"dia": d, "status_ficha": "Verde"})
+    return res
 
-@app.get("/obter-quadro")
-async def obter_quadro():
-    return quadro_producao
+@app.get("/maquinas/{id_m}/meses/{id_mes}/dias/{dia}/resumo")
+def resumo_dia(id_m: str, id_mes: int, dia: int):
+    banco = ler_do_cofre("banco_inspecoes")
+    res = {"1": {"insp1": False, "insp2": False}, "2": {"insp1": False, "insp2": False}, "3": {"insp1": False, "insp2": False}}
+    for t in ["1","2","3"]:
+        for i in ["1","2"]:
+            if f"{id_m}-{id_mes}-{dia}-{t}-{i}" in banco:
+                res[t][f"insp{i}"] = True
+    return res
+
+@app.get("/ver-ficha/{id_m}/{id_mes}/{dia}/{turno}/{insp}")
+def ver_ficha(id_m: str, id_mes: int, dia: int, turno: int, insp: int):
+    banco = ler_do_cofre("banco_inspecoes")
+    chave = f"{id_m}-{id_mes}-{dia}-{turno}-{insp}"
+    ficha = banco.get(chave)
+    if not ficha:
+        raise HTTPException(status_code=404, detail="Ficha não encontrada")
+    return ficha
 
 @app.post("/salvar-quadro")
-async def salvar_quadro_endpoint(dados: dict):
-    global quadro_producao
-    for chave, valores in dados.items():
-        quadro_producao[chave] = valores
-    salvar_dados(quadro_producao, ARQUIVO_QUADRO)
+def salvar_quadro(dados: Dict[str, Any]):
+    salvar_no_cofre("quadro_producao", dados)
     return {"status": "ok"}
 
+@app.get("/obter-quadro")
+def obter_quadro():
+    return ler_do_cofre("quadro_producao")
+
 @app.post("/assinar-ficha")
-async def assinar_ficha(dados: dict):
-    try:
-        chave = limpar_chave(dados.get("chave", ""))
-        cargo = str(dados.get("cargo", ""))
-        matricula = str(dados.get("matricula", ""))
-        senha = str(dados.get("senha", ""))
-        nova_assinatura = dados.get("assinatura", "")
+def assinar_ficha(req: AssinaturaRequest):
+    # Verifica login da chefia
+    usuarios = ler_do_cofre("usuarios")
+    u = usuarios.get(req.matricula)
+    if not u or u["senha"] != req.senha:
+        return {"erro": "Credenciais de chefia inválidas"}
+    
+    banco = ler_do_cofre("banco_inspecoes")
+    if req.chave not in banco:
+        return {"erro": "Ficha não encontrada"}
+    
+    # Se não mandou assinatura nova, usa a que já está no cadastro
+    img_assinatura = req.assinatura if len(req.assinatura) > 100 else u.get("assinatura", "")
+    
+    banco[req.chave][req.cargo] = {
+        "nome": u["nome"],
+        "assinatura": img_assinatura
+    }
+    salvar_no_cofre("banco_inspecoes", banco)
+    return {"status": "ok"}
 
-        usuario = banco_usuarios.get(matricula)
-        if not usuario or str(usuario.get("senha", "")) != senha:
-            return JSONResponse(content={"erro": "Matrícula ou senha incorretos!"}, status_code=401)
-        
-        if not usuario.get("assinatura") and nova_assinatura:
-            usuario["assinatura"] = nova_assinatura
-            salvar_dados(banco_usuarios, ARQUIVO_USUARIOS)
-        elif not usuario.get("assinatura") and not nova_assinatura:
-            return JSONResponse(content={"erro": "Você precisa desenhar sua assinatura no primeiro acesso!"}, status_code=400)
-
-        for k in historico_inspecoes.keys():
-            if limpar_chave(k) == chave:
-                historico_inspecoes[k][cargo] = {"nome": usuario.get("nome", "Usuário"), "assinatura": usuario.get("assinatura", "")}
-                salvar_dados(historico_inspecoes, ARQUIVO_BD)
-                return {"status": "ok"}
-        
-        return JSONResponse(content={"erro": "Ficha não encontrada."}, status_code=404)
-    except Exception as e:
-        return JSONResponse(content={"erro": f"Falha no servidor: {str(e)}"}, status_code=500)
+if __name__ == "__main__":
+    import uvicorn
+    uvicorn.run(app, host="0.0.0.0", port=8000)
