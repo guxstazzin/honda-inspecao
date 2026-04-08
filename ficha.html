@@ -319,10 +319,17 @@
         }).catch(e => console.log("Ainda sem conexão com o resumo ou motor offline.", e));
     }
 
-    // 🔥 NOVA FUNÇÃO ABRIR FOTO INTELIGENTE 🔥
+    // 🔥 NOVA FUNÇÃO ABRIR FOTO INTELIGENTE (AGORA IGNORA O "LINK_AQUI.jpg") 🔥
     function abrirFotoItem(nomeDoItem, linkDaFoto) { 
         document.getElementById('titulo-foto-item').textContent = nomeDoItem; 
-        let imagemParaMostrar = (linkDaFoto && linkDaFoto !== 'undefined') ? linkDaFoto : "https://raw.githubusercontent.com/guxstazzin/honda-inspecao/main/croqui.jpg.png";
+        
+        let imagemParaMostrar = "https://raw.githubusercontent.com/guxstazzin/honda-inspecao/main/croqui.jpg.png"; // Padrão Honda
+        
+        // Se tiver um link válido e não for o texto genérico, ele mostra a foto certa!
+        if (linkDaFoto && linkDaFoto !== 'undefined' && linkDaFoto !== 'LINK_AQUI.jpg') {
+            imagemParaMostrar = linkDaFoto;
+        }
+
         document.getElementById('img-modal-dinamica').src = imagemParaMostrar;
         document.getElementById('modalVisualizadorItem').style.display = 'flex'; 
     }
@@ -336,8 +343,8 @@
         // =======================================================================================
         LPDC_K2GF: [ 
             { sec: "Parâmetros de Processo da Injetora - K2GF" }, 
-            { t: "Temperatura do Molde", u: "330-390°C", min: 330, max: 390, img: "https://github.com/guxstazzin/honda-inspecao/blob/main/temperatura%20do%20molde.jpeg?raw=true" }, 
-            { t: "Temperatura do Banho", u: "685-710°C", min: 685, max: 710, img: "https://github.com/guxstazzin/honda-inspecao/blob/main/temperatura%20do%20banho.jpeg?raw=true" }, 
+            { t: "Temperatura do Molde", u: "330-390°C", min: 330, max: 390, img: "https://raw.githubusercontent.com/guxstazzin/honda-inspecao/main/temperatura%20do%20molde.jpeg" }, 
+            { t: "Temperatura do Banho", u: "685-710°C", min: 685, max: 710, img: "https://raw.githubusercontent.com/guxstazzin/honda-inspecao/main/temperatura%20do%20banho.jpeg" }, 
             { t: "Tempo de Abertura", u: "15-20 seg", min: 15, max: 20, img: "LINK_AQUI.jpg" }, 
             { t: "Tempo de Pressurização", u: "190-210 seg", min: 190, max: 210, img: "LINK_AQUI.jpg" }, 
             { t: "Refrigeração Base Inferior", u: "5 ±1 Kgf/cm²", min: 4, max: 6, img: "LINK_AQUI.jpg" }, 
@@ -352,16 +359,7 @@
             { t: "Guias de Fundição", u: "Sem deformações", tipo: "bin", img: "LINK_AQUI.jpg" }, 
             { t: "Pré-Furo do Prisioneiro", u: "Sem deformações", tipo: "bin", img: "LINK_AQUI.jpg" }, 
             { t: "Referência de Usinagem", u: "Sem falhas/aderências", tipo: "bin", img: "LINK_AQUI.jpg" }, 
-            { t: "Aloj. Guias e Sedes de Válvula", u: "Sem rebarbas", tipo: "bin", img: "https://github.com/guxstazzin/honda-inspecao/blob/main/alojamento%20dos%20guias.jpeg?raw=true" }, 
-            { t: "Canais de Admissão/Escape", u: "Sem macho quebrado", tipo: "bin", img: "LINK_AQUI.jpg" }, 
-            { t: "Câmara de Combustão", u: "Sem rechupe", tipo: "bin", img: "LINK_AQUI.jpg" }, 
-            { t: "Fechamento Molde com Macho", u: "Visual", tipo: "bin", img: "LINK_AQUI.jpg" }, 
-            { t: "Pontos Fixação Escapamento", u: "Visual", tipo: "bin", img: "LINK_AQUI.jpg" }, 
-            { t: "Machos de Areia", u: "Sem deformações", tipo: "bin", img: "LINK_AQUI.jpg" }, 
-            { t: "Código de Fabricação", u: "Registrar", tipo: "txt", img: "LINK_AQUI.jpg" }, 
-            { t: "Pintura do Massalote", u: "Visual", tipo: "bin", img: "LINK_AQUI.jpg" }, 
-            { t: "Logotipo HONDA", u: "Legível", tipo: "bin", img: "LINK_AQUI.jpg" }, 
-            { t: "Aspecto Geral", u: "Visual", tipo: "bin", img: "LINK_AQUI.jpg" } 
+            { t: "Aloj. Guias e Sedes de Válvula", u: "Sem rebarbas", tipo: "bin", img: "https://raw.githubusercontent.com/guxstazzin/honda-inspecao/main/alojamento%20dos%20guias.jpeg" },
         ],
         // =======================================================================================
         
