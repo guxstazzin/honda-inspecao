@@ -77,7 +77,7 @@
     <div id="tela-login">
         <div class="login-box" id="box-login">
             <h2>Acesso ao Sistema</h2>
-            <input type="number" id="login-mat" class="login-input" placeholder="Sua Matrícula" required>
+            <input type="text" id="login-mat" class="login-input" placeholder="Matrícula (Ex: SB12345)" oninput="this.value = this.value.toUpperCase()" required>
             <input type="password" id="login-senha" class="login-input" placeholder="Sua Senha" required>
             <button class="btn-logar" onclick="fazerLogin()">Entrar na Ficha</button>
             <span class="link-cadastro" onclick="alternarTelas('box-cadastro')">Primeiro acesso? Cadastre-se</span>
@@ -86,7 +86,7 @@
         <div class="login-box" id="box-cadastro" style="display: none;">
             <h2>Novo Inspetor</h2>
             <input type="text" id="cad-nome" class="login-input" placeholder="Nome Completo" required>
-            <input type="number" id="cad-mat" class="login-input" placeholder="Sua Matrícula" required>
+            <input type="text" id="cad-mat" class="login-input" placeholder="Matrícula (Ex: SB12345)" oninput="this.value = this.value.toUpperCase()" required>
             <input type="password" id="cad-senha" class="login-input" placeholder="Crie uma Senha" required>
             
             <select id="cad-setor" class="login-input" required style="font-weight: bold; color: var(--blue-dark);">
@@ -179,6 +179,7 @@
         <div class="footer"><button id="btn-salvar" class="btn-env" onclick="enviar()">SALVAR INSPEÇÃO</button></div>
     </div>
 
+    <!-- 🔥 MODAL DE FOTO (Puxando a imagem do GitHub) 🔥 -->
     <div id="modalVisualizadorItem" style="display: none; position: fixed; z-index: 99999; left: 0; top: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); align-items: center; justify-content: center; backdrop-filter: blur(4px);">
         <div style="background: white; width: 95%; max-width: 500px; border-radius: 12px; overflow: hidden; box-shadow: 0 10px 40px rgba(0,0,0,0.5);">
             <div style="background: linear-gradient(135deg, var(--blue-dark), var(--blue)); color: white; padding: 15px 20px; display: flex; justify-content: space-between; align-items: center;">
@@ -197,14 +198,13 @@
 
 <script>
     // =====================================================================
-    // ⚠️ ATENÇÃO: LINK DO MOTOR (SEM BARRA NO FINAL E SEM /INSPECAO) ⚠️
+    // ⚠️ ATENÇÃO: COLOQUE AQUI O SEU LINK DO RENDER! ⚠️
     // =====================================================================
     const API_URL = "https://gestao-a-vista-r9uv.onrender.com"; 
     // =====================================================================
 
     const headersConfig = { 'ngrok-skip-browser-warning': '69420', 'Content-Type': 'application/json' };
     
-    // 🛡️ VACINA DO LINK: Limpa qualquer barra sobrando no final do link automaticamente
     function getUrlLimpa(url) { 
         let base = API_URL.endsWith('/') ? API_URL.slice(0, -1) : API_URL;
         return base + url + '?nocache=' + new Date().getTime(); 
@@ -247,20 +247,28 @@
     }
 
     function fazerLogin() {
-        const mat = document.getElementById('login-mat').value; const senha = document.getElementById('login-senha').value;
+        let mat = document.getElementById('login-mat').value.trim().toUpperCase(); 
+        const senha = document.getElementById('login-senha').value;
         if(!mat || !senha) return alert("Preencha matrícula e senha!");
+        if(!mat.startsWith('SB')) return alert("⚠️ MATRÍCULA INVÁLIDA: A sua matrícula deve começar com 'SB' (Ex: SB056312).");
+
         fetch(getUrlLimpa('/login'), { method: 'POST', headers: headersConfig, body: JSON.stringify({matricula: mat, senha: senha}) })
         .then(async r => { 
             const res = await r.json(); 
             if(r.ok) { res.matricula = mat; sucessoLogin(res); } 
             else alert("❌ Erro: " + (res.erro || res.detail || JSON.stringify(res))); 
-        }).catch(e => alert("Erro de conexão com o Render. O servidor pode estar dormindo ou o link está errado."));
+        }).catch(e => alert("Erro de conexão com o Render."));
     }
 
     function fazerCadastro() {
-        const nome = document.getElementById('cad-nome').value; const mat = document.getElementById('cad-mat').value; 
-        const senha = document.getElementById('cad-senha').value; const setor = document.getElementById('cad-setor').value;
+        const nome = document.getElementById('cad-nome').value; 
+        let mat = document.getElementById('cad-mat').value.trim().toUpperCase(); 
+        const senha = document.getElementById('cad-senha').value; 
+        const setor = document.getElementById('cad-setor').value;
+        
         if(!nome || !mat || !senha || !setor) return alert("⚠️ Preencha todos os campos e selecione seu Setor!");
+        if(!mat.startsWith('SB')) return alert("⚠️ MATRÍCULA INVÁLIDA: A sua matrícula deve começar com 'SB' (Ex: SB056312).");
+
         fetch(getUrlLimpa('/cadastrar'), { method: 'POST', headers: headersConfig, body: JSON.stringify({nome: nome, matricula: mat, senha: senha, setor: setor}) })
         .then(async r => { 
             const res = await r.json(); 
@@ -429,7 +437,20 @@
             fetch(getUrlLimpa('/salvar-inspecao'), { method: 'POST', headers: headersConfig, body: JSON.stringify(d) })
             .then(async resposta => {
                 const erroData = await resposta.json();
-                if(resposta.ok) { alert("✅ Inspeção e Assinatura Gravadas com Sucesso!"); window.location.reload(); } 
+                if(resposta.ok) { 
+                    alert("✅ Inspeção e Assinatura Gravadas com Sucesso!"); 
+                    
+                    // 🔥 A MÁGICA DE NÃO DESLOGAR ACONTECE AQUI:
+                    document.getElementById('op1').value = ""; // Limpa operador 1
+                    document.getElementById('op2').value = ""; // Limpa operador 2
+                    limparCanvas(); // Limpa a assinatura (se houver)
+                    
+                    btn.textContent = "SALVAR INSPEÇÃO"; 
+                    btn.style.opacity = "1"; 
+                    btn.disabled = false;
+                    
+                    voltarParaHome(); // Te joga de volta pra tela de "Escolher Setor" sem atualizar a página
+                } 
                 else { alert("❌ Erro: " + (erroData.erro || erroData.detail || JSON.stringify(erroData))); btn.textContent = "SALVAR INSPEÇÃO"; btn.style.opacity = "1"; btn.disabled = false; }
             }).catch(erro => { alert("❌ ERRO DE CONEXÃO. O servidor no Render pode estar dormindo."); btn.textContent = "SALVAR INSPEÇÃO"; btn.style.opacity = "1"; btn.disabled = false; });
         } catch(e) { alert("❌ Erro interno: " + e.message); }
