@@ -38,7 +38,6 @@
         .nome-maq { font-size: 26px; font-weight: 900; margin-bottom: 8px; letter-spacing: 1px; }
         .status-container { display: flex; flex-direction: row; gap: 8px; width: 90%; justify-content: center; margin-top: 5px;}
         
-        /* 🔥 BOTÕES DE INSPEÇÃO ALINHADOS E CORES VIBRANTES 🔥 */
         .s-ok, .s-nc { display: flex; align-items: center; justify-content: center; padding: 8px 6px; border-radius: 6px; font-weight: 900; font-size: 11px; flex: 1; text-transform: uppercase; letter-spacing: 0.5px; line-height: 1; color: white; white-space: nowrap; }
         .s-ok { background: var(--success); box-shadow: 0 3px 6px rgba(16,185,129,0.4); }
         .s-nc { background: var(--danger); box-shadow: 0 3px 6px rgba(239,68,68,0.4); }
@@ -306,8 +305,17 @@
     </div>
 
 <script>
-    const headers = { "ngrok-skip-browser-warning": "69420", 'Cache-Control': 'no-cache' };
-    function getUrlLimpa(url) { return url + '?nocache=' + new Date().getTime(); }
+    // =====================================================================
+    // ⚠️ ATENÇÃO FALCÃO: COLOQUE AQUI O SEU LINK DO RENDER! ⚠️
+    // =====================================================================
+    const API_URL = "https://gestao-a-vista-r9uv.onrender.com/"; 
+    // Exemplo: "https://honda-app-backend.onrender.com"
+    // =====================================================================
+
+    const headers = { "ngrok-skip-browser-warning": "69420", 'Cache-Control': 'no-cache', 'Content-Type': 'application/json' };
+    
+    // Agora o sistema sabe onde procurar o motor!
+    function getUrlLimpa(url) { return API_URL + url + '?nocache=' + new Date().getTime(); }
 
     const maqLpdcLista = [4, 5, 6, 7, 9, 11, 12, 13, 14, 15, 16]; 
     const maqMachLista = ["H-TOP 2", "H-TOP 3", "H-TOP 4", "H-TOP 5", "H-TOP 6", "H-TOP 7", "V-TOP 1", "V-TOP 2", "V-TOP 3"];
@@ -357,27 +365,19 @@
         }
     }
 
-    // 🔥 ÍCONES DO MESMO TAMANHO USANDO TEXTO PURO (SEM EMOJI DE SISTEMA) 🔥
     function getIconHTML(status) {
         let baseStyle = "width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; font-size: 28px; font-weight: 900; line-height: 1; font-family: 'Inter', sans-serif;";
-        
-        if (status === '□') {
-            // O caractere U+25A1 (Quadrado Branco Geométrico - Apenas contorno)
-            return `<div style="${baseStyle} color: #facc15; font-size: 38px; position:relative; top:-2px; text-shadow: 1px 1px 2px rgba(0,0,0,0.5);">□</div>`;
-        } else if (status === 'O') {
-            return `<div style="${baseStyle} color: #10b981; text-shadow: 1px 1px 2px rgba(0,0,0,0.5);">O</div>`;
-        } else if (status === 'X') {
-            return `<div style="${baseStyle} color: #ef4444; text-shadow: 1px 1px 2px rgba(0,0,0,0.5);">X</div>`;
-        } else if (status === '△') {
-            return `<div style="${baseStyle} color: #3b82f6; text-shadow: 1px 1px 2px rgba(0,0,0,0.5);">△</div>`;
-        }
+        if (status === '□') return `<div style="${baseStyle} color: #facc15; font-size: 38px; position:relative; top:-2px; text-shadow: 1px 1px 2px rgba(0,0,0,0.5);">□</div>`;
+        else if (status === 'O') return `<div style="${baseStyle} color: #10b981; text-shadow: 1px 1px 2px rgba(0,0,0,0.5);">O</div>`;
+        else if (status === 'X') return `<div style="${baseStyle} color: #ef4444; text-shadow: 1px 1px 2px rgba(0,0,0,0.5);">X</div>`;
+        else if (status === '△') return `<div style="${baseStyle} color: #3b82f6; text-shadow: 1px 1px 2px rgba(0,0,0,0.5);">△</div>`;
         return `<div style="${baseStyle} color: #fff;">${status}</div>`;
     }
 
     function getCorStatus(status) {
         if (status === 'O') return '#10b981';
         if (status === 'X') return '#ef4444';
-        if (status === '□') return '#eab308'; // Amarelo Contorno
+        if (status === '□') return '#eab308';
         if (status === '△') return '#3b82f6';
         return '#1e3a8a';
     }
@@ -385,7 +385,6 @@
     function carregarMaquinas() {
         document.getElementById('wrapper-quadro').style.display = "flex"; document.getElementById('painel-unico').style.display = "none";
         document.getElementById('painel-esq').innerHTML = ""; document.getElementById('painel-dir').innerHTML = "";
-        
         let mesHoje = new Date().getMonth() + 1; let diaHoje = new Date().getDate();
 
         Promise.all([ fetch(getUrlLimpa('/maquinas'), {headers}).then(r=>r.json()), fetch(getUrlLimpa('/obter-quadro'), {headers}).then(r=>r.json()) ]).then(([maquinas, quadroSalvo]) => {
@@ -397,13 +396,10 @@
                 const status1 = m.insp1 ? `<div class="s-ok"><span>✅ 1ª INSP OK</span></div>` : `<div class="s-nc"><span>❌ 1ª INSP PEND</span></div>`;
                 const status2 = m.insp2 ? `<div class="s-ok"><span>✅ 2ª INSP OK</span></div>` : `<div class="s-nc"><span>❌ 2ª INSP PEND</span></div>`;
                 
-                let chave = m.id; 
-                if (m.setor === "LPDC") chave = `MAQ${m.id}`; 
+                let chave = m.id; if (m.setor === "LPDC") chave = `MAQ${m.id}`; 
                 
                 let qMod = (quadroSalvo[chave] && quadroSalvo[chave].modelo) ? quadroSalvo[chave].modelo.toUpperCase() : '---';
                 let qStat = (quadroSalvo[chave] && quadroSalvo[chave].status) ? quadroSalvo[chave].status : 'O';
-                
-                // Proteção contra o emoji branco velho do BD
                 if (qStat === '⬜') qStat = '□'; 
 
                 let iconHtml = getIconHTML(qStat);
@@ -433,12 +429,14 @@
                     } else { inspetorElem.textContent = "Aguardando..."; }
                 }).catch(()=> document.getElementById(`insp-nome-${m.id}`).textContent = "---");
             })
+        }).catch(err => {
+            console.error("Erro ao carregar máquinas:", err);
+            alert("⚠️ Erro de conexão! O site não conseguiu encontrar o motor no Render. Verifique se o link do Render foi colocado corretamente no código.");
         });
     }
 
-    // 🔥 O SELECT COLORIDO (ATUALIZADO PARA O TEXTO GEOMÉTRICO) 🔥
     function criarLinhaQuadro(nomeExibicao, idInput, valorModelo, valorStatus) { 
-        if (valorStatus === '⬜') valorStatus = '□'; // Conversão de segurança
+        if (valorStatus === '⬜') valorStatus = '□'; 
         let corAtual = getCorStatus(valorStatus);
         return `
         <div class="q-linha">
@@ -457,16 +455,11 @@
         document.getElementById('modalQuadroFisico').style.display = 'block';
         fetch(getUrlLimpa('/obter-quadro'), {headers}).then(r=>r.json()).then(quadroSalvo => {
             const container = document.getElementById('q-container-linhas'); container.innerHTML = "";
-            
             if(setorAtivo === "LPDC") {
                 let htmlLpdc = '<div class="q-coluna"><div class="q-cabecalho"><div class="q-cab-maq">LPDC</div><div class="q-cab-mod">MODELO/MATRIZ</div><div class="q-cab-stat">STATUS</div></div>';
                 maqLpdcLista.forEach(m => { let id = `MAQ${m}`; htmlLpdc += criarLinhaQuadro(`MAQ ${m}`, id, quadroSalvo[id]?.modelo || '', quadroSalvo[id]?.status || 'O'); }); htmlLpdc += '</div>';
-                
                 let htmlMach = '<div class="q-coluna"><div class="q-cabecalho"><div class="q-cab-maq">MACHEIRA</div><div class="q-cab-mod">MOLDE/MATRIZ</div><div class="q-cab-stat">STATUS</div></div>';
-                maqMachLista.forEach(m => { 
-                    let id = m.replace(" ", "").replace("-", ""); 
-                    htmlMach += criarLinhaQuadro(m, id, quadroSalvo[id]?.modelo || '', quadroSalvo[id]?.status || 'O'); 
-                }); htmlMach += '</div>';
+                maqMachLista.forEach(m => { let id = m.replace(" ", "").replace("-", ""); htmlMach += criarLinhaQuadro(m, id, quadroSalvo[id]?.modelo || '', quadroSalvo[id]?.status || 'O'); }); htmlMach += '</div>';
                 container.innerHTML = htmlLpdc + htmlMach;
             } else if(setorAtivo === "HPDC") {
                 let htmlHpdc = '<div class="q-coluna" style="max-width: 600px; margin: 0 auto;"><div class="q-cabecalho"><div class="q-cab-maq">HPDC</div><div class="q-cab-mod">MOLDE/MATRIZ</div><div class="q-cab-stat">STATUS</div></div>';
@@ -479,16 +472,13 @@
     function salvarQuadroFisico() {
         let dados = {};
         if(setorAtivo === "LPDC") {
-            maqLpdcLista.forEach(m => { let id = `MAQ${m}`; dados[id] = { modelo: document.getElementById(`q-mod-${id}`).value, status: document.getElementById(`q-stat-${id}`).value }; });
-            maqMachLista.forEach(m => { 
-                let id = m.replace(" ", "").replace("-", ""); 
-                dados[id] = { modelo: document.getElementById(`q-mod-${id}`).value, status: document.getElementById(`q-stat-${id}`).value }; 
-            });
+            maqLpdcLista.forEach(m => { let id = `MAQ${m}`; dados[id] = { modelo: document.getElementById(`q-mod-${id}`).value.toUpperCase(), status: document.getElementById(`q-stat-${id}`).value }; });
+            maqMachLista.forEach(m => { let id = m.replace(" ", "").replace("-", ""); dados[id] = { modelo: document.getElementById(`q-mod-${id}`).value.toUpperCase(), status: document.getElementById(`q-stat-${id}`).value }; });
         } else if(setorAtivo === "HPDC") {
-            maqHpdcLista.forEach(m => { let id = `HPDC${m}`; dados[id] = { modelo: document.getElementById(`q-mod-${id}`).value, status: document.getElementById(`q-stat-${id}`).value }; });
+            maqHpdcLista.forEach(m => { let id = `HPDC${m}`; dados[id] = { modelo: document.getElementById(`q-mod-${id}`).value.toUpperCase(), status: document.getElementById(`q-stat-${id}`).value }; });
         }
 
-        fetch('/salvar-quadro', { method: 'POST', headers: { 'Content-Type': 'application/json', 'ngrok-skip-browser-warning': '69420' }, body: JSON.stringify(dados) })
+        fetch(API_URL + '/salvar-quadro', { method: 'POST', headers: headers, body: JSON.stringify(dados) })
         .then(r => r.json()).then(res => { alert("✅ Quadro de Gestão atualizado com sucesso!"); document.getElementById('modalQuadroFisico').style.display = 'none'; carregarMaquinas(); }).catch(e => alert("❌ Erro ao salvar o quadro."));
     }
 
@@ -541,14 +531,14 @@
     function cadastrarChefe() {
         const nome = document.getElementById('cad-nome-chefe').value; const mat = document.getElementById('cad-mat-chefe').value; const senha = document.getElementById('cad-senha-chefe').value;
         if(!nome || !mat || !senha) return alert("Preencha todos os campos!");
-        fetch('/cadastrar', { method: 'POST', headers: { 'Content-Type': 'application/json', 'ngrok-skip-browser-warning': '69420' }, body: JSON.stringify({nome, matricula: mat, senha}) })
+        fetch(API_URL + '/cadastrar', { method: 'POST', headers: headers, body: JSON.stringify({nome, matricula: mat, senha}) })
         .then(async r => { const res = await r.json(); if(r.ok) { alert("✅ Cadastro realizado! Autentique-se agora para assinar."); mostrarLoginChefe(); } else alert("❌ " + (res.erro || JSON.stringify(res.detail))); }).catch(e => alert("Erro de conexão."));
     }
 
     function validarChefe() {
         const mat = document.getElementById('mat-chefe').value; const senha = document.getElementById('senha-chefe').value;
         if(!mat || !senha) return alert("Preencha matrícula e senha!");
-        fetch('/login', { method: 'POST', headers: { 'Content-Type': 'application/json', 'ngrok-skip-browser-warning': '69420' }, body: JSON.stringify({matricula: mat, senha}) })
+        fetch(API_URL + '/login', { method: 'POST', headers: headers, body: JSON.stringify({matricula: mat, senha}) })
         .then(async r => {
             const res = await r.json();
             if(r.ok) {
@@ -563,7 +553,7 @@
     function aplicarAssinaturaExistente() { chefiaAcao.base64 = ""; executarChamadaAssinatura(); }
 
     function executarChamadaAssinatura() {
-        fetch('/assinar-ficha', { method: 'POST', headers: { 'Content-Type': 'application/json', 'ngrok-skip-browser-warning': '69420' }, body: JSON.stringify({ chave: chefiaAcao.chave, cargo: chefiaAcao.cargo, matricula: chefiaAcao.mat, senha: chefiaAcao.senha, assinatura: chefiaAcao.base64 }) })
+        fetch(API_URL + '/assinar-ficha', { method: 'POST', headers: headers, body: JSON.stringify({ chave: chefiaAcao.chave, cargo: chefiaAcao.cargo, matricula: chefiaAcao.mat, senha: chefiaAcao.senha, assinatura: chefiaAcao.base64 }) })
         .then(r => r.json()).then(res => {
             if(res.status === 'ok') { 
                 if(chefiaAcao.cargo === 'chefe_cq' && chefiaAcao.base64) {
@@ -578,23 +568,13 @@
 
     function renderAssinaturaCaixa(objData, cargo, titulo, chaveFicha, mes) {
         if (objData && typeof objData === 'object' && objData.assinatura) {
-            return `
-                <div style="display:flex; flex-direction:column; align-items:center; justify-content:center; padding: 5px;">
-                    <img src="${objData.assinatura}" style="max-height: 45px; mix-blend-mode: multiply;">
-                    <span style="font-size: 10px; font-weight: bold; color: #64748b; margin-top: 2px;">${objData.nome.toUpperCase()}</span>
-                </div>`;
+            return `<div style="display:flex; flex-direction:column; align-items:center; justify-content:center; padding: 5px;"><img src="${objData.assinatura}" style="max-height: 45px; mix-blend-mode: multiply;"><span style="font-size: 10px; font-weight: bold; color: #64748b; margin-top: 2px;">${objData.nome.toUpperCase()}</span></div>`;
         } else if (objData && typeof objData === 'string') {
             return `<span class="assinado-texto">${objData}</span>`; 
         } else {
             if (cargo === 'chefe_cq') {
                 let assinaturaSalva = localStorage.getItem('assinatura_chefe_mes_' + mes);
-                if(assinaturaSalva) {
-                    return `
-                        <div style="display:flex; flex-direction:column; align-items:center; justify-content:center; padding: 5px;">
-                            <img src="${assinaturaSalva}" style="max-height: 45px; mix-blend-mode: multiply;">
-                            <span style="font-size: 10px; font-weight: bold; color: var(--success-dark); margin-top: 2px;">CHEFE CQ (AUTO)</span>
-                        </div>`;
-                }
+                if(assinaturaSalva) return `<div style="display:flex; flex-direction:column; align-items:center; justify-content:center; padding: 5px;"><img src="${assinaturaSalva}" style="max-height: 45px; mix-blend-mode: multiply;"><span style="font-size: 10px; font-weight: bold; color: var(--success-dark); margin-top: 2px;">CHEFE CQ (AUTO)</span></div>`;
             }
             return `<button class="btn-assinar" onclick="iniciarAssinaturaChefe('${chaveFicha}', '${cargo}', '${titulo}')">🔒 ASSINAR</button>`;
         }
@@ -629,14 +609,8 @@
         `;
 
         const p1=document.getElementById('p1'); const p2=document.getElementById('p2'); p1.innerHTML=""; p2.innerHTML="";
-        
-        if(f.injetora.includes('TOP')) {
-            document.getElementById('titulo-esq').textContent = "Parâmetros do Macho";
-            document.getElementById('titulo-dir').textContent = "Qualidade Dimensional";
-        } else {
-            document.getElementById('titulo-esq').textContent = "Parâmetros de Processo";
-            document.getElementById('titulo-dir').textContent = "Checagem Visual";
-        }
+        if(f.injetora.includes('TOP')) { document.getElementById('titulo-esq').textContent = "Parâmetros do Macho"; document.getElementById('titulo-dir').textContent = "Qualidade Dimensional"; } 
+        else { document.getElementById('titulo-esq').textContent = "Parâmetros de Processo"; document.getElementById('titulo-dir').textContent = "Checagem Visual"; }
 
         const chavesItens = Object.keys(f.itens_detalhados || {});
         const metade = Math.ceil(chavesItens.length / 2);
@@ -649,49 +623,32 @@
             if (dado.valor !== undefined && dado.valor !== null) {
                 const cor = (dado.status === "C") ? "v-ok" : "v-nc";
                 controleHtml = `<div class="valor-lido ${cor}">${dado.valor}</div>`;
-            } else {
-                controleHtml = `<div class="botoes-visual-wrapper"><div class="btn-v ${dado.status=='C'?'v-ok':''}">C</div><div class="btn-v ${dado.status=='NC'?'v-nc':''}">NC</div></div>`;
-            }
+            } else { controleHtml = `<div class="botoes-visual-wrapper"><div class="btn-v ${dado.status=='C'?'v-ok':''}">C</div><div class="btn-v ${dado.status=='NC'?'v-nc':''}">NC</div></div>`; }
             if (dado.status === "NC") { boxNcHtml = `<div class="box-nc"><div class="box-nc-desc"><b>❌ PROBLEMA:</b> ${dado.descricao}</div><div class="box-nc-trat"><b>✅ SOLUÇÃO:</b> ${dado.tratativa}</div></div>`; }
             
             const html = `<div class="item-view-container"><div class="item-main"><span class="texto-item"><b>${index+1}.</b> ${nomeExibicao}</span><div class="modal-controle-container">${controleHtml}</div></div>${boxNcHtml}</div>`;
-            
             if(index < metade) p1.innerHTML += html; else p2.innerHTML += html;
         });
 
-        const op1 = (f.operador1 && f.operador1.trim() !== "") ? f.operador1 : "Não Informado";
-        const op2 = (f.operador2 && f.operador2.trim() !== "") ? f.operador2 : "---";
+        const op1 = (f.operador1 && f.operador1.trim() !== "") ? f.operador1 : "Não Informado"; const op2 = (f.operador2 && f.operador2.trim() !== "") ? f.operador2 : "---";
         
         document.getElementById('assinaturas-container').innerHTML = `
             <div class="modal-secao">Operadores do Processo</div>
             <div style="display: flex; gap: 15px; padding: 20px 25px; text-align: center; background: #f8fafc; margin: 15px 25px; border-radius: 12px; border: 1px solid #cbd5e1; box-shadow: inset 0 2px 4px rgba(0,0,0,0.02);">
-                <div style="flex: 1; border-right: 1px solid #cbd5e1; padding-right: 10px;">
-                    <div style="font-size: 11px; color: #64748b; font-weight: bold; text-transform: uppercase; margin-bottom: 8px;">Operador Principal</div>
-                    <div style="font-weight: 700; color: #334155; font-size: 16px;">${op1}</div>
-                </div>
-                <div style="flex: 1;">
-                    <div style="font-size: 11px; color: #64748b; font-weight: bold; text-transform: uppercase; margin-bottom: 8px;">Operador Auxiliar</div>
-                    <div style="font-weight: 700; color: #334155; font-size: 16px;">${op2}</div>
-                </div>
+                <div style="flex: 1; border-right: 1px solid #cbd5e1; padding-right: 10px;"><div style="font-size: 11px; color: #64748b; font-weight: bold; text-transform: uppercase; margin-bottom: 8px;">Operador Principal</div><div style="font-weight: 700; color: #334155; font-size: 16px;">${op1}</div></div>
+                <div style="flex: 1;"><div style="font-size: 11px; color: #64748b; font-weight: bold; text-transform: uppercase; margin-bottom: 8px;">Operador Auxiliar</div><div style="font-weight: 700; color: #334155; font-size: 16px;">${op2}</div></div>
             </div>
-            
             <div class="rodape-auditoria" style="display: flex; justify-content: space-between; font-size: 11px; color: #64748b; margin: 25px 35px 15px 35px; padding-top: 15px; border-top: 1px solid #cbd5e1; font-family: monospace; font-weight: bold;">
-                <span>PERÍODO DE RETENÇÃO: 5 ANOS</span>
-                <span>FD 15010 R17-00</span>
+                <span>PERÍODO DE RETENÇÃO: 5 ANOS</span><span>FD 15010 R17-00</span>
             </div>
         `;
         document.getElementById('modalFicha').style.display="block";
     }
 
-    function fechar() { document.getElementById('modalFicha').style.display="none"; }
-
     function editarFichaChefe() {
         let senha = prompt("🔒 Área Restrita\nInsira a senha da Chefia para editar esta ficha:");
-        if (senha === 'admin' || senha === 'chefe') {
-            alert("✅ Acesso Liberado!\n\nA interface de edição foi ativada.\n\n(Nota da Engenharia: A gravação no banco de dados será plugada na próxima atualização do Cérebro Python!)");
-        } else if (senha) {
-            alert("❌ Senha incorreta.");
-        }
+        if (senha === 'admin' || senha === 'chefe') alert("✅ Acesso Liberado!\n\nA interface de edição foi ativada.\n\n(Nota da Engenharia: A gravação no banco de dados será plugada na próxima atualização do Cérebro Python!)");
+        else if (senha) alert("❌ Senha incorreta.");
     }
 </script>
 </body>
