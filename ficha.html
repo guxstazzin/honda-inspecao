@@ -179,7 +179,7 @@
         <div class="footer"><button id="btn-salvar" class="btn-env" onclick="enviar()">SALVAR INSPEÇÃO</button></div>
     </div>
 
-    <!-- 🔥 MODAL DE FOTO (Puxando a imagem do GitHub) 🔥 -->
+    <!-- 🔥 MODAL DE FOTO DINÂMICO 🔥 -->
     <div id="modalVisualizadorItem" style="display: none; position: fixed; z-index: 99999; left: 0; top: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); align-items: center; justify-content: center; backdrop-filter: blur(4px);">
         <div style="background: white; width: 95%; max-width: 500px; border-radius: 12px; overflow: hidden; box-shadow: 0 10px 40px rgba(0,0,0,0.5);">
             <div style="background: linear-gradient(135deg, var(--blue-dark), var(--blue)); color: white; padding: 15px 20px; display: flex; justify-content: space-between; align-items: center;">
@@ -188,7 +188,8 @@
             </div>
             <div style="padding: 15px; text-align: center;">
                 <div style="width: 100%; max-height: 60vh; overflow: auto; background: #f3f4f6; border: 1px solid #cbd5e1; border-radius: 8px;">
-                    <img src="https://raw.githubusercontent.com/guxstazzin/honda-inspecao/main/croqui.jpg.png" alt="Croqui Honda" style="width: 100%; display: block;">
+                    <!-- 🔥 ID ATUALIZADO AQUI -->
+                    <img id="img-modal-dinamica" src="https://raw.githubusercontent.com/guxstazzin/honda-inspecao/main/croqui.jpg.png" alt="Croqui Honda" style="width: 100%; display: block;">
                 </div>
                 <p style="font-size: 12px; color: #64748b; margin-top: 10px;">Dica: Faça movimento de pinça na tela para dar zoom na imagem.</p>
                 <button onclick="fecharFotoItem()" style="margin-top:10px; width:100%; padding:12px; border-radius:6px; border:none; background:#e2e8f0; color:#1f2937; font-weight:800; cursor:pointer;">FECHAR</button>
@@ -205,7 +206,6 @@
 
     const headersConfig = { 'ngrok-skip-browser-warning': '69420', 'Content-Type': 'application/json' };
     
-    // 🛡️ VACINA DO LINK: Limpa qualquer barra sobrando no final do link automaticamente
     function getUrlLimpa(url) { 
         let base = API_URL.endsWith('/') ? API_URL.slice(0, -1) : API_URL;
         return base + url + '?nocache=' + new Date().getTime(); 
@@ -238,7 +238,6 @@
     }
 
     function sucessoLogin(res) {
-        // 🔥 AQUI ESTAVA O ERRO! Agora ele puxa o nome certinho e não trava mais
         nomeInspetorLogado = res.nome || "INSPETOR"; 
         matriculaInspetorLogado = res.matricula; 
         assinaturaBase64 = res.assinatura; 
@@ -286,15 +285,7 @@
         fetch(getUrlLimpa('/cadastrar'), { method: 'POST', headers: headersConfig, body: JSON.stringify({nome: nome, matricula: mat, senha: senha, setor: setor}) })
         .then(async r => { 
             const res = await r.json(); 
-            if(r.ok) { 
-                alert("✅ Cadastro realizado!"); 
-                // 🔥 A vacina está aqui: agora ele salva seu nome e manda pro sucessoLogin
-                res.matricula = mat; 
-                res.setor = setor; 
-                res.nome = nome; 
-                res.assinatura = ""; 
-                sucessoLogin(res); 
-            } 
+            if(r.ok) { alert("✅ Cadastro realizado!"); res.matricula = mat; res.setor = setor; res.nome = nome; res.assinatura = ""; sucessoLogin(res); } 
             else alert("❌ Erro: " + (res.erro || res.detail || JSON.stringify(res))); 
         }).catch(e => alert("Erro de conexão com o Render."));
     }
@@ -328,11 +319,52 @@
         }).catch(e => console.log("Ainda sem conexão com o resumo ou motor offline.", e));
     }
 
-    function abrirFotoItem(nomeDoItem) { document.getElementById('titulo-foto-item').textContent = "Visualização do Item"; document.getElementById('modalVisualizadorItem').style.display = 'flex'; }
+    // 🔥 NOVA FUNÇÃO ABRIR FOTO INTELIGENTE 🔥
+    function abrirFotoItem(nomeDoItem, linkDaFoto) { 
+        document.getElementById('titulo-foto-item').textContent = nomeDoItem; 
+        let imagemParaMostrar = (linkDaFoto && linkDaFoto !== 'undefined') ? linkDaFoto : "https://raw.githubusercontent.com/guxstazzin/honda-inspecao/main/croqui.jpg.png";
+        document.getElementById('img-modal-dinamica').src = imagemParaMostrar;
+        document.getElementById('modalVisualizadorItem').style.display = 'flex'; 
+    }
     function fecharFotoItem() { document.getElementById('modalVisualizadorItem').style.display = 'none'; }
 
     const TEMPLATES = {
         LPDC_PADRAO: [ { sec: "Parâmetros de Processo da Injetora" }, { t: "Temperatura do Molde", u: "330-390°C", min: 330, max: 390 }, { t: "Temperatura do Banho", u: "685-710°C", min: 685, max: 710 }, { t: "Tempo de Abertura", u: "15-20 seg", min: 15, max: 20 }, { t: "Tempo de Pressurização", u: "190-210 seg", min: 190, max: 210 }, { t: "Refrigeração Base Inferior", u: "5 ±1 Kgf/cm²", min: 4, max: 6 }, { t: "Refrigeração Base Superior", u: "3 ±1 Kgf/cm²", min: 2, max: 4 }, { t: "Mangueiras da Refrigeração", u: "Visual (Sem obstrução)", tipo: "bin" }, { t: "Gráfico de Injeção", u: "Painel da Máquina", tipo: "bin" }, { t: "Programa", u: "Painel (Ex: A-1, B-3)", tipo: "txt" }, { t: "Teste Tridimensional", u: "Visual / CNC", tipo: "bin" }, { t: "Desumidificador", u: "Tela Limpa / Área Verde", tipo: "bin" }, { t: "Checar Forno e Banho", u: "Visual", tipo: "bin" }, { sec: "Checagem Visual (Peça)" }, { t: "Guias de Fundição", u: "Sem deformações", tipo: "bin" }, { t: "Pré-Furo do Prisioneiro", u: "Sem deformações", tipo: "bin" }, { t: "Referência de Usinagem", u: "Sem falhas/aderências", tipo: "bin" }, { t: "Aloj. Guias e Sedes de Válvula", u: "Sem rebarbas", tipo: "bin" }, { t: "Canais de Admissão/Escape", u: "Sem macho quebrado", tipo: "bin" }, { t: "Câmara de Combustão", u: "Sem rechupe", tipo: "bin" }, { t: "Fechamento Molde com Macho", u: "Visual", tipo: "bin" }, { t: "Pontos Fixação Escapamento", u: "Visual", tipo: "bin" }, { t: "Machos de Areia", u: "Sem deformações", tipo: "bin" }, { t: "Código de Fabricação", u: "Registrar", tipo: "txt" }, { t: "Pintura do Massalote", u: "Visual", tipo: "bin" }, { t: "Logotipo HONDA", u: "Legível", tipo: "bin" }, { t: "Aspecto Geral", u: "Visual", tipo: "bin" } ],
+        
+        // =======================================================================================
+        // 🔥🔥🔥 COLOQUE OS LINKS DAS FOTOS DO K2GF AQUI NAS PROPRIEDADES "img" 🔥🔥🔥
+        // =======================================================================================
+        LPDC_K2GF: [ 
+            { sec: "Parâmetros de Processo da Injetora - K2GF" }, 
+            { t: "Temperatura do Molde", u: "330-390°C", min: 330, max: 390, img: "https://github.com/guxstazzin/honda-inspecao/blob/main/temperatura%20do%20molde.jpeg?raw=true" }, 
+            { t: "Temperatura do Banho", u: "685-710°C", min: 685, max: 710, img: "https://github.com/guxstazzin/honda-inspecao/blob/main/temperatura%20do%20banho.jpeg?raw=true" }, 
+            { t: "Tempo de Abertura", u: "15-20 seg", min: 15, max: 20, img: "LINK_AQUI.jpg" }, 
+            { t: "Tempo de Pressurização", u: "190-210 seg", min: 190, max: 210, img: "LINK_AQUI.jpg" }, 
+            { t: "Refrigeração Base Inferior", u: "5 ±1 Kgf/cm²", min: 4, max: 6, img: "LINK_AQUI.jpg" }, 
+            { t: "Refrigeração Base Superior", u: "3 ±1 Kgf/cm²", min: 2, max: 4, img: "LINK_AQUI.jpg" }, 
+            { t: "Mangueiras da Refrigeração", u: "Visual (Sem obstrução)", tipo: "bin", img: "LINK_AQUI.jpg" }, 
+            { t: "Gráfico de Injeção", u: "Painel da Máquina", tipo: "bin", img: "LINK_AQUI.jpg" }, 
+            { t: "Programa", u: "Painel (Ex: A-1, B-3)", tipo: "txt", img: "LINK_AQUI.jpg" }, 
+            { t: "Teste Tridimensional", u: "Visual / CNC", tipo: "bin", img: "LINK_AQUI.jpg" }, 
+            { t: "Desumidificador", u: "Tela Limpa / Área Verde", tipo: "bin", img: "LINK_AQUI.jpg" }, 
+            { t: "Checar Forno e Banho", u: "Visual", tipo: "bin", img: "LINK_AQUI.jpg" }, 
+            { sec: "Checagem Visual (Peça)" }, 
+            { t: "Guias de Fundição", u: "Sem deformações", tipo: "bin", img: "LINK_AQUI.jpg" }, 
+            { t: "Pré-Furo do Prisioneiro", u: "Sem deformações", tipo: "bin", img: "LINK_AQUI.jpg" }, 
+            { t: "Referência de Usinagem", u: "Sem falhas/aderências", tipo: "bin", img: "LINK_AQUI.jpg" }, 
+            { t: "Aloj. Guias e Sedes de Válvula", u: "Sem rebarbas", tipo: "bin", img: "https://github.com/guxstazzin/honda-inspecao/blob/main/alojamento%20dos%20guias.jpeg?raw=true" }, 
+            { t: "Canais de Admissão/Escape", u: "Sem macho quebrado", tipo: "bin", img: "LINK_AQUI.jpg" }, 
+            { t: "Câmara de Combustão", u: "Sem rechupe", tipo: "bin", img: "LINK_AQUI.jpg" }, 
+            { t: "Fechamento Molde com Macho", u: "Visual", tipo: "bin", img: "LINK_AQUI.jpg" }, 
+            { t: "Pontos Fixação Escapamento", u: "Visual", tipo: "bin", img: "LINK_AQUI.jpg" }, 
+            { t: "Machos de Areia", u: "Sem deformações", tipo: "bin", img: "LINK_AQUI.jpg" }, 
+            { t: "Código de Fabricação", u: "Registrar", tipo: "txt", img: "LINK_AQUI.jpg" }, 
+            { t: "Pintura do Massalote", u: "Visual", tipo: "bin", img: "LINK_AQUI.jpg" }, 
+            { t: "Logotipo HONDA", u: "Legível", tipo: "bin", img: "LINK_AQUI.jpg" }, 
+            { t: "Aspecto Geral", u: "Visual", tipo: "bin", img: "LINK_AQUI.jpg" } 
+        ],
+        // =======================================================================================
+        
         LPDC_KVK: [ { sec: "Parâmetros KVK (Com Paquímetro)" }, { t: "Temperatura do Molde", u: "330-390°C", min: 330, max: 390 }, { t: "Temperatura do Banho", u: "690-710°C", min: 690, max: 710 }, { t: "Tempo de Abertura", u: "15 seg", min: 14, max: 16 }, { t: "Tempo de Pressurização", u: "230 seg", min: 220, max: 240 }, { t: "Refrigeração Base Inferior", u: "5 ±1 Kgf/cm²", min: 4, max: 6 }, { t: "Refrigeração Base Superior", u: "3 ±1 Kgf/cm²", min: 2, max: 4 }, { t: "Mangueiras e Gráfico", u: "Visual", tipo: "bin" }, { t: "Programa", u: "Ex: D2", tipo: "txt" }, { sec: "Checagem Dimensional e Visual" }, { t: "Passagem Guia e Tensor Corrente", u: "Rebarba Grossa > 0.4mm", tipo: "bin" }, { t: "Aloj. Guias e Sedes Válvula", u: "Isento excesso", tipo: "bin" }, { t: "Canais Admissão/Escape", u: "Isento macho quebrado", tipo: "bin" }, { t: "Espessura Parede Assentamento", u: "Paquímetro (6.0 ± 1mm)", min: 5.0, max: 7.0 }, { t: "Canais Passagem Óleo", u: "Uniforme", tipo: "bin" }, { t: "Canal de Arrefecimento", u: "Sem Obstrução", tipo: "bin" }, { t: "Código de Fabricação", u: "Ex: 1 D T 3", tipo: "txt" }, { t: "Aspecto Geral", u: "Visual", tipo: "bin" } ],
         MACHEIRA_JACKET_PADRAO: [ { sec: "Parâmetros Macho Jacket (H-TOP)" }, { t: "Temperatura Molde Fixo", u: "240 - 280°C", min: 240, max: 280 }, { t: "Temperatura Molde Móvel", u: "240 - 280°C", min: 240, max: 280 }, { t: "Tempo de Cozimento", u: "25 - 35 Seg", min: 25, max: 35 }, { t: "Tempo de Sopro", u: "2 - 4 Seg", min: 2, max: 4 }, { t: "Pressão do Sopro", u: "0.4 - 0.6 Mpa", min: 0.4, max: 0.6 }, { t: "Pressão do Ar", u: "0.4 - 0.6 Mpa", min: 0.4, max: 0.6 }, { sec: "Qualidade do Macho (Dimensional)" }, { t: "Área de Rebarbação", u: "Isento na junção", tipo: "bin" }, { t: "Coloração da Peça", u: "Marrom e Uniforme", tipo: "bin" }, { t: "Canal do Sopro", u: "Sem excessos", tipo: "bin" }, { t: "Marca Extração na Peça", u: "0.0 - 0.2mm", min: 0.0, max: 0.2 }, { t: "Altura Inserto Região Comando", u: "48.6 - 48.8mm", min: 48.6, max: 48.8 }, { t: "Aspecto Geral", u: "Visual", tipo: "bin" } ],
         MACHEIRA_JACKET_K68L: [ { sec: "Parâmetros Macho Jacket K68L (H-TOP)" }, { t: "Temperatura Molde Fixo", u: "240 - 280°C", min: 240, max: 280 }, { t: "Temperatura Molde Móvel", u: "240 - 280°C", min: 240, max: 280 }, { t: "Tempo de Cozimento", u: "25 - 35 Seg", min: 25, max: 35 }, { t: "Tempo de Sopro", u: "2 - 4 Seg", min: 2, max: 4 }, { t: "Pressão do Sopro", u: "0.4 - 0.8 Mpa", min: 0.4, max: 0.8 }, { t: "Pressão do Ar", u: "0.4 - 0.8 Mpa", min: 0.4, max: 0.8 }, { sec: "Qualidade do Macho (Dimensional)" }, { t: "Área de Rebarbação", u: "Isento na junção", tipo: "bin" }, { t: "Coloração da Peça", u: "Marrom e Uniforme", tipo: "bin" }, { t: "Canal do Sopro", u: "Sem excessos", tipo: "bin" }, { t: "Marca Extração na Peça", u: "0.0 - 0.2mm", min: 0.0, max: 0.2 }, { t: "Altura Inserto Região Comando", u: "48.6 - 48.8mm", min: 48.6, max: 48.8 }, { t: "Aspecto Geral", u: "Visual", tipo: "bin" } ],
@@ -346,7 +378,9 @@
         const inj = document.getElementById('inj').value; const mod = document.getElementById('mod').value; const corpo = document.getElementById('lista-corpo');
         if (inj.includes('HTOP')) templateAtivo = (mod === 'K68L') ? TEMPLATES.MACHEIRA_JACKET_K68L : TEMPLATES.MACHEIRA_JACKET_PADRAO;
         else if (inj.includes('VTOP')) templateAtivo = (mod === 'K68L') ? TEMPLATES.MACHEIRA_POTTON_K68L : TEMPLATES.MACHEIRA_POTTON_PADRAO;
-        else templateAtivo = (mod === 'KVK') ? TEMPLATES.LPDC_KVK : TEMPLATES.LPDC_PADRAO;
+        else if (mod === 'KVK') templateAtivo = TEMPLATES.LPDC_KVK;
+        else if (mod === 'K2GF') templateAtivo = TEMPLATES.LPDC_K2GF; // 🔥 AVISA QUE O K2GF TEM FICHA PRÓPRIA AGORA!
+        else templateAtivo = TEMPLATES.LPDC_PADRAO;
         
         corpo.innerHTML = ""; res = {}; let c = 0;
         let isVisual = false;
@@ -369,7 +403,8 @@
                 <div class="item" id="card-${c}">
                     <div class="item-header">
                         <div style="flex:1;">
-                            <div class="item-texto" onclick="abrirFotoItem('${it.t}')">
+                            <!-- 🔥 A MÁGICA: PASSA O LINK DA FOTO PARA O MODAL -->
+                            <div class="item-texto" onclick="abrirFotoItem('${it.t}', '${it.img}')">
                                 ${c+1}. ${it.t}
                                 <span style="font-size:16px;">📷</span>
                             </div>
