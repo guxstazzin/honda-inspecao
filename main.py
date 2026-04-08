@@ -1,13 +1,13 @@
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import JSONResponse
 from pydantic import BaseModel
 import requests
-import json
 from typing import Dict, Any, Optional
+from datetime import datetime
 
 app = FastAPI()
 
-# Configuração de CORS para permitir acesso do GitHub Pages/Celular
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
@@ -22,16 +22,18 @@ FIREBASE_URL = "https://honda-qualidade-default-rtdb.firebaseio.com/"
 # --- FUNÇÕES DE COMUNICAÇÃO COM O COFRE (FIREBASE) ---
 
 def salvar_no_cofre(caminho: str, dados: Any):
-    """Envia os dados para o Firebase"""
     url = f"{FIREBASE_URL}{caminho}.json"
-    response = requests.put(url, json=dados)
-    return response.json()
+    requests.put(url, json=dados)
 
 def ler_do_cofre(caminho: str):
-    """Busca os dados no Firebase"""
     url = f"{FIREBASE_URL}{caminho}.json"
     response = requests.get(url)
     dados = response.json()
+    
+    # 🛡️ VACINA: Se o Firebase transformar números de matrícula em Listas, isso reverte pra Dicionário
+    if isinstance(dados, list):
+        return {str(i): v for i, v in enumerate(dados) if v is not None}
+    
     return dados if dados is not None else {}
 
 # --- MODELOS DE DADOS ---
@@ -47,11 +49,11 @@ class LoginRequest(BaseModel):
     senha: str
 
 class AssinaturaRequest(BaseModel):
-    chave: str # injetora-mes-dia-turno-insp
-    cargo: str # inspetor, analista ou chefe_cq
+    chave: str 
+    cargo: str 
     matricula: str
     senha: str
-    assinatura: str # base64
+    assinatura: str 
 
 # --- ROTAS DO SISTEMA ---
 
@@ -63,7 +65,8 @@ def home():
 def cadastrar(u: Usuario):
     usuarios = ler_do_cofre("usuarios")
     if u.matricula in usuarios:
-        raise HTTPException(status_code=400, detail="Matrícula já cadastrada!")
+        # Retorna o erro no formato exato que o seu HTML espera
+        return JSONResponse(status_code=400, content={"erro": "Matrícula já cadastrada!"})
     
     usuarios[u.matricula] = {
         "nome": u.nome,
@@ -78,8 +81,10 @@ def cadastrar(u: Usuario):
 def login(req: LoginRequest):
     usuarios = ler_do_cofre("usuarios")
     u = usuarios.get(req.matricula)
-    if not u or u["senha"] != req.senha:
-        return {"erro": "Matrícula ou senha incorretos"}
+    
+    if not u or u.get("senha") != req.senha:
+        return JSONResponse(status_code=400, content={"erro": "Matrícula ou senha incorretos!"})
+        
     return {
         "nome": u["nome"], 
         "assinatura": u.get("assinatura", ""),
@@ -89,12 +94,9 @@ def login(req: LoginRequest):
 
 @app.get("/maquinas")
 def listar_maquinas():
-    # Retorna o status das máquinas baseado nas fichas de hoje
-    from datetime import datetime
     hoje = datetime.now()
     dia, mes = str(hoje.day), str(hoje.month)
     
-    # Lista fixa das máquinas da planta atualizada
     plantas = [
         {"id": "4", "nome": "MAQ 4", "setor": "LPDC"},
         {"id": "5", "nome": "MAQ 5", "setor": "LPDC"},
@@ -139,7 +141,6 @@ def listar_maquinas():
 
     for m in plantas:
         m["turno_atual"] = turno_atual
-        # Verifica se tem inspeção hoje no turno atual
         chave1 = f"{m['id']}-{mes}-{dia}-{turno_atual}-1"
         chave2 = f"{m['id']}-{mes}-{dia}-{turno_atual}-2"
         m["insp1"] = chave1 in banco
@@ -149,14 +150,11 @@ def listar_maquinas():
 
 @app.post("/salvar-inspecao")
 def salvar_inspecao(dados: Dict[str, Any]):
-    # Formato da chave: IDMAQUINA-MES-DIA-TURNO-INSPECAO
     chave = f"{dados['injetora']}-{dados['mes']}-{dados['dia']}-{dados['turno']}-{dados['inspecao']}"
-    
     banco = ler_do_cofre("banco_inspecoes")
     banco[chave] = dados
     salvar_no_cofre("banco_inspecoes", banco)
     
-    # Salva assinatura no perfil do usuário se enviada
     if dados.get("assinatura_inspetor") and dados.get("matricula_inspetor"):
         usuarios = ler_do_cofre("usuarios")
         mat = dados["matricula_inspetor"]
@@ -168,21 +166,33 @@ def salvar_inspecao(dados: Dict[str, Any]):
 
 @app.get("/maquinas/{id_m}/meses")
 def listar_meses(id_m: str):
-    return [{"id_mes": 4, "nome": "Abril"}] # Simplificado para o teste
+    banco = ler_do_cofre("banco_inspecoes")
+    meses_encontrados = set()
+    
+    for chave in banco:
+        partes = chave.split('-')
+        if partes[0] == id_m:
+            meses_encontrados.add(int(partes[1]))
+            
+    nomes_meses = {1:"Janeiro", 2:"Fevereiro", 3:"Março", 4:"Abril", 5:"Maio", 6:"Junho", 7:"Julho", 8:"Agosto", 9:"Setembro", 10:"Outubro", 11:"Novembro", 12:"Dezembro"}
+    
+    res = []
+    for m in sorted(list(meses_encontrados)):
+        res.append({"id_mes": m, "nome": nomes_meses.get(m, str(m))})
+    return res
 
 @app.get("/maquinas/{id_m}/meses/{id_mes}/dias")
 def listar_dias(id_m: str, id_mes: int):
     banco = ler_do_cofre("banco_inspecoes")
-    dias_encontrados = []
-    # Filtra as fichas existentes para essa máquina e mês
+    dias_encontrados = set()
+    
     for chave in banco:
         partes = chave.split('-')
         if partes[0] == id_m and partes[1] == str(id_mes):
-            d = int(partes[2])
-            if d not in dias_encontrados: dias_encontrados.append(d)
-    
+            dias_encontrados.add(int(partes[2]))
+            
     res = []
-    for d in sorted(dias_encontrados):
+    for d in sorted(list(dias_encontrados)):
         res.append({"dia": d, "status_ficha": "Verde"})
     return res
 
@@ -202,7 +212,7 @@ def ver_ficha(id_m: str, id_mes: int, dia: int, turno: int, insp: int):
     chave = f"{id_m}-{id_mes}-{dia}-{turno}-{insp}"
     ficha = banco.get(chave)
     if not ficha:
-        raise HTTPException(status_code=404, detail="Ficha não encontrada")
+        return JSONResponse(status_code=404, content={"erro": "Ficha não encontrada"})
     return ficha
 
 @app.post("/salvar-quadro")
@@ -216,17 +226,16 @@ def obter_quadro():
 
 @app.post("/assinar-ficha")
 def assinar_ficha(req: AssinaturaRequest):
-    # Verifica login da chefia
     usuarios = ler_do_cofre("usuarios")
     u = usuarios.get(req.matricula)
-    if not u or u["senha"] != req.senha:
-        return {"erro": "Credenciais de chefia inválidas"}
+    
+    if not u or u.get("senha") != req.senha:
+        return JSONResponse(status_code=400, content={"erro": "Credenciais de chefia inválidas"})
     
     banco = ler_do_cofre("banco_inspecoes")
     if req.chave not in banco:
-        return {"erro": "Ficha não encontrada"}
+        return JSONResponse(status_code=400, content={"erro": "Ficha não encontrada"})
     
-    # Se não mandou assinatura nova, usa a que já está no cadastro
     img_assinatura = req.assinatura if len(req.assinatura) > 100 else u.get("assinatura", "")
     
     banco[req.chave][req.cargo] = {
