@@ -5,6 +5,7 @@ from pydantic import BaseModel
 import requests
 from typing import Dict, Any, Optional
 from datetime import datetime
+import calendar
 
 app = FastAPI()
 
@@ -65,7 +66,6 @@ def home():
 def cadastrar(u: Usuario):
     usuarios = ler_do_cofre("usuarios")
     if u.matricula in usuarios:
-        # Retorna o erro no formato exato que o seu HTML espera
         return JSONResponse(status_code=400, content={"erro": "Matrícula já cadastrada!"})
     
     usuarios[u.matricula] = {
@@ -164,36 +164,38 @@ def salvar_inspecao(dados: Dict[str, Any]):
             
     return {"status": "ok", "chave": chave}
 
+# 🔥 NOVO: Mostra o calendário completo de 12 meses
 @app.get("/maquinas/{id_m}/meses")
 def listar_meses(id_m: str):
-    banco = ler_do_cofre("banco_inspecoes")
-    meses_encontrados = set()
-    
-    for chave in banco:
-        partes = chave.split('-')
-        if partes[0] == id_m:
-            meses_encontrados.add(int(partes[1]))
-            
     nomes_meses = {1:"Janeiro", 2:"Fevereiro", 3:"Março", 4:"Abril", 5:"Maio", 6:"Junho", 7:"Julho", 8:"Agosto", 9:"Setembro", 10:"Outubro", 11:"Novembro", 12:"Dezembro"}
-    
     res = []
-    for m in sorted(list(meses_encontrados)):
-        res.append({"id_mes": m, "nome": nomes_meses.get(m, str(m))})
+    for m in range(1, 13):
+        res.append({"id_mes": m, "nome": nomes_meses[m]})
     return res
 
+# 🔥 NOVO: Mostra todos os dias do mês, pintando de Verde se tiver ficha e de Cinza se não tiver
 @app.get("/maquinas/{id_m}/meses/{id_mes}/dias")
 def listar_dias(id_m: str, id_mes: int):
     banco = ler_do_cofre("banco_inspecoes")
-    dias_encontrados = set()
+    dias_com_ficha = set()
     
+    # Procura quais dias têm fichas salvas
     for chave in banco:
         partes = chave.split('-')
         if partes[0] == id_m and partes[1] == str(id_mes):
-            dias_encontrados.add(int(partes[2]))
+            dias_com_ficha.add(int(partes[2]))
             
+    hoje = datetime.now()
+    try:
+        _, num_dias = calendar.monthrange(hoje.year, id_mes)
+    except:
+        num_dias = 31
+
     res = []
-    for d in sorted(list(dias_encontrados)):
-        res.append({"dia": d, "status_ficha": "Verde"})
+    for d in range(1, num_dias + 1):
+        cor_do_card = "Verde" if d in dias_com_ficha else "Cinza"
+        res.append({"dia": d, "status_ficha": cor_do_card})
+        
     return res
 
 @app.get("/maquinas/{id_m}/meses/{id_mes}/dias/{dia}/resumo")
