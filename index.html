@@ -650,6 +650,16 @@
         if (senha === 'admin' || senha === 'chefe') alert("✅ Acesso Liberado!\n\nA interface de edição foi ativada.\n\n(Nota da Engenharia: A gravação no banco de dados será plugada na próxima atualização do Cérebro Python!)");
         else if (senha) alert("❌ Senha incorreta.");
     }
+
+    // =====================================================================
+    // 📡 RADAR DO JARVIS: ATUALIZAÇÃO AUTOMÁTICA DO PAINEL
+    // =====================================================================
+    setInterval(() => {
+        if (telaAtual === "DASHBOARD") {
+            carregarMaquinas();
+        }
+    }, 30000); 
+
 </script>
 </body>
 </html>
