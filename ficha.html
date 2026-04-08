@@ -299,3 +299,131 @@
         MACHEIRA_JACKET_K68L: [ { sec: "Parâmetros Macho Jacket K68L (H-TOP)" }, { t: "Temperatura Molde Fixo", u: "240 - 280°C", min: 240, max: 280 }, { t: "Temperatura Molde Móvel", u: "240 - 280°C", min: 240, max: 280 }, { t: "Tempo de Cozimento", u: "25 - 35 Seg", min: 25, max: 35 }, { t: "Tempo de Sopro", u: "2 - 4 Seg", min: 2, max: 4 }, { t: "Pressão do Sopro", u: "0.4 - 0.8 Mpa", min: 0.4, max: 0.8 }, { t: "Pressão do Ar", u: "0.4 - 0.8 Mpa", min: 0.4, max: 0.8 }, { sec: "Qualidade do Macho (Dimensional)" }, { t: "Área de Rebarbação", u: "Isento na junção", tipo: "bin" }, { t: "Coloração da Peça", u: "Marrom e Uniforme", tipo: "bin" }, { t: "Canal do Sopro", u: "Sem excessos", tipo: "bin" }, { t: "Marca Extração na Peça", u: "0.0 - 0.2mm", min: 0.0, max: 0.2 }, { t: "Altura Inserto Região Comando", u: "48.6 - 48.8mm", min: 48.6, max: 48.8 }, { t: "Aspecto Geral", u: "Visual", tipo: "bin" } ],
         MACHEIRA_POTTON_PADRAO: [ { sec: "Parâmetros Macho Potton (V-TOP)" }, { t: "Temperatura Molde Fixo", u: "290 - 330°C", min: 290, max: 330 }, { t: "Temperatura Molde Móvel", u: "290 - 330°C", min: 290, max: 330 }, { t: "Pressão de Operação do Ar", u: "0.4 - 0.6 Mpa", min: 0.4, max: 0.6 }, { t: "Pressão do Sopro", u: "0.2 - 0.4 Mpa", min: 0.2, max: 0.4 }, { t: "Tempo de Sopro", u: "2 - 4 Seg", min: 2, max: 4 }, { t: "Tempo de Cozimento", u: "25 - 35 Seg", min: 25, max: 35 }, { sec: "Qualidade do Macho (Dimensional)" }, { t: "Junção Fixo/Móvel", u: "Isento desencontro/rebarba", tipo: "bin" }, { t: "Coloração da Peça", u: "Marrom e Uniforme", tipo: "bin" }, { t: "Marca de Extração", u: "0.0 - 0.2 mm", min: 0.0, max: 0.2 }, { t: "Armazenagem Macho de Areia", u: "Máx 14 jogos/bandeja", tipo: "bin" }, { t: "Medida Macho Potton IN", u: "27.8 (+0.3/-0.2 mm)", min: 27.6, max: 28.1 }, { t: "Diâmetro Potton IN (1)", u: "25.2 (+0.3/-0.2 mm)", min: 25.0, max: 25.5 }, { t: "Diâmetro Potton IN (2)", u: "25.2 (+0.3/-0.2 mm)", min: 25.0, max: 25.5 }, { t: "Medida Apoio Potton IN (1)", u: "10.2 (+0.3/-0.2 mm)", min: 10.0, max: 10.5 }, { t: "Medida Apoio Potton IN (2)", u: "10.2 (+0.3/-0.2 mm)", min: 10.0, max: 10.5 }, { t: "Medida Apoio Potton IN (3)", u: "8.3 (+0.3/-0.2 mm)", min: 8.1, max: 8.6 }, { t: "Medida Apoio Potton IN (4)", u: "12.3 (+0.3/-0.2 mm)", min: 12.1, max: 12.6 }, { t: "Medida Macho Potton EX", u: "25.8 (+0.3/-0.2 mm)", min: 25.6, max: 26.1 }, { t: "Diâmetro Potton EX (1)", u: "26.2 (+0.3/-0.2 mm)", min: 26.0, max: 26.5 }, { t: "Diâmetro Potton EX (2)", u: "26.2 (+0.3/-0.2 mm)", min: 26.0, max: 26.5 }, { t: "Medida Apoio Potton EX (1)", u: "8.2 (+0.3/-0.2 mm)", min: 8.0, max: 8.5 }, { t: "Medida Apoio Potton EX (2)", u: "8.2 (+0.3/-0.2 mm)", min: 8.0, max: 8.5 }, { t: "Medida Apoio Potton EX (3)", u: "12.2 (+0.3/-0.2 mm)", min: 12.0, max: 12.5 }, { t: "Medida Apoio Potton EX (4)", u: "10.1 (+0.3/-0.2 mm)", min: 9.9, max: 10.4 }, { t: "Aspecto Geral", u: "Visual", tipo: "bin" } ],
         MACHEIRA_
+        };
+
+    let templateAtivo = []; let res = {};
+
+    function atualizarTemplate() {
+        const inj = document.getElementById('inj').value; const mod = document.getElementById('mod').value; const corpo = document.getElementById('lista-corpo');
+        if (inj.includes('HTOP')) templateAtivo = (mod === 'K68L') ? TEMPLATES.MACHEIRA_JACKET_K68L : TEMPLATES.MACHEIRA_JACKET_PADRAO;
+        else if (inj.includes('VTOP')) templateAtivo = (mod === 'K68L') ? TEMPLATES.MACHEIRA_POTTON_K68L : TEMPLATES.MACHEIRA_POTTON_PADRAO;
+        else templateAtivo = (mod === 'KVK') ? TEMPLATES.LPDC_KVK : TEMPLATES.LPDC_PADRAO;
+        
+        corpo.innerHTML = ""; res = {}; let c = 0;
+        let isVisual = false;
+
+        templateAtivo.forEach((it) => {
+            if (it.sec) { 
+                corpo.innerHTML += `<div class="titulo-secao">${it.sec}</div>`; 
+                if (!it.sec.includes("Parâmetros")) isVisual = true;
+                return; 
+            }
+            
+            res[c] = { nome: it.t, status: "Pendente", isVisual: isVisual };
+            
+            let ctrl = "";
+            if (it.min !== undefined) ctrl = `<input type="number" class="input-valor" placeholder="Val." oninput="validar(${c},this,${it.min},${it.max})">`;
+            else if (it.tipo === "txt") ctrl = `<input type="text" class="input-valor" placeholder="..." oninput="res[${c}].valor=this.value; res[${c}].status='C'; verificarAutoNC(${c});">`;
+            else ctrl = `<div class="botoes"><button class="btn-status" id="c-${c}" onclick="setBin(${c},'C')">C</button><button class="btn-status" id="nc-${c}" onclick="setBin(${c},'NC')">NC</button></div>`;
+            
+            corpo.innerHTML += `
+                <div class="item" id="card-${c}">
+                    <div class="item-header">
+                        <div style="flex:1;">
+                            <div class="item-texto" onclick="abrirFotoItem('${it.t}')">
+                                ${c+1}. ${it.t}
+                                <span style="font-size:16px;">📷</span>
+                            </div>
+                            <span class="item-unidade">${it.u}</span>
+                        </div>
+                        ${ctrl}
+                    </div>
+                    <div class="providencia-box" id="prov-box-${c}">
+                        <div class="grid-5w">
+                            <label class="label-nc-5w">O QUE? (Problema)</label>
+                            <input type="text" class="input-nc" id="oq-${c}" placeholder="Descreva o defeito...">
+                            <label class="label-nc-5w">POR QUE? (Causa Raiz)</label>
+                            <input type="text" class="input-nc" id="pq-${c}" placeholder="Qual o motivo aparente?">
+                            <label class="label-nc-5w" style="color:#059669; margin-top:5px;">COMO? (Ação de Correção)</label>
+                            <input type="text" class="input-nc" id="cm-${c}" placeholder="O que foi feito..." style="border-color:#10b981!important;">
+                            <label class="label-nc-5w" style="color:#059669;">QUEM? (Responsável)</label>
+                            <input type="text" class="input-nc" id="qm-${c}" placeholder="Nome do resp. pela ação..." style="border-color:#10b981!important;">
+                        </div>
+                    </div>
+                </div>`;
+            c++;
+        });
+        checarLiberacao();
+    }
+
+    function verificarAutoNC(idModificado) {
+        let idAspecto = -1; let temNCVisual = false;
+        for(let k in res) {
+            if(res[k].nome === "Aspecto Geral") idAspecto = parseInt(k);
+            else if(res[k].status === "NC" && res[k].isVisual) temNCVisual = true;
+        }
+
+        if(idAspecto !== -1 && idModificado !== idAspecto) {
+            if(temNCVisual) {
+                res[idAspecto].status = 'NC';
+                document.getElementById(`c-${idAspecto}`).className = 'btn-status';
+                document.getElementById(`nc-${idAspecto}`).className = 'btn-status active-nc';
+                document.getElementById(`prov-box-${idAspecto}`).style.display = "block";
+                document.getElementById(`card-${idAspecto}`).style.borderLeftColor = "var(--nc)";
+            }
+        }
+    }
+
+    function validar(id, el, min, max) {
+        const v = parseFloat(el.value); const ok = v >= min && v <= max;
+        el.className = "input-valor " + (ok ? "dentro-tolerancia" : "fora-tolerancia");
+        document.getElementById(`prov-box-${id}`).style.display = ok ? "none" : "block";
+        document.getElementById(`card-${id}`).style.borderLeftColor = ok ? "var(--ok)" : "var(--nc)";
+        res[id].status = ok ? "C" : "NC"; res[id].valor = v;
+        verificarAutoNC(id);
+    }
+
+    function setBin(i, s) {
+        res[i].status = s;
+        document.getElementById(`c-${i}`).className = 'btn-status' + (s=='C'?' active-c':'');
+        document.getElementById(`nc-${i}`).className = 'btn-status' + (s=='NC'?' active-nc':'');
+        document.getElementById(`prov-box-${i}`).style.display = (s=='NC') ? "block" : "none";
+        document.getElementById(`card-${i}`).style.borderLeftColor = (s=='NC') ? "var(--nc)" : "var(--ok)";
+        verificarAutoNC(i);
+    }
+
+    function enviar() {
+        try {
+            const btn = document.getElementById('btn-salvar'); const op1 = document.getElementById('op1').value; const op2 = document.getElementById('op2').value;
+            if (!op1) return alert("⚠️ O nome do Operador Principal é obrigatório!");
+            for(let k in res) { if(res[k].status === "Pendente") return alert(`⚠️ Ficha Incompleta: O item ${parseInt(k)+1} não foi preenchido.`); }
+
+            btn.textContent = "SALVANDO..."; btn.style.opacity = "0.7"; btn.disabled = true;
+
+            let assFinal = assinaturaBase64;
+            if(document.getElementById('area-canvas').style.display !== 'none') assFinal = canvas.toDataURL();
+
+            for(let k in res) { 
+                if(res[k].status === "NC") {
+                    const oq = document.getElementById(`oq-${k}`)?.value || "";
+                    const pq = document.getElementById(`pq-${k}`)?.value || "";
+                    const cm = document.getElementById(`cm-${k}`)?.value || "";
+                    const qm = document.getElementById(`qm-${k}`)?.value || "";
+                    res[k].descricao = `O QUE: ${oq} | POR QUE: ${pq}`;
+                    res[k].tratativa = `COMO: ${cm} | QUEM: ${qm}`;
+                }
+            }
+
+            const agora = new Date(); const horaExata = String(agora.getHours()).padStart(2, '0') + ':' + String(agora.getMinutes()).padStart(2, '0');
+            const d = { modelo: document.getElementById('mod').value, injetora: document.getElementById('inj').value, turno: document.getElementById('tur').value, inspecao: document.getElementById('insp').value, mes: document.getElementById('mes').value, dia: document.getElementById('dia').value, horario: horaExata, operador1: op1, operador2: op2, inspetor: nomeInspetorLogado, matricula_inspetor: matriculaInspetorLogado, assinatura_inspetor: assFinal, itens_detalhados: res };
+
+            fetch(getUrlLimpa('/salvar-inspecao'), { method: 'POST', headers: headersConfig, body: JSON.stringify(d) })
+            .then(async resposta => {
+                if(resposta.ok) { alert("✅ Inspeção e Assinatura Gravadas com Sucesso!"); window.location.reload(); } 
+                else { const erroData = await resposta.json(); alert("❌ ALERTA: " + (erroData.erro || "Erro.")); btn.textContent = "SALVAR INSPEÇÃO"; btn.style.opacity = "1"; btn.disabled = false; }
+            }).catch(erro => { alert("❌ ERRO DE CONEXÃO. Verifique se o link do Render está correto."); btn.textContent = "SALVAR INSPEÇÃO"; btn.style.opacity = "1"; btn.disabled = false; });
+        } catch(e) { alert("❌ Erro interno: " + e.message); }
+    }
+</script>
+</body>
+</html>
