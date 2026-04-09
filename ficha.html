@@ -44,7 +44,8 @@
         .item-texto:hover { color: var(--blue); }
         .item-unidade { display: block; font-size: 11px; color: #94a3b8; font-weight: 500; margin-top: 4px; }
         
-        .input-valor { width: 90px !important; text-align: center; font-weight: 800; margin-bottom: 0 !important; background: #fff !important; font-size: 15px !important; padding: 10px !important;}
+        /* Ajuste do botão de input para caber 2 colunas */
+        .input-valor { text-align: center; font-weight: 800; margin-bottom: 0 !important; background: #fff !important; font-size: 15px !important; padding: 10px !important;}
         .fora-tolerancia { border-color: var(--nc) !important; background: #fef2f2 !important; color: var(--nc); }
         .dentro-tolerancia { border-color: var(--ok) !important; background: #ecfdf5 !important; color: var(--ok); }
         
@@ -68,7 +69,7 @@
             #app-conteudo .footer { padding: 10px 0 15px 0; height: auto; } #app-conteudo .btn-env { padding: 12px; font-size: 14px; border-radius: 10px; margin-bottom: 0; }
             #app-conteudo { padding-bottom: 70px !important; } .card { margin: 10px 15px; padding: 15px 15px; } .card label { margin-bottom: 4px; } .card select, .card input { margin-bottom: 8px; padding: 10px 12px; font-size: 14px; }
             #app-conteudo .titulo-secao { margin: 15px 15px 8px 15px; padding: 8px 15px; font-size: 0.8rem; } #app-conteudo .item { margin: 8px 15px; padding: 12px; } .item-texto { font-size: 13px; } .item-unidade { font-size: 10px; }
-            .input-valor { padding: 6px !important; font-size: 14px !important; width: 70px !important; } .btn-status { width: 45px; height: 36px; font-size: 13px; }
+            .btn-status { width: 45px; height: 36px; font-size: 13px; }
         }
     </style>
 </head>
@@ -137,10 +138,13 @@
                 <option value="K68L">K68L</option>
                 <option value="KVK">KVK</option>
                 <option value="HRV">HR-V</option>
-                <!-- 🔥 NOVOS MODELOS ASTEC ADICIONADOS AQUI 🔥 -->
                 <option value="KVSP">KVSP (ASTEC)</option>
                 <option value="KRET">KRET (ASTEC)</option>
             </select>
+
+            <!-- 🔥 CAMPO DE MATRIZ ADICIONADO AQUI 🔥 -->
+            <label style="color: var(--blue-dark);">Matriz / Cavidade *</label>
+            <input type="text" id="matriz" placeholder="Ex: #1, #2..." style="font-weight: bold; color: var(--blue-dark); text-transform: uppercase;">
 
             <label>Turno / Inspeção</label>
             <div style="display:flex; gap:12px;">
@@ -331,7 +335,7 @@
     function fecharFotoItem() { document.getElementById('modalVisualizadorItem').style.display = 'none'; }
 
     // =======================================================================================
-    // 🔥 BANCO DE FICHAS COM FOTOS (TEMPLATES) 🔥
+    // 🔥 BANCO DE FICHAS COM FOTOS E ITEM DO NOME DO MODELO 🔥
     // =======================================================================================
     const TEMPLATES = {
         LPDC_PADRAO: [ { sec: "Parâmetros de Processo da Injetora" }, { t: "Temperatura do Molde", u: "330-390°C", min: 330, max: 390 }, { t: "Temperatura do Banho", u: "685-710°C", min: 685, max: 710 }, { t: "Tempo de Abertura", u: "15-20 seg", min: 15, max: 20 }, { t: "Tempo de Pressurização", u: "190-210 seg", min: 190, max: 210 }, { t: "Refrigeração Base Inferior", u: "5 ±1 Kgf/cm²", min: 4, max: 6 }, { t: "Refrigeração Base Superior", u: "3 ±1 Kgf/cm²", min: 2, max: 4 }, { t: "Mangueiras da Refrigeração", u: "Visual (Sem obstrução)", tipo: "bin" }, { t: "Gráfico de Injeção", u: "Painel da Máquina", tipo: "bin" }, { t: "Programa", u: "Painel (Ex: A-1, B-3)", tipo: "txt" }, { t: "Teste Tridimensional", u: "Visual / CNC", tipo: "bin" }, { t: "Desumidificador", u: "Tela Limpa / Área Verde", tipo: "bin" }, { t: "Checar Forno e Banho", u: "Visual", tipo: "bin" }, { sec: "Checagem Visual (Peça)" }, { t: "Guias de Fundição", u: "Sem deformações", tipo: "bin" }, { t: "Pré-Furo do Prisioneiro", u: "Sem deformações", tipo: "bin" }, { t: "Referência de Usinagem", u: "Sem falhas/aderências", tipo: "bin" }, { t: "Aloj. Guias e Sedes de Válvula", u: "Sem rebarbas", tipo: "bin" }, { t: "Canais de Admissão/Escape", u: "Sem macho quebrado", tipo: "bin" }, { t: "Câmara de Combustão", u: "Sem rechupe", tipo: "bin" }, { t: "Fechamento Molde com Macho", u: "Visual", tipo: "bin" }, { t: "Pontos Fixação Escapamento", u: "Visual", tipo: "bin" }, { t: "Machos de Areia", u: "Sem deformações", tipo: "bin" }, { t: "Código de Fabricação", u: "Registrar", tipo: "txt" }, { t: "Pintura do Massalote", u: "Visual", tipo: "bin" }, { t: "Logotipo HONDA", u: "Legível", tipo: "bin" }, { t: "Aspecto Geral", u: "Visual", tipo: "bin" } ],
@@ -491,55 +495,6 @@
             { t: "Pintura do Massalote", u: "Visual", tipo: "bin", img: "https://github.com/guxstazzin/honda-inspecao/blob/main/massalote.png?raw=true" }, 
             { t: "Logotipo HONDA", u: "Legível", tipo: "bin", img: "https://github.com/guxstazzin/honda-inspecao/blob/main/logotipo.png?raw=true" }, 
             { t: "Aspecto Geral", u: "Visual", tipo: "bin", img: "LINK_AQUI.jpg" } 
-        ],
-
-        MACHEIRA_JACKET_K68L: [ 
-            { sec: "Parâmetros Macho Jacket K68L (H-TOP)" }, 
-            { t: "Temperatura Molde Fixo", u: "240 - 280°C", min: 240, max: 280, img: "LINK_AQUI.jpg" }, 
-            { t: "Temperatura Molde Móvel", u: "240 - 280°C", min: 240, max: 280, img: "LINK_AQUI.jpg" }, 
-            { t: "Tempo de Cozimento", u: "25 - 35 Seg", min: 25, max: 35, img: "LINK_AQUI.jpg" }, 
-            { t: "Tempo de Sopro", u: "2 - 4 Seg", min: 2, max: 4, img: "LINK_AQUI.jpg" }, 
-            { t: "Pressão do Sopro", u: "0.4 - 0.8 Mpa", min: 0.4, max: 0.8, img: "LINK_AQUI.jpg" }, 
-            { t: "Pressão do Ar", u: "0.4 - 0.8 Mpa", min: 0.4, max: 0.8, img: "LINK_AQUI.jpg" }, 
-            { sec: "Qualidade do Macho (Dimensional)" }, 
-            { t: "Nome do Modelo", u: '"K68L"', tipo: "bin", img: "LINK_AQUI.jpg" }, 
-            { t: "Área de Rebarbação", u: "Isento na junção", tipo: "bin", img: "LINK_AQUI.jpg" }, 
-            { t: "Coloração da Peça", u: "Marrom e Uniforme", tipo: "bin", img: "LINK_AQUI.jpg" }, 
-            { t: "Canal do Sopro", u: "Sem excessos", tipo: "bin", img: "LINK_AQUI.jpg" }, 
-            { t: "Marca Extração na Peça", u: "0.0 - 0.2mm", min: 0.0, max: 0.2, img: "LINK_AQUI.jpg" }, 
-            { t: "Altura Inserto Região Comando", u: "48.6 - 48.8mm", min: 48.6, max: 48.8, img: "LINK_AQUI.jpg" }, 
-            { t: "Aspecto Geral", u: "Visual", tipo: "bin", img: "LINK_AQUI.jpg" } 
-        ],
-        MACHEIRA_POTTON_K68L: [ 
-            { sec: "Parâmetros Macho Potton K68L (V-TOP)" }, 
-            { t: "Temperatura Molde Fixo", u: "290 - 330°C", min: 290, max: 330, img: "LINK_AQUI.jpg" }, 
-            { t: "Temperatura Molde Móvel", u: "290 - 330°C", min: 290, max: 330, img: "LINK_AQUI.jpg" }, 
-            { t: "Pressão de Operação do Ar", u: "0.4 - 0.6 Mpa", min: 0.4, max: 0.6, img: "LINK_AQUI.jpg" }, 
-            { t: "Pressão do Sopro", u: "0.2 - 0.4 Mpa", min: 0.2, max: 0.4, img: "LINK_AQUI.jpg" }, 
-            { t: "Tempo de Sopro", u: "2 - 4 Seg", min: 2, max: 4, img: "LINK_AQUI.jpg" }, 
-            { t: "Tempo de Cozimento", u: "25 - 35 Seg", min: 25, max: 35, img: "LINK_AQUI.jpg" }, 
-            { sec: "Qualidade do Macho (Dimensional)" }, 
-            { t: "Nome do Modelo", u: '"K68L"', tipo: "bin", img: "LINK_AQUI.jpg" }, 
-            { t: "Junção Fixo/Móvel", u: "Isento desencontro/rebarba", tipo: "bin", img: "LINK_AQUI.jpg" }, 
-            { t: "Coloração da Peça", u: "Marrom e Uniforme", tipo: "bin", img: "LINK_AQUI.jpg" }, 
-            { t: "Marca de Extração", u: "0.0 - 0.2 mm", min: 0.0, max: 0.2, img: "LINK_AQUI.jpg" }, 
-            { t: "Armazenagem Macho de Areia", u: "Máx 14 jogos/bandeja", tipo: "bin", img: "LINK_AQUI.jpg" }, 
-            { t: "Medida Macho Potton IN", u: "26.0 (+0.3/-0.2 mm)", min: 25.8, max: 26.3, img: "LINK_AQUI.jpg" }, 
-            { t: "Diâmetro Potton IN (1)", u: "25.7 (+0.3/-0.2 mm)", min: 25.5, max: 26.0, img: "LINK_AQUI.jpg" }, 
-            { t: "Diâmetro Potton IN (2)", u: "25.7 (+0.3/-0.2 mm)", min: 25.5, max: 26.0, img: "LINK_AQUI.jpg" }, 
-            { t: "Medida Apoio Potton IN (1)", u: "10.2 (+0.3/-0.2 mm)", min: 10.0, max: 10.5, img: "LINK_AQUI.jpg" }, 
-            { t: "Medida Apoio Potton IN (2)", u: "10.2 (+0.3/-0.2 mm)", min: 10.0, max: 10.5, img: "LINK_AQUI.jpg" }, 
-            { t: "Medida Apoio Potton IN (3)", u: "8.3 (+0.3/-0.2 mm)", min: 8.1, max: 8.6, img: "LINK_AQUI.jpg" }, 
-            { t: "Medida Apoio Potton IN (4)", u: "12.2 (+0.3/-0.2 mm)", min: 12.0, max: 12.5, img: "LINK_AQUI.jpg" }, 
-            { t: "Apoio Reg. Guia Tensor", u: "Isento rebarba", tipo: "bin", img: "LINK_AQUI.jpg" }, 
-            { t: "Medida Macho Potton EX", u: "23.7 (+0.3/-0.2 mm)", min: 23.5, max: 24.0, img: "LINK_AQUI.jpg" }, 
-            { t: "Diâmetro Potton EX (1)", u: "26.2 (+0.3/-0.2 mm)", min: 26.0, max: 26.5, img: "LINK_AQUI.jpg" }, 
-            { t: "Diâmetro Potton EX (2)", u: "26.2 (+0.3/-0.2 mm)", min: 26.0, max: 26.5, img: "LINK_AQUI.jpg" }, 
-            { t: "Medida Apoio Potton EX (1)", u: "8.2 (+0.3/-0.2 mm)", min: 8.0, max: 8.5, img: "LINK_AQUI.jpg" }, 
-            { t: "Medida Apoio Potton EX (2)", u: "8.2 (+0.3/-0.2 mm)", min: 8.0, max: 8.5, img: "LINK_AQUI.jpg" }, 
-            { t: "Medida Apoio Potton EX (3)", u: "12.2 (+0.3/-0.2 mm)", min: 12.0, max: 12.5, img: "LINK_AQUI.jpg" }, 
-            { t: "Medida Apoio Potton EX (4)", u: "10.2 (+0.3/-0.2 mm)", min: 10.0, max: 10.5, img: "LINK_AQUI.jpg" }, 
-            { t: "Aspecto Geral", u: "Visual", tipo: "bin", img: "LINK_AQUI.jpg" } 
         ]
     };
 
@@ -548,7 +503,6 @@
     function atualizarTemplate() {
         const inj = document.getElementById('inj').value; const mod = document.getElementById('mod').value; const corpo = document.getElementById('lista-corpo');
         
-        // 🔥 CÉREBRO ATUALIZADO PARA RECONHECER TODOS OS MODELOS NOVOS!
         if (inj.includes('HTOP')) templateAtivo = (mod === 'K68L') ? TEMPLATES.MACHEIRA_JACKET_K68L : TEMPLATES.MACHEIRA_JACKET_PADRAO;
         else if (inj.includes('VTOP')) templateAtivo = (mod === 'K68L') ? TEMPLATES.MACHEIRA_POTTON_K68L : TEMPLATES.MACHEIRA_POTTON_PADRAO;
         else if (mod === 'KVK') templateAtivo = TEMPLATES.LPDC_KVK;
@@ -572,9 +526,21 @@
             res[c] = { nome: it.t, status: "Pendente", isVisual: isVisual };
             
             let ctrl = "";
-            if (it.min !== undefined) ctrl = `<input type="number" class="input-valor" placeholder="Val." oninput="validar(${c},this,${it.min},${it.max})">`;
-            else if (it.tipo === "txt") ctrl = `<input type="text" class="input-valor" placeholder="..." oninput="res[${c}].valor=this.value; res[${c}].status='C'; verificarAutoNC(${c});">`;
-            else ctrl = `<div class="botoes"><button class="btn-status" id="c-${c}" onclick="setBin(${c},'C')">C</button><button class="btn-status" id="nc-${c}" onclick="setBin(${c},'NC')">NC</button></div>`;
+            
+            // 🔥 MÁGICA DOS 2 LADOS: Se for valor de parâmetro, cria Esq e Dir
+            if (it.min !== undefined) {
+                ctrl = `
+                <div style="display: flex; gap: 4px;">
+                    <input type="number" class="input-valor" placeholder="Esq" oninput="validarDuplo(${c}, 'esq', this, ${it.min}, ${it.max})" style="width: 65px !important; font-size: 13px !important; padding: 10px 5px !important;">
+                    <input type="number" class="input-valor" placeholder="Dir" oninput="validarDuplo(${c}, 'dir', this, ${it.min}, ${it.max})" style="width: 65px !important; font-size: 13px !important; padding: 10px 5px !important;">
+                </div>`;
+            } 
+            else if (it.tipo === "txt") {
+                ctrl = `<input type="text" class="input-valor" placeholder="..." style="width: 100px !important;" oninput="res[${c}].valor=this.value; res[${c}].status='C'; verificarAutoNC(${c});">`;
+            } 
+            else {
+                ctrl = `<div class="botoes"><button class="btn-status" id="c-${c}" onclick="setBin(${c},'C')">C</button><button class="btn-status" id="nc-${c}" onclick="setBin(${c},'NC')">NC</button></div>`;
+            }
             
             corpo.innerHTML += `
                 <div class="item" id="card-${c}">
@@ -604,6 +570,40 @@
             c++;
         });
         checarLiberacao();
+    }
+
+    // 🔥 NOVA FUNÇÃO: VALIDA OS DOIS LADOS E SALVA JUNTO
+    function validarDuplo(id, lado, el, min, max) {
+        const v = parseFloat(el.value);
+        const isEmpty = isNaN(v);
+        const ok = !isEmpty && v >= min && v <= max;
+        
+        el.className = "input-valor " + (isEmpty ? "" : (ok ? "dentro-tolerancia" : "fora-tolerancia"));
+
+        if(!res[id].lados) res[id].lados = { esq: {valor: "-", status: "Pendente"}, dir: {valor: "-", status: "Pendente"} };
+        
+        if (isEmpty) { res[id].lados[lado] = { valor: "-", status: "Pendente" }; } 
+        else { res[id].lados[lado] = { valor: v, status: ok ? "C" : "NC" }; }
+
+        let sEsq = res[id].lados.esq.status; let sDir = res[id].lados.dir.status;
+        let vEsq = res[id].lados.esq.valor; let vDir = res[id].lados.dir.valor;
+
+        res[id].valor = `Esq: ${vEsq} | Dir: ${vDir}`;
+
+        if (sEsq === "NC" || sDir === "NC") {
+            res[id].status = "NC";
+            document.getElementById(`prov-box-${id}`).style.display = "block";
+            document.getElementById(`card-${id}`).style.borderLeftColor = "var(--nc)";
+        } else if (sEsq === "C" && sDir === "C") {
+            res[id].status = "C";
+            document.getElementById(`prov-box-${id}`).style.display = "none";
+            document.getElementById(`card-${id}`).style.borderLeftColor = "var(--ok)";
+        } else {
+            res[id].status = "Pendente";
+            document.getElementById(`prov-box-${id}`).style.display = "none";
+            document.getElementById(`card-${id}`).style.borderLeftColor = "#e2e8f0";
+        }
+        verificarAutoNC(id);
     }
 
     function verificarAutoNC(idModificado) {
@@ -644,7 +644,12 @@
 
     function enviar() {
         try {
-            const btn = document.getElementById('btn-salvar'); const op1 = document.getElementById('op1').value; const op2 = document.getElementById('op2').value;
+            const btn = document.getElementById('btn-salvar'); 
+            const op1 = document.getElementById('op1').value; 
+            const op2 = document.getElementById('op2').value;
+            const matrizVal = document.getElementById('matriz').value.trim(); // 🔥 PEGA A MATRIZ
+            
+            if (!matrizVal) return alert("⚠️ O campo Matriz / Cavidade é obrigatório!");
             if (!op1) return alert("⚠️ O nome do Operador Principal é obrigatório!");
             for(let k in res) { if(res[k].status === "Pendente") return alert(`⚠️ Ficha Incompleta: O item ${parseInt(k)+1} não foi preenchido.`); }
 
@@ -665,14 +670,32 @@
             }
 
             const agora = new Date(); const horaExata = String(agora.getHours()).padStart(2, '0') + ':' + String(agora.getMinutes()).padStart(2, '0');
-            const d = { modelo: document.getElementById('mod').value, injetora: document.getElementById('inj').value, turno: document.getElementById('tur').value, inspecao: document.getElementById('insp').value, mes: document.getElementById('mes').value, dia: document.getElementById('dia').value, horario: horaExata, operador1: op1, operador2: op2, inspetor: nomeInspetorLogado, matricula_inspetor: matriculaInspetorLogado, assinatura_inspetor: assFinal, itens_detalhados: res };
+            
+            // 🔥 ENVIA A MATRIZ PARA O BANCO DE DADOS
+            const d = { 
+                modelo: document.getElementById('mod').value, 
+                matriz: matrizVal, 
+                injetora: document.getElementById('inj').value, 
+                turno: document.getElementById('tur').value, 
+                inspecao: document.getElementById('insp').value, 
+                mes: document.getElementById('mes').value, 
+                dia: document.getElementById('dia').value, 
+                horario: horaExata, 
+                operador1: op1, 
+                operador2: op2, 
+                inspetor: nomeInspetorLogado, 
+                matricula_inspetor: matriculaInspetorLogado, 
+                assinatura_inspetor: assFinal, 
+                itens_detalhados: res 
+            };
 
             fetch(getUrlLimpa('/salvar-inspecao'), { method: 'POST', headers: headersConfig, body: JSON.stringify(d) })
             .then(async resposta => {
                 const erroData = await resposta.json();
                 if(resposta.ok) { 
                     alert("✅ Inspeção e Assinatura Gravadas com Sucesso!"); 
-                    document.getElementById('op1').value = ""; document.getElementById('op2').value = ""; limparCanvas(); 
+                    document.getElementById('op1').value = ""; document.getElementById('op2').value = ""; 
+                    document.getElementById('matriz').value = ""; limparCanvas(); 
                     btn.textContent = "SALVAR INSPEÇÃO"; btn.style.opacity = "1"; btn.disabled = false;
                     voltarParaHome(); 
                 } 
