@@ -18,6 +18,13 @@
         .btn-logar:active { transform: translateY(2px); }
         .link-cadastro { margin-top: 15px; display: block; font-size: 14px; color: var(--blue); text-decoration: none; font-weight: 600; cursor: pointer; }
         
+        /* 🔥 CSS DA TELA DE CARREGAMENTO 🔥 */
+        .tela-loading { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 30, 70, 0.95); z-index: 100000; display: none; flex-direction: column; justify-content: center; align-items: center; backdrop-filter: blur(5px); color: white; text-align: center; padding: 20px; box-sizing: border-box; }
+        .spinner { width: 60px; height: 60px; border: 6px solid rgba(255,255,255,0.2); border-top-color: var(--ok); border-radius: 50%; animation: spin 1s linear infinite; margin-bottom: 20px; }
+        @keyframes spin { to { transform: rotate(360deg); } }
+        .loading-tit { font-family: 'Montserrat', sans-serif; font-size: 20px; font-weight: 900; letter-spacing: 1px; margin: 0 0 10px 0; }
+        .loading-sub { font-size: 14px; font-weight: 500; color: #cbd5e1; max-width: 300px; line-height: 1.5; }
+
         #tela-home-inspetor { display: none; text-align: center; padding-top: 40px; }
         .btn-setor { background: white; border: 3px solid var(--blue); padding: 40px 20px; border-radius: 24px; cursor: pointer; transition: 0.3s; box-shadow: 0 15px 30px rgba(0,0,0,0.1); width: 90%; max-width: 350px; margin: 0 auto 30px auto; }
         .btn-setor:hover { transform: translateY(-5px); box-shadow: 0 20px 35px rgba(0,86,179,0.2); background: linear-gradient(135deg, var(--blue), var(--blue-dark)); color: white; border-color: transparent; }
@@ -71,6 +78,13 @@
     </style>
 </head>
 <body>
+
+    <!-- 🔥 TELA DE CARREGAMENTO (AMNÉSIA) 🔥 -->
+    <div id="loader-geral" class="tela-loading">
+        <div class="spinner"></div>
+        <p class="loading-tit">ACORDANDO SERVIDOR...</p>
+        <p class="loading-sub">Se for o primeiro acesso do dia, o sistema está ligando os motores. Pode levar até 40 segundos.<br><br>Por favor, não feche a tela!</p>
+    </div>
 
     <div id="tela-login">
         <div class="login-box" id="box-login">
@@ -237,6 +251,10 @@
         document.getElementById('tur').value = turnoDoSistema;
     }
 
+    // 🔥 FUNÇÕES DE TELA DE CARREGAMENTO 🔥
+    function mostrarLoader() { document.getElementById('loader-geral').style.display = 'flex'; }
+    function esconderLoader() { document.getElementById('loader-geral').style.display = 'none'; }
+
     function sucessoLogin(res) {
         nomeInspetorLogado = res.nome || "INSPETOR"; 
         matriculaInspetorLogado = res.matricula; 
@@ -265,12 +283,18 @@
         if(!mat || !senha) return alert("Preencha matrícula e senha!");
         if(!mat.startsWith('SB')) return alert("⚠️ MATRÍCULA INVÁLIDA: A sua matrícula deve começar com 'SB' (Ex: SB056312).");
 
+        mostrarLoader(); // 🔥 LIGA O AVISO DE AMNÉSIA AQUI
+        
         fetch(getUrlLimpa('/login'), { method: 'POST', headers: headersConfig, body: JSON.stringify({matricula: mat, senha: senha}) })
         .then(async r => { 
+            esconderLoader(); // 🔥 DESLIGA QUANDO RESPONDER
             const res = await r.json(); 
             if(r.ok) { res.matricula = mat; sucessoLogin(res); } 
             else alert("❌ Erro: " + (res.erro || res.detail || JSON.stringify(res))); 
-        }).catch(e => alert("Erro de conexão com o Render."));
+        }).catch(e => {
+            esconderLoader();
+            alert("Erro de conexão com o Render. O servidor pode estar offline.");
+        });
     }
 
     function fazerCadastro() {
@@ -282,12 +306,18 @@
         if(!nome || !mat || !senha || !setor) return alert("⚠️ Preencha todos os campos e selecione seu Setor!");
         if(!mat.startsWith('SB')) return alert("⚠️ MATRÍCULA INVÁLIDA: A sua matrícula deve começar com 'SB' (Ex: SB056312).");
 
+        mostrarLoader(); // 🔥 LIGA O AVISO DE AMNÉSIA AQUI
+        
         fetch(getUrlLimpa('/cadastrar'), { method: 'POST', headers: headersConfig, body: JSON.stringify({nome: nome, matricula: mat, senha: senha, setor: setor}) })
         .then(async r => { 
+            esconderLoader(); // 🔥 DESLIGA QUANDO RESPONDER
             const res = await r.json(); 
             if(r.ok) { alert("✅ Cadastro realizado!"); res.matricula = mat; res.setor = setor; res.nome = nome; res.assinatura = ""; sucessoLogin(res); } 
             else alert("❌ Erro: " + (res.erro || res.detail || JSON.stringify(res))); 
-        }).catch(e => alert("Erro de conexão com o Render."));
+        }).catch(e => {
+            esconderLoader();
+            alert("Erro de conexão com o Render. O servidor pode estar offline.");
+        });
     }
 
     function entrarNoSetor(setorClicado) {
@@ -328,8 +358,8 @@
     }
     function fecharFotoItem() { document.getElementById('modalVisualizadorItem').style.display = 'none'; }
 
-   // =======================================================================================
-    // 🔥 BANCO DE FICHAS COM FOTOS, MODELOS NOVOS E MACHEIRAS RESTAURADAS 🔥
+    // =======================================================================================
+    // 🔥 BANCO DE FICHAS COM FOTOS E ITEM DO NOME DO MODELO 🔥
     // =======================================================================================
     const TEMPLATES = {
         LPDC_PADRAO: [ { sec: "Parâmetros de Processo da Injetora" }, { t: "Temperatura do Molde", u: "330-390°C", min: 330, max: 390 }, { t: "Temperatura do Banho", u: "685-710°C", min: 685, max: 710 }, { t: "Tempo de Abertura", u: "15-20 seg", min: 15, max: 20 }, { t: "Tempo de Pressurização", u: "190-210 seg", min: 190, max: 210 }, { t: "Refrigeração Base Inferior", u: "5 ±1 Kgf/cm²", min: 4, max: 6 }, { t: "Refrigeração Base Superior", u: "3 ±1 Kgf/cm²", min: 2, max: 4 }, { t: "Mangueiras da Refrigeração", u: "Visual (Sem obstrução)", tipo: "bin" }, { t: "Gráfico de Injeção", u: "Painel da Máquina", tipo: "bin" }, { t: "Programa", u: "Painel (Ex: A-1, B-3)", tipo: "txt" }, { t: "Teste Tridimensional", u: "Visual / CNC", tipo: "bin" }, { t: "Desumidificador", u: "Tela Limpa / Área Verde", tipo: "bin" }, { t: "Checar Forno e Banho", u: "Visual", tipo: "bin" }, { sec: "Checagem Visual (Peça)" }, { t: "Guias de Fundição", u: "Sem deformações", tipo: "bin" }, { t: "Pré-Furo do Prisioneiro", u: "Sem deformações", tipo: "bin" }, { t: "Referência de Usinagem", u: "Sem falhas/aderências", tipo: "bin" }, { t: "Aloj. Guias e Sedes de Válvula", u: "Sem rebarbas", tipo: "bin" }, { t: "Canais de Admissão/Escape", u: "Sem macho quebrado", tipo: "bin" }, { t: "Câmara de Combustão", u: "Sem rechupe", tipo: "bin" }, { t: "Fechamento Molde com Macho", u: "Visual", tipo: "bin" }, { t: "Pontos Fixação Escapamento", u: "Visual", tipo: "bin" }, { t: "Machos de Areia", u: "Sem deformações", tipo: "bin" }, { t: "Código de Fabricação", u: "Registrar", tipo: "txt" }, { t: "Pintura do Massalote", u: "Visual", tipo: "bin" }, { t: "Logotipo HONDA", u: "Legível", tipo: "bin" }, { t: "Aspecto Geral", u: "Visual", tipo: "bin" } ],
@@ -491,7 +521,6 @@
             { t: "Aspecto Geral", u: "Visual", tipo: "bin", img: "LINK_AQUI.jpg" } 
         ],
 
-        // 🔥 MACHEIRAS RESTAURADAS COM SUCESSO!
         MACHEIRA_JACKET_PADRAO: [ 
             { sec: "Parâmetros Macho Jacket (H-TOP)" }, 
             { t: "Temperatura Molde Fixo", u: "240 - 280°C", min: 240, max: 280, img: "LINK_AQUI.jpg" }, 
@@ -619,7 +648,6 @@
             
             let ctrl = "";
             
-            // 🔥 MÁGICA DOS 2 LADOS PARA NÚMEROS (ESQ E DIR LADO A LADO)
             if (it.min !== undefined) {
                 ctrl = `
                 <div style="display: flex; gap: 10px; justify-content: flex-end;">
@@ -633,11 +661,9 @@
                     </div>
                 </div>`;
             } 
-            // TEXTO ÚNICO (Para Código de Fabricação, etc)
             else if (it.tipo === "txt") {
                 ctrl = `<input type="text" class="input-valor" placeholder="..." style="width: 100px !important; border-radius: 8px;" oninput="res[${c}].valor=this.value; res[${c}].status='C'; verificarAutoNC(${c});">`;
             } 
-            // 🔥 MÁGICA DOS 2 LADOS PARA C/NC (ESQ E DIR LADO A LADO)
             else {
                 ctrl = `
                 <div style="display: flex; gap: 12px; justify-content: flex-end;">
@@ -684,7 +710,6 @@
         checarLiberacao();
     }
 
-    // 🔥 NOVA FUNÇÃO: VALIDA OS DOIS LADOS (NÚMEROS) E SALVA JUNTO
     function validarDuplo(id, lado, el, min, max) {
         const v = parseFloat(el.value);
         const isEmpty = isNaN(v);
@@ -700,7 +725,6 @@
         atualizarStatusDuplo(id);
     }
 
-    // 🔥 NOVA FUNÇÃO: VALIDA OS DOIS LADOS (C / NC) E SALVA JUNTO
     function setBinDuplo(id, lado, s) {
         if(!res[id].lados) res[id].lados = { esq: {valor: "-", status: "Pendente"}, dir: {valor: "-", status: "Pendente"} };
         
@@ -712,7 +736,6 @@
         atualizarStatusDuplo(id);
     }
 
-    // 🔥 PROCESSA SE O ITEM INTEIRO FICOU VERDE OU VERMELHO
     function atualizarStatusDuplo(id) {
         let sEsq = res[id].lados.esq.status; 
         let sDir = res[id].lados.dir.status;
@@ -737,7 +760,6 @@
         verificarAutoNC(id);
     }
 
-    // 🔥 INTELIGÊNCIA ARTIFICIAL ATUALIZADA PARA BOTÕES DUPLOS LADO A LADO
     function verificarAutoNC(idModificado) {
         let idAspecto = -1; let temNCVisual = false;
         for(let k in res) {
