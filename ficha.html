@@ -137,6 +137,9 @@
                 <option value="K68L">K68L</option>
                 <option value="KVK">KVK</option>
                 <option value="HRV">HR-V</option>
+                <!-- 🔥 NOVOS MODELOS ASTEC ADICIONADOS AQUI 🔥 -->
+                <option value="KVSP">KVSP (ASTEC)</option>
+                <option value="KRET">KRET (ASTEC)</option>
             </select>
 
             <label>Turno / Inspeção</label>
@@ -188,7 +191,6 @@
             </div>
             <div style="padding: 15px; text-align: center;">
                 <div style="width: 100%; max-height: 60vh; overflow: auto; background: #f3f4f6; border: 1px solid #cbd5e1; border-radius: 8px;">
-                    <!-- 🔥 ID ATUALIZADO AQUI -->
                     <img id="img-modal-dinamica" src="https://raw.githubusercontent.com/guxstazzin/honda-inspecao/main/croqui.jpg.png" alt="Croqui Honda" style="width: 100%; display: block;">
                 </div>
                 <p style="font-size: 12px; color: #64748b; margin-top: 10px;">Dica: Faça movimento de pinça na tela para dar zoom na imagem.</p>
@@ -199,7 +201,7 @@
 
 <script>
     // =====================================================================
-    // ⚠️ ATENÇÃO: COLOQUE AQUI O SEU LINK DO RENDER! ⚠️
+    // ⚠️ LINK DO SEU MOTOR RENDER AQUI ⚠️
     // =====================================================================
     const API_URL = "https://gestao-a-vista-r9uv.onrender.com"; 
     // =====================================================================
@@ -319,74 +321,242 @@
         }).catch(e => console.log("Ainda sem conexão com o resumo ou motor offline.", e));
     }
 
-    // 🔥 NOVA FUNÇÃO ABRIR FOTO INTELIGENTE (AGORA IGNORA O "LINK_AQUI.jpg") 🔥
     function abrirFotoItem(nomeDoItem, linkDaFoto) { 
         document.getElementById('titulo-foto-item').textContent = nomeDoItem; 
-        
-        let imagemParaMostrar = "https://raw.githubusercontent.com/guxstazzin/honda-inspecao/main/croqui.jpg.png"; // Padrão Honda
-        
-        // Se tiver um link válido e não for o texto genérico, ele mostra a foto certa!
-        if (linkDaFoto && linkDaFoto !== 'undefined' && linkDaFoto !== 'LINK_AQUI.jpg') {
-            imagemParaMostrar = linkDaFoto;
-        }
-
+        let imagemParaMostrar = "https://raw.githubusercontent.com/guxstazzin/honda-inspecao/main/croqui.jpg.png"; 
+        if (linkDaFoto && linkDaFoto !== 'undefined' && linkDaFoto !== 'LINK_AQUI.jpg') { imagemParaMostrar = linkDaFoto; }
         document.getElementById('img-modal-dinamica').src = imagemParaMostrar;
         document.getElementById('modalVisualizadorItem').style.display = 'flex'; 
     }
     function fecharFotoItem() { document.getElementById('modalVisualizadorItem').style.display = 'none'; }
 
+    // =======================================================================================
+    // 🔥 BANCO DE FICHAS COM FOTOS (TEMPLATES) 🔥
+    // =======================================================================================
     const TEMPLATES = {
         LPDC_PADRAO: [ { sec: "Parâmetros de Processo da Injetora" }, { t: "Temperatura do Molde", u: "330-390°C", min: 330, max: 390 }, { t: "Temperatura do Banho", u: "685-710°C", min: 685, max: 710 }, { t: "Tempo de Abertura", u: "15-20 seg", min: 15, max: 20 }, { t: "Tempo de Pressurização", u: "190-210 seg", min: 190, max: 210 }, { t: "Refrigeração Base Inferior", u: "5 ±1 Kgf/cm²", min: 4, max: 6 }, { t: "Refrigeração Base Superior", u: "3 ±1 Kgf/cm²", min: 2, max: 4 }, { t: "Mangueiras da Refrigeração", u: "Visual (Sem obstrução)", tipo: "bin" }, { t: "Gráfico de Injeção", u: "Painel da Máquina", tipo: "bin" }, { t: "Programa", u: "Painel (Ex: A-1, B-3)", tipo: "txt" }, { t: "Teste Tridimensional", u: "Visual / CNC", tipo: "bin" }, { t: "Desumidificador", u: "Tela Limpa / Área Verde", tipo: "bin" }, { t: "Checar Forno e Banho", u: "Visual", tipo: "bin" }, { sec: "Checagem Visual (Peça)" }, { t: "Guias de Fundição", u: "Sem deformações", tipo: "bin" }, { t: "Pré-Furo do Prisioneiro", u: "Sem deformações", tipo: "bin" }, { t: "Referência de Usinagem", u: "Sem falhas/aderências", tipo: "bin" }, { t: "Aloj. Guias e Sedes de Válvula", u: "Sem rebarbas", tipo: "bin" }, { t: "Canais de Admissão/Escape", u: "Sem macho quebrado", tipo: "bin" }, { t: "Câmara de Combustão", u: "Sem rechupe", tipo: "bin" }, { t: "Fechamento Molde com Macho", u: "Visual", tipo: "bin" }, { t: "Pontos Fixação Escapamento", u: "Visual", tipo: "bin" }, { t: "Machos de Areia", u: "Sem deformações", tipo: "bin" }, { t: "Código de Fabricação", u: "Registrar", tipo: "txt" }, { t: "Pintura do Massalote", u: "Visual", tipo: "bin" }, { t: "Logotipo HONDA", u: "Legível", tipo: "bin" }, { t: "Aspecto Geral", u: "Visual", tipo: "bin" } ],
         
-        // =======================================================================================
-        // 🔥🔥🔥 COLOQUE OS LINKS DAS FOTOS DO K2GF AQUI NAS PROPRIEDADES "img" 🔥🔥🔥
-        // =======================================================================================
+        LPDC_KVK: [ { sec: "Parâmetros KVK (Com Paquímetro)" }, { t: "Temperatura do Molde", u: "330-390°C", min: 330, max: 390 }, { t: "Temperatura do Banho", u: "690-710°C", min: 690, max: 710 }, { t: "Tempo de Abertura", u: "15 seg", min: 14, max: 16 }, { t: "Tempo de Pressurização", u: "230 seg", min: 220, max: 240 }, { t: "Refrigeração Base Inferior", u: "5 ±1 Kgf/cm²", min: 4, max: 6 }, { t: "Refrigeração Base Superior", u: "3 ±1 Kgf/cm²", min: 2, max: 4 }, { t: "Mangueiras e Gráfico", u: "Visual", tipo: "bin" }, { t: "Programa", u: "Ex: D2", tipo: "txt" }, { sec: "Checagem Dimensional e Visual" }, { t: "Passagem Guia e Tensor Corrente", u: "Rebarba Grossa > 0.4mm", tipo: "bin" }, { t: "Aloj. Guias e Sedes Válvula", u: "Isento excesso", tipo: "bin" }, { t: "Canais Admissão/Escape", u: "Isento macho quebrado", tipo: "bin" }, { t: "Espessura Parede Assentamento", u: "Paquímetro (6.0 ± 1mm)", min: 5.0, max: 7.0 }, { t: "Canais Passagem Óleo", u: "Uniforme", tipo: "bin" }, { t: "Canal de Arrefecimento", u: "Sem Obstrução", tipo: "bin" }, { t: "Código de Fabricação", u: "Ex: 1 D T 3", tipo: "txt" }, { t: "Aspecto Geral", u: "Visual", tipo: "bin" } ],
+        
         LPDC_K2GF: [ 
-            { sec: "Parâmetros de Processo da Injetora - K2GF" }, 
-            { t: "Temperatura do Molde", u: "330-390°C", min: 330, max: 390, img: "https://raw.githubusercontent.com/guxstazzin/honda-inspecao/main/temperatura%20do%20molde.jpeg" }, 
-            { t: "Temperatura do Banho", u: "685-710°C", min: 685, max: 710, img: "https://raw.githubusercontent.com/guxstazzin/honda-inspecao/main/temperatura%20do%20banho.jpeg" }, 
-            { t: "Tempo de Abertura", u: "15-20 seg", min: 15, max: 20, img: "LINK_AQUI.jpg" }, 
-            { t: "Tempo de Pressurização", u: "190-210 seg", min: 190, max: 210, img: "LINK_AQUI.jpg" }, 
-            { t: "Refrigeração Base Inferior", u: "5 ±1 Kgf/cm²", min: 4, max: 6, img: "LINK_AQUI.jpg" }, 
-            { t: "Refrigeração Base Superior", u: "3 ±1 Kgf/cm²", min: 2, max: 4, img: "LINK_AQUI.jpg" }, 
-            { t: "Mangueiras da Refrigeração", u: "Visual (Sem obstrução)", tipo: "bin", img: "LINK_AQUI.jpg" }, 
-            { t: "Gráfico de Injeção", u: "Painel da Máquina", tipo: "bin", img: "LINK_AQUI.jpg" }, 
-            { t: "Programa", u: "Painel (Ex: A-1, B-3)", tipo: "txt", img: "LINK_AQUI.jpg" }, 
+            { sec: "Parâmetros de Processo - K2GF" }, 
+            { t: "Temperatura do Molde", u: "330-390°C", min: 330, max: 390, img: "https://github.com/guxstazzin/honda-inspecao/blob/main/temp%20molde.png?raw=true" }, 
+            { t: "Temperatura do Banho", u: "685-710°C", min: 685, max: 710, img: "https://github.com/guxstazzin/honda-inspecao/blob/main/temp%20banho.png?raw=true" }, 
+            { t: "Tempo de Abertura", u: "15-20 seg", min: 15, max: 20, img: "https://github.com/guxstazzin/honda-inspecao/blob/main/temp%20de%20abertura.png?raw=true" }, 
+            { t: "Tempo de Pressurização", u: "190-210 seg", min: 190, max: 210, img: "https://github.com/guxstazzin/honda-inspecao/blob/main/temp%20pressur.png?raw=true" }, 
+            { t: "Refrigeração Base Inferior", u: "5 ±1 Kgf/cm²", min: 4, max: 6, img: "https://github.com/guxstazzin/honda-inspecao/blob/main/mangueira%20inferior.png?raw=true" }, 
+            { t: "Refrigeração Base Superior", u: "3 ±1 Kgf/cm²", min: 2, max: 4, img: "https://github.com/guxstazzin/honda-inspecao/blob/main/mangueira%20inferior.png?raw=true" }, 
+            { t: "Mangueiras da Refrigeração", u: "Visual (Sem obstrução)", tipo: "bin", img: "https://github.com/guxstazzin/honda-inspecao/blob/main/mangueira%20superior.png?raw=true" }, 
+            { t: "Gráfico de Injeção", u: "Painel da Máquina", tipo: "bin", img: "https://github.com/guxstazzin/honda-inspecao/blob/main/grafico.png?raw=true" }, 
+            { t: "Programa", u: "Painel (Ex: A-1, B-3)", tipo: "txt", img: "https://github.com/guxstazzin/honda-inspecao/blob/main/programa.png?raw=true" }, 
             { t: "Teste Tridimensional", u: "Visual / CNC", tipo: "bin", img: "LINK_AQUI.jpg" }, 
-            { t: "Desumidificador", u: "Tela Limpa / Área Verde", tipo: "bin", img: "LINK_AQUI.jpg" }, 
+            { t: "Desumidificador", u: "Tela Limpa / Área Verde", tipo: "bin", img: "https://github.com/guxstazzin/honda-inspecao/blob/main/desumidificador.png?raw=true" }, 
+            { t: "Checar Forno e Banho", u: "Visual", tipo: "bin", img: "LINK_AQUI.jpg" }, 
+            { sec: "Checagem Visual (Peça)" },
+            { t: "Nome do Modelo", u: '"K2GF"', tipo: "bin", img: "https://github.com/guxstazzin/honda-inspecao/blob/main/k2gf.png?raw=true" },
+            { t: "Guias de Fundição", u: "Sem deformações", tipo: "bin", img: "https://github.com/guxstazzin/honda-inspecao/blob/main/guia%20fundi%C3%A7%C3%A3o.png?raw=true" }, 
+            { t: "Pré-Furo do Prisioneiro", u: "Sem deformações", tipo: "bin", img: "https://github.com/guxstazzin/honda-inspecao/blob/main/prisioneiro.png?raw=true" }, 
+            { t: "Referência de Usinagem", u: "Sem falhas/aderências", tipo: "bin", img: "https://github.com/guxstazzin/honda-inspecao/blob/main/guia%20de%20usinagem.png?raw=true" }, 
+            { t: "Aloj. Guias e Sedes de Válvula", u: "Sem rebarbas", tipo: "bin", img: "https://github.com/guxstazzin/honda-inspecao/blob/main/Prancheta%201.png?raw=true" }, 
+            { t: "Canais de Admissão/Escape", u: "Sem macho quebrado", tipo: "bin", img: "https://github.com/guxstazzin/honda-inspecao/blob/main/lado%20in%20e%20lado%20ex.png?raw=true" }, 
+            { t: "Câmara de Combustão", u: "Sem rechupe", tipo: "bin", img: "https://github.com/guxstazzin/honda-inspecao/blob/main/camara.png?raw=true" }, 
+            { t: "Fechamento Molde com Macho", u: "Visual", tipo: "bin", img: "https://github.com/guxstazzin/honda-inspecao/blob/main/fechamento.png?raw=true" }, 
+            { t: "Pontos Fixação Escapamento", u: "Visual", tipo: "bin", img: "https://github.com/guxstazzin/honda-inspecao/blob/main/ponto%20de%20fixa%C3%A7%C3%A3o%20escp.png?raw=true" }, 
+            { t: "Machos de Areia", u: "Sem deformações", tipo: "bin", img: "https://github.com/guxstazzin/honda-inspecao/blob/main/machos.png?raw=true" }, 
+            { t: "Código de Fabricação", u: "Registrar", tipo: "txt", img: "https://github.com/guxstazzin/honda-inspecao/blob/main/codigo.png?raw=true" }, 
+            { t: "Pintura do Massalote", u: "Visual", tipo: "bin", img: "https://github.com/guxstazzin/honda-inspecao/blob/main/massalote.png?raw=true" }, 
+            { t: "Logotipo HONDA", u: "Legível", tipo: "bin", img: "https://github.com/guxstazzin/honda-inspecao/blob/main/logotipo.png?raw=true" },
+            { t: "Aspecto Geral", u: "Visual", tipo: "bin", img: "LINK_AQUI.jpg" } 
+        ],
+
+        LPDC_K1SG: [ 
+            { sec: "Parâmetros de Processo - K1SG" }, 
+            { t: "Temperatura do Molde", u: "330-390°C", min: 330, max: 390, img: "https://github.com/guxstazzin/honda-inspecao/blob/main/temp%20molde.png?raw=true" }, 
+            { t: "Temperatura do Banho", u: "685-710°C", min: 685, max: 710, img: "https://github.com/guxstazzin/honda-inspecao/blob/main/temp%20banho.png?raw=true" }, 
+            { t: "Tempo de Abertura", u: "15-20 seg", min: 15, max: 20, img: "https://github.com/guxstazzin/honda-inspecao/blob/main/temp%20de%20abertura.png?raw=true" }, 
+            { t: "Tempo de Pressurização", u: "190-210 seg", min: 190, max: 210, img: "https://github.com/guxstazzin/honda-inspecao/blob/main/temp%20pressur.png?raw=true" }, 
+            { t: "Refrigeração Base Inferior", u: "5 ±1 Kgf/cm²", min: 4, max: 6, img: "https://github.com/guxstazzin/honda-inspecao/blob/main/mangueira%20inferior.png?raw=true" }, 
+            { t: "Refrigeração Base Superior", u: "3 ±1 Kgf/cm²", min: 2, max: 4, img: "https://github.com/guxstazzin/honda-inspecao/blob/main/mangueira%20inferior.png?raw=true" }, 
+            { t: "Mangueiras da Refrigeração", u: "Visual (Sem obstrução)", tipo: "bin", img: "https://github.com/guxstazzin/honda-inspecao/blob/main/mangueira%20superior.png?raw=true" }, 
+            { t: "Gráfico de Injeção", u: "Painel da Máquina", tipo: "bin", img: "https://github.com/guxstazzin/honda-inspecao/blob/main/grafico.png?raw=true" }, 
+            { t: "Programa", u: "Painel (Ex: A-1, B-3)", tipo: "txt", img: "https://github.com/guxstazzin/honda-inspecao/blob/main/programa.png?raw=true" }, 
+            { t: "Teste Tridimensional", u: "Visual / CNC", tipo: "bin", img: "LINK_AQUI.jpg" }, 
+            { t: "Desumidificador", u: "Tela Limpa / Área Verde", tipo: "bin", img: "https://github.com/guxstazzin/honda-inspecao/blob/main/desumidificador.png?raw=true" }, 
             { t: "Checar Forno e Banho", u: "Visual", tipo: "bin", img: "LINK_AQUI.jpg" }, 
             { sec: "Checagem Visual (Peça)" }, 
-            { t: "Guias de Fundição", u: "Sem deformações", tipo: "bin", img: "LINK_AQUI.jpg" }, 
-            { t: "Pré-Furo do Prisioneiro", u: "Sem deformações", tipo: "bin", img: "LINK_AQUI.jpg" }, 
-            { t: "Referência de Usinagem", u: "Sem falhas/aderências", tipo: "bin", img: "LINK_AQUI.jpg" }, 
-            { t: "Aloj. Guias e Sedes de Válvula", u: "Sem rebarbas", tipo: "bin", img: "https://raw.githubusercontent.com/guxstazzin/honda-inspecao/main/alojamento%20dos%20guias.jpeg" },
-            { t: "Canais de Admissão/Escape", u: "Sem macho quebrado", tipo: "bin", img: "LINK_AQUI.jpg" }, 
-            { t: "Câmara de Combustão", u: "Sem rechupe", tipo: "bin", img: "LINK_AQUI.jpg" }, 
-            { t: "Fechamento Molde com Macho", u: "Visual", tipo: "bin", img: "LINK_AQUI.jpg" }, 
-            { t: "Pontos Fixação Escapamento", u: "Visual", tipo: "bin", img: "LINK_AQUI.jpg" }, 
-            { t: "Machos de Areia", u: "Sem deformações", tipo: "bin", img: "LINK_AQUI.jpg" }, 
-            { t: "Código de Fabricação", u: "Registrar", tipo: "txt", img: "LINK_AQUI.jpg" }, 
-            { t: "Pintura do Massalote", u: "Visual", tipo: "bin", img: "LINK_AQUI.jpg" }, 
-            { t: "Logotipo HONDA", u: "Legível", tipo: "bin", img: "LINK_AQUI.jpg" }, 
-            { t: "Aspecto Geral", u: "Visual", tipo: "bin", img: "LINK_AQUI.jpg" }
+            { t: "Nome do Modelo", u: '"K1SG"', tipo: "bin", img: "https://github.com/guxstazzin/honda-inspecao/blob/main/k2gf.png?raw=true" }, 
+            { t: "Guias de Fundição", u: "Sem deformações", tipo: "bin", img: "https://github.com/guxstazzin/honda-inspecao/blob/main/guia%20fundi%C3%A7%C3%A3o.png?raw=true" }, 
+            { t: "Pré-Furo do Prisioneiro", u: "Sem deformações", tipo: "bin", img: "https://github.com/guxstazzin/honda-inspecao/blob/main/prisioneiro.png?raw=true" }, 
+            { t: "Referência de Usinagem", u: "Sem falhas/aderências", tipo: "bin", img: "https://github.com/guxstazzin/honda-inspecao/blob/main/guia%20de%20usinagem.png?raw=true" }, 
+            { t: "Aloj. Guias e Sedes de Válvula", u: "Sem rebarbas", tipo: "bin", img: "https://github.com/guxstazzin/honda-inspecao/blob/main/Prancheta%201.png?raw=true" }, 
+            { t: "Canais de Admissão/Escape", u: "Sem macho quebrado", tipo: "bin", img: "https://github.com/guxstazzin/honda-inspecao/blob/main/lado%20in%20e%20lado%20ex.png?raw=true" }, 
+            { t: "Câmara de Combustão", u: "Sem rechupe", tipo: "bin", img: "https://github.com/guxstazzin/honda-inspecao/blob/main/camara.png?raw=true" }, 
+            { t: "Fechamento Molde com Macho", u: "Visual", tipo: "bin", img: "https://github.com/guxstazzin/honda-inspecao/blob/main/fechamento.png?raw=true" }, 
+            { t: "Pontos Fixação Escapamento", u: "Visual", tipo: "bin", img: "https://github.com/guxstazzin/honda-inspecao/blob/main/ponto%20de%20fixa%C3%A7%C3%A3o%20escp.png?raw=true" }, 
+            { t: "Machos de Areia", u: "Sem deformações", tipo: "bin", img: "https://github.com/guxstazzin/honda-inspecao/blob/main/machos.png?raw=true" }, 
+            { t: "Código de Fabricação", u: "Registrar", tipo: "txt", img: "https://github.com/guxstazzin/honda-inspecao/blob/main/codigo.png?raw=true" }, 
+            { t: "Pintura do Massalote", u: "Visual", tipo: "bin", img: "https://github.com/guxstazzin/honda-inspecao/blob/main/massalote.png?raw=true" }, 
+            { t: "Logotipo HONDA", u: "Legível", tipo: "bin", img: "https://github.com/guxstazzin/honda-inspecao/blob/main/logotipo.png?raw=true" }, 
+            { t: "Aspecto Geral", u: "Visual", tipo: "bin", img: "LINK_AQUI.jpg" } 
         ],
-        // =======================================================================================
-        
-        LPDC_KVK: [ { sec: "Parâmetros KVK (Com Paquímetro)" }, { t: "Temperatura do Molde", u: "330-390°C", min: 330, max: 390 }, { t: "Temperatura do Banho", u: "690-710°C", min: 690, max: 710 }, { t: "Tempo de Abertura", u: "15 seg", min: 14, max: 16 }, { t: "Tempo de Pressurização", u: "230 seg", min: 220, max: 240 }, { t: "Refrigeração Base Inferior", u: "5 ±1 Kgf/cm²", min: 4, max: 6 }, { t: "Refrigeração Base Superior", u: "3 ±1 Kgf/cm²", min: 2, max: 4 }, { t: "Mangueiras e Gráfico", u: "Visual", tipo: "bin" }, { t: "Programa", u: "Ex: D2", tipo: "txt" }, { sec: "Checagem Dimensional e Visual" }, { t: "Passagem Guia e Tensor Corrente", u: "Rebarba Grossa > 0.4mm", tipo: "bin" }, { t: "Aloj. Guias e Sedes Válvula", u: "Isento excesso", tipo: "bin" }, { t: "Canais Admissão/Escape", u: "Isento macho quebrado", tipo: "bin" }, { t: "Espessura Parede Assentamento", u: "Paquímetro (6.0 ± 1mm)", min: 5.0, max: 7.0 }, { t: "Canais Passagem Óleo", u: "Uniforme", tipo: "bin" }, { t: "Canal de Arrefecimento", u: "Sem Obstrução", tipo: "bin" }, { t: "Código de Fabricação", u: "Ex: 1 D T 3", tipo: "txt" }, { t: "Aspecto Geral", u: "Visual", tipo: "bin" } ],
-        MACHEIRA_JACKET_PADRAO: [ { sec: "Parâmetros Macho Jacket (H-TOP)" }, { t: "Temperatura Molde Fixo", u: "240 - 280°C", min: 240, max: 280 }, { t: "Temperatura Molde Móvel", u: "240 - 280°C", min: 240, max: 280 }, { t: "Tempo de Cozimento", u: "25 - 35 Seg", min: 25, max: 35 }, { t: "Tempo de Sopro", u: "2 - 4 Seg", min: 2, max: 4 }, { t: "Pressão do Sopro", u: "0.4 - 0.6 Mpa", min: 0.4, max: 0.6 }, { t: "Pressão do Ar", u: "0.4 - 0.6 Mpa", min: 0.4, max: 0.6 }, { sec: "Qualidade do Macho (Dimensional)" }, { t: "Área de Rebarbação", u: "Isento na junção", tipo: "bin" }, { t: "Coloração da Peça", u: "Marrom e Uniforme", tipo: "bin" }, { t: "Canal do Sopro", u: "Sem excessos", tipo: "bin" }, { t: "Marca Extração na Peça", u: "0.0 - 0.2mm", min: 0.0, max: 0.2 }, { t: "Altura Inserto Região Comando", u: "48.6 - 48.8mm", min: 48.6, max: 48.8 }, { t: "Aspecto Geral", u: "Visual", tipo: "bin" } ],
-        MACHEIRA_JACKET_K68L: [ { sec: "Parâmetros Macho Jacket K68L (H-TOP)" }, { t: "Temperatura Molde Fixo", u: "240 - 280°C", min: 240, max: 280 }, { t: "Temperatura Molde Móvel", u: "240 - 280°C", min: 240, max: 280 }, { t: "Tempo de Cozimento", u: "25 - 35 Seg", min: 25, max: 35 }, { t: "Tempo de Sopro", u: "2 - 4 Seg", min: 2, max: 4 }, { t: "Pressão do Sopro", u: "0.4 - 0.8 Mpa", min: 0.4, max: 0.8 }, { t: "Pressão do Ar", u: "0.4 - 0.8 Mpa", min: 0.4, max: 0.8 }, { sec: "Qualidade do Macho (Dimensional)" }, { t: "Área de Rebarbação", u: "Isento na junção", tipo: "bin" }, { t: "Coloração da Peça", u: "Marrom e Uniforme", tipo: "bin" }, { t: "Canal do Sopro", u: "Sem excessos", tipo: "bin" }, { t: "Marca Extração na Peça", u: "0.0 - 0.2mm", min: 0.0, max: 0.2 }, { t: "Altura Inserto Região Comando", u: "48.6 - 48.8mm", min: 48.6, max: 48.8 }, { t: "Aspecto Geral", u: "Visual", tipo: "bin" } ],
-        MACHEIRA_POTTON_PADRAO: [ { sec: "Parâmetros Macho Potton (V-TOP)" }, { t: "Temperatura Molde Fixo", u: "290 - 330°C", min: 290, max: 330 }, { t: "Temperatura Molde Móvel", u: "290 - 330°C", min: 290, max: 330 }, { t: "Pressão de Operação do Ar", u: "0.4 - 0.6 Mpa", min: 0.4, max: 0.6 }, { t: "Pressão do Sopro", u: "0.2 - 0.4 Mpa", min: 0.2, max: 0.4 }, { t: "Tempo de Sopro", u: "2 - 4 Seg", min: 2, max: 4 }, { t: "Tempo de Cozimento", u: "25 - 35 Seg", min: 25, max: 35 }, { sec: "Qualidade do Macho (Dimensional)" }, { t: "Junção Fixo/Móvel", u: "Isento desencontro/rebarba", tipo: "bin" }, { t: "Coloração da Peça", u: "Marrom e Uniforme", tipo: "bin" }, { t: "Marca de Extração", u: "0.0 - 0.2 mm", min: 0.0, max: 0.2 }, { t: "Armazenagem Macho de Areia", u: "Máx 14 jogos/bandeja", tipo: "bin" }, { t: "Medida Macho Potton IN", u: "27.8 (+0.3/-0.2 mm)", min: 27.6, max: 28.1 }, { t: "Diâmetro Potton IN (1)", u: "25.2 (+0.3/-0.2 mm)", min: 25.0, max: 25.5 }, { t: "Diâmetro Potton IN (2)", u: "25.2 (+0.3/-0.2 mm)", min: 25.0, max: 25.5 }, { t: "Medida Apoio Potton IN (1)", u: "10.2 (+0.3/-0.2 mm)", min: 10.0, max: 10.5 }, { t: "Medida Apoio Potton IN (2)", u: "10.2 (+0.3/-0.2 mm)", min: 10.0, max: 10.5 }, { t: "Medida Apoio Potton IN (3)", u: "8.3 (+0.3/-0.2 mm)", min: 8.1, max: 8.6 }, { t: "Medida Apoio Potton IN (4)", u: "12.3 (+0.3/-0.2 mm)", min: 12.1, max: 12.6 }, { t: "Medida Macho Potton EX", u: "25.8 (+0.3/-0.2 mm)", min: 25.6, max: 26.1 }, { t: "Diâmetro Potton EX (1)", u: "26.2 (+0.3/-0.2 mm)", min: 26.0, max: 26.5 }, { t: "Diâmetro Potton EX (2)", u: "26.2 (+0.3/-0.2 mm)", min: 26.0, max: 26.5 }, { t: "Medida Apoio Potton EX (1)", u: "8.2 (+0.3/-0.2 mm)", min: 8.0, max: 8.5 }, { t: "Medida Apoio Potton EX (2)", u: "8.2 (+0.3/-0.2 mm)", min: 8.0, max: 8.5 }, { t: "Medida Apoio Potton EX (3)", u: "12.2 (+0.3/-0.2 mm)", min: 12.0, max: 12.5 }, { t: "Medida Apoio Potton EX (4)", u: "10.1 (+0.3/-0.2 mm)", min: 9.9, max: 10.4 }, { t: "Aspecto Geral", u: "Visual", tipo: "bin" } ],
-        MACHEIRA_POTTON_K68L: [ { sec: "Parâmetros Macho Potton K68L (V-TOP)" }, { t: "Temperatura Molde Fixo", u: "290 - 330°C", min: 290, max: 330 }, { t: "Temperatura Molde Móvel", u: "290 - 330°C", min: 290, max: 330 }, { t: "Pressão de Operação do Ar", u: "0.4 - 0.6 Mpa", min: 0.4, max: 0.6 }, { t: "Pressão do Sopro", u: "0.2 - 0.4 Mpa", min: 0.2, max: 0.4 }, { t: "Tempo de Sopro", u: "2 - 4 Seg", min: 2, max: 4 }, { t: "Tempo de Cozimento", u: "25 - 35 Seg", min: 25, max: 35 }, { sec: "Qualidade do Macho (Dimensional)" }, { t: "Junção Fixo/Móvel", u: "Isento desencontro/rebarba", tipo: "bin" }, { t: "Coloração da Peça", u: "Marrom e Uniforme", tipo: "bin" }, { t: "Marca de Extração", u: "0.0 - 0.2 mm", min: 0.0, max: 0.2 }, { t: "Armazenagem Macho de Areia", u: "Máx 14 jogos/bandeja", tipo: "bin" }, { t: "Medida Macho Potton IN", u: "26.0 (+0.3/-0.2 mm)", min: 25.8, max: 26.3 }, { t: "Diâmetro Potton IN (1)", u: "25.7 (+0.3/-0.2 mm)", min: 25.5, max: 26.0 }, { t: "Diâmetro Potton IN (2)", u: "25.7 (+0.3/-0.2 mm)", min: 25.5, max: 26.0 }, { t: "Medida Apoio Potton IN (1)", u: "10.2 (+0.3/-0.2 mm)", min: 10.0, max: 10.5 }, { t: "Medida Apoio Potton IN (2)", u: "10.2 (+0.3/-0.2 mm)", min: 10.0, max: 10.5 }, { t: "Medida Apoio Potton IN (3)", u: "8.3 (+0.3/-0.2 mm)", min: 8.1, max: 8.6 }, { t: "Medida Apoio Potton IN (4)", u: "12.2 (+0.3/-0.2 mm)", min: 12.0, max: 12.5 }, { t: "Apoio Reg. Guia Tensor", u: "Isento rebarba", tipo: "bin" }, { t: "Medida Macho Potton EX", u: "23.7 (+0.3/-0.2 mm)", min: 23.5, max: 24.0 }, { t: "Diâmetro Potton EX (1)", u: "26.2 (+0.3/-0.2 mm)", min: 26.0, max: 26.5 }, { t: "Diâmetro Potton EX (2)", u: "26.2 (+0.3/-0.2 mm)", min: 26.0, max: 26.5 }, { t: "Medida Apoio Potton EX (1)", u: "8.2 (+0.3/-0.2 mm)", min: 8.0, max: 8.5 }, { t: "Medida Apoio Potton EX (2)", u: "8.2 (+0.3/-0.2 mm)", min: 8.0, max: 8.5 }, { t: "Medida Apoio Potton EX (3)", u: "12.2 (+0.3/-0.2 mm)", min: 12.0, max: 12.5 }, { t: "Medida Apoio Potton EX (4)", u: "10.2 (+0.3/-0.2 mm)", min: 10.0, max: 10.5 }, { t: "Aspecto Geral", u: "Visual", tipo: "bin" } ]
+
+        LPDC_K68L: [ 
+            { sec: "Parâmetros de Processo - K68L" }, 
+            { t: "Temperatura do Molde", u: "330-390°C", min: 330, max: 390, img: "https://github.com/guxstazzin/honda-inspecao/blob/main/temp%20molde.png?raw=true" }, 
+            { t: "Temperatura do Banho", u: "685-710°C", min: 685, max: 710, img: "https://github.com/guxstazzin/honda-inspecao/blob/main/temp%20banho.png?raw=true" }, 
+            { t: "Tempo de Abertura", u: "15-20 seg", min: 15, max: 20, img: "https://github.com/guxstazzin/honda-inspecao/blob/main/temp%20de%20abertura.png?raw=true" }, 
+            { t: "Tempo de Pressurização", u: "190-210 seg", min: 190, max: 210, img: "https://github.com/guxstazzin/honda-inspecao/blob/main/temp%20pressur.png?raw=true" }, 
+            { t: "Refrigeração Base Inferior", u: "5 ±1 Kgf/cm²", min: 4, max: 6, img: "https://github.com/guxstazzin/honda-inspecao/blob/main/mangueira%20inferior.png?raw=true" }, 
+            { t: "Refrigeração Base Superior", u: "3 ±1 Kgf/cm²", min: 2, max: 4, img: "https://github.com/guxstazzin/honda-inspecao/blob/main/mangueira%20inferior.png?raw=true" }, 
+            { t: "Mangueiras da Refrigeração", u: "Visual (Sem obstrução)", tipo: "bin", img: "https://github.com/guxstazzin/honda-inspecao/blob/main/mangueira%20superior.png?raw=true" }, 
+            { t: "Gráfico de Injeção", u: "Painel da Máquina", tipo: "bin", img: "https://github.com/guxstazzin/honda-inspecao/blob/main/grafico.png?raw=true" }, 
+            { t: "Programa", u: "Painel (Ex: A-1, B-3)", tipo: "txt", img: "https://github.com/guxstazzin/honda-inspecao/blob/main/programa.png?raw=true" }, 
+            { t: "Teste Tridimensional", u: "Visual / CNC", tipo: "bin", img: "LINK_AQUI.jpg" }, 
+            { t: "Desumidificador", u: "Tela Limpa / Área Verde", tipo: "bin", img: "https://github.com/guxstazzin/honda-inspecao/blob/main/desumidificador.png?raw=true" }, 
+            { t: "Checar Forno e Banho", u: "Visual", tipo: "bin", img: "LINK_AQUI.jpg" }, 
+            { sec: "Checagem Visual (Peça)" }, 
+            { t: "Nome do Modelo", u: '"K68L"', tipo: "bin", img: "https://github.com/guxstazzin/honda-inspecao/blob/main/k2gf.png?raw=true" }, 
+            { t: "Guias de Fundição", u: "Sem deformações", tipo: "bin", img: "https://github.com/guxstazzin/honda-inspecao/blob/main/guia%20fundi%C3%A7%C3%A3o.png?raw=true" }, 
+            { t: "Pré-Furo do Prisioneiro", u: "Sem deformações", tipo: "bin", img: "https://github.com/guxstazzin/honda-inspecao/blob/main/prisioneiro.png?raw=true" }, 
+            { t: "Referência de Usinagem", u: "Sem falhas/aderências", tipo: "bin", img: "https://github.com/guxstazzin/honda-inspecao/blob/main/guia%20de%20usinagem.png?raw=true" }, 
+            { t: "Aloj. Guias e Sedes de Válvula", u: "Sem rebarbas", tipo: "bin", img: "https://github.com/guxstazzin/honda-inspecao/blob/main/Prancheta%201.png?raw=true" }, 
+            { t: "Canais de Admissão/Escape", u: "Sem macho quebrado", tipo: "bin", img: "https://github.com/guxstazzin/honda-inspecao/blob/main/lado%20in%20e%20lado%20ex.png?raw=true" }, 
+            { t: "Câmara de Combustão", u: "Sem rechupe", tipo: "bin", img: "https://github.com/guxstazzin/honda-inspecao/blob/main/camara.png?raw=true" }, 
+            { t: "Fechamento Molde com Macho", u: "Visual", tipo: "bin", img: "https://github.com/guxstazzin/honda-inspecao/blob/main/fechamento.png?raw=true" }, 
+            { t: "Pontos Fixação Escapamento", u: "Visual", tipo: "bin", img: "https://github.com/guxstazzin/honda-inspecao/blob/main/ponto%20de%20fixa%C3%A7%C3%A3o%20escp.png?raw=true" }, 
+            { t: "Machos de Areia", u: "Sem deformações", tipo: "bin", img: "https://github.com/guxstazzin/honda-inspecao/blob/main/machos.png?raw=true" }, 
+            { t: "Código de Fabricação", u: "Registrar", tipo: "txt", img: "https://github.com/guxstazzin/honda-inspecao/blob/main/codigo.png?raw=true" }, 
+            { t: "Pintura do Massalote", u: "Visual", tipo: "bin", img: "https://github.com/guxstazzin/honda-inspecao/blob/main/massalote.png?raw=true" }, 
+            { t: "Logotipo HONDA", u: "Legível", tipo: "bin", img: "https://github.com/guxstazzin/honda-inspecao/blob/main/logotipo.png?raw=true" }, 
+            { t: "Aspecto Geral", u: "Visual", tipo: "bin", img: "LINK_AQUI.jpg" } 
+        ],
+
+        LPDC_KVSP: [ 
+            { sec: "Parâmetros de Processo - KVSP (ASTEC)" }, 
+            { t: "Temperatura do Molde", u: "330-390°C", min: 330, max: 390, img: "https://github.com/guxstazzin/honda-inspecao/blob/main/temp%20molde.png?raw=true" }, 
+            { t: "Temperatura do Banho", u: "685-710°C", min: 685, max: 710, img: "https://github.com/guxstazzin/honda-inspecao/blob/main/temp%20banho.png?raw=true" }, 
+            { t: "Tempo de Abertura", u: "15-20 seg", min: 15, max: 20, img: "https://github.com/guxstazzin/honda-inspecao/blob/main/temp%20de%20abertura.png?raw=true" }, 
+            { t: "Tempo de Pressurização", u: "190-210 seg", min: 190, max: 210, img: "https://github.com/guxstazzin/honda-inspecao/blob/main/temp%20pressur.png?raw=true" }, 
+            { t: "Refrigeração Base Inferior", u: "5 ±1 Kgf/cm²", min: 4, max: 6, img: "https://github.com/guxstazzin/honda-inspecao/blob/main/mangueira%20inferior.png?raw=true" }, 
+            { t: "Refrigeração Base Superior", u: "3 ±1 Kgf/cm²", min: 2, max: 4, img: "https://github.com/guxstazzin/honda-inspecao/blob/main/mangueira%20inferior.png?raw=true" }, 
+            { t: "Mangueiras da Refrigeração", u: "Visual (Sem obstrução)", tipo: "bin", img: "https://github.com/guxstazzin/honda-inspecao/blob/main/mangueira%20superior.png?raw=true" }, 
+            { t: "Gráfico de Injeção", u: "Painel da Máquina", tipo: "bin", img: "https://github.com/guxstazzin/honda-inspecao/blob/main/grafico.png?raw=true" }, 
+            { t: "Programa", u: "Painel (Ex: A-1, B-3)", tipo: "txt", img: "https://github.com/guxstazzin/honda-inspecao/blob/main/programa.png?raw=true" }, 
+            { t: "Teste Tridimensional", u: "Visual / CNC", tipo: "bin", img: "LINK_AQUI.jpg" }, 
+            { t: "Desumidificador", u: "Tela Limpa / Área Verde", tipo: "bin", img: "https://github.com/guxstazzin/honda-inspecao/blob/main/desumidificador.png?raw=true" }, 
+            { t: "Checar Forno e Banho", u: "Visual", tipo: "bin", img: "LINK_AQUI.jpg" }, 
+            { sec: "Checagem Visual (Peça)" }, 
+            { t: "Nome do Modelo", u: '"KVSP"', tipo: "bin", img: "https://github.com/guxstazzin/honda-inspecao/blob/main/k2gf.png?raw=true" }, 
+            { t: "Guias de Fundição", u: "Sem deformações", tipo: "bin", img: "https://github.com/guxstazzin/honda-inspecao/blob/main/guia%20fundi%C3%A7%C3%A3o.png?raw=true" }, 
+            { t: "Pré-Furo do Prisioneiro", u: "Sem deformações", tipo: "bin", img: "https://github.com/guxstazzin/honda-inspecao/blob/main/prisioneiro.png?raw=true" }, 
+            { t: "Referência de Usinagem", u: "Sem falhas/aderências", tipo: "bin", img: "https://github.com/guxstazzin/honda-inspecao/blob/main/guia%20de%20usinagem.png?raw=true" }, 
+            { t: "Aloj. Guias e Sedes de Válvula", u: "Sem rebarbas", tipo: "bin", img: "https://github.com/guxstazzin/honda-inspecao/blob/main/Prancheta%201.png?raw=true" }, 
+            { t: "Canais de Admissão/Escape", u: "Sem macho quebrado", tipo: "bin", img: "https://github.com/guxstazzin/honda-inspecao/blob/main/lado%20in%20e%20lado%20ex.png?raw=true" }, 
+            { t: "Câmara de Combustão", u: "Sem rechupe", tipo: "bin", img: "https://github.com/guxstazzin/honda-inspecao/blob/main/camara.png?raw=true" }, 
+            { t: "Fechamento Molde com Macho", u: "Visual", tipo: "bin", img: "https://github.com/guxstazzin/honda-inspecao/blob/main/fechamento.png?raw=true" }, 
+            { t: "Pontos Fixação Escapamento", u: "Visual", tipo: "bin", img: "https://github.com/guxstazzin/honda-inspecao/blob/main/ponto%20de%20fixa%C3%A7%C3%A3o%20escp.png?raw=true" }, 
+            { t: "Machos de Areia", u: "Sem deformações", tipo: "bin", img: "https://github.com/guxstazzin/honda-inspecao/blob/main/machos.png?raw=true" }, 
+            { t: "Código de Fabricação", u: "Registrar", tipo: "txt", img: "https://github.com/guxstazzin/honda-inspecao/blob/main/codigo.png?raw=true" }, 
+            { t: "Pintura do Massalote", u: "Visual", tipo: "bin", img: "https://github.com/guxstazzin/honda-inspecao/blob/main/massalote.png?raw=true" }, 
+            { t: "Logotipo HONDA", u: "Legível", tipo: "bin", img: "https://github.com/guxstazzin/honda-inspecao/blob/main/logotipo.png?raw=true" }, 
+            { t: "Aspecto Geral", u: "Visual", tipo: "bin", img: "LINK_AQUI.jpg" } 
+        ],
+
+        LPDC_KRET: [ 
+            { sec: "Parâmetros de Processo - KRET (ASTEC)" }, 
+            { t: "Temperatura do Molde", u: "330-390°C", min: 330, max: 390, img: "https://github.com/guxstazzin/honda-inspecao/blob/main/temp%20molde.png?raw=true" }, 
+            { t: "Temperatura do Banho", u: "685-710°C", min: 685, max: 710, img: "https://github.com/guxstazzin/honda-inspecao/blob/main/temp%20banho.png?raw=true" }, 
+            { t: "Tempo de Abertura", u: "15-20 seg", min: 15, max: 20, img: "https://github.com/guxstazzin/honda-inspecao/blob/main/temp%20de%20abertura.png?raw=true" }, 
+            { t: "Tempo de Pressurização", u: "190-210 seg", min: 190, max: 210, img: "https://github.com/guxstazzin/honda-inspecao/blob/main/temp%20pressur.png?raw=true" }, 
+            { t: "Refrigeração Base Inferior", u: "5 ±1 Kgf/cm²", min: 4, max: 6, img: "https://github.com/guxstazzin/honda-inspecao/blob/main/mangueira%20inferior.png?raw=true" }, 
+            { t: "Refrigeração Base Superior", u: "3 ±1 Kgf/cm²", min: 2, max: 4, img: "https://github.com/guxstazzin/honda-inspecao/blob/main/mangueira%20inferior.png?raw=true" }, 
+            { t: "Mangueiras da Refrigeração", u: "Visual (Sem obstrução)", tipo: "bin", img: "https://github.com/guxstazzin/honda-inspecao/blob/main/mangueira%20superior.png?raw=true" }, 
+            { t: "Gráfico de Injeção", u: "Painel da Máquina", tipo: "bin", img: "https://github.com/guxstazzin/honda-inspecao/blob/main/grafico.png?raw=true" }, 
+            { t: "Programa", u: "Painel (Ex: A-1, B-3)", tipo: "txt", img: "https://github.com/guxstazzin/honda-inspecao/blob/main/programa.png?raw=true" }, 
+            { t: "Teste Tridimensional", u: "Visual / CNC", tipo: "bin", img: "LINK_AQUI.jpg" }, 
+            { t: "Desumidificador", u: "Tela Limpa / Área Verde", tipo: "bin", img: "https://github.com/guxstazzin/honda-inspecao/blob/main/desumidificador.png?raw=true" }, 
+            { t: "Checar Forno e Banho", u: "Visual", tipo: "bin", img: "LINK_AQUI.jpg" }, 
+            { sec: "Checagem Visual (Peça)" }, 
+            { t: "Nome do Modelo", u: '"KRET"', tipo: "bin", img: "https://github.com/guxstazzin/honda-inspecao/blob/main/k2gf.png?raw=true" }, 
+            { t: "Guias de Fundição", u: "Sem deformações", tipo: "bin", img: "https://github.com/guxstazzin/honda-inspecao/blob/main/guia%20fundi%C3%A7%C3%A3o.png?raw=true" }, 
+            { t: "Pré-Furo do Prisioneiro", u: "Sem deformações", tipo: "bin", img: "https://github.com/guxstazzin/honda-inspecao/blob/main/prisioneiro.png?raw=true" }, 
+            { t: "Referência de Usinagem", u: "Sem falhas/aderências", tipo: "bin", img: "https://github.com/guxstazzin/honda-inspecao/blob/main/guia%20de%20usinagem.png?raw=true" }, 
+            { t: "Aloj. Guias e Sedes de Válvula", u: "Sem rebarbas", tipo: "bin", img: "https://github.com/guxstazzin/honda-inspecao/blob/main/Prancheta%201.png?raw=true" }, 
+            { t: "Canais de Admissão/Escape", u: "Sem macho quebrado", tipo: "bin", img: "https://github.com/guxstazzin/honda-inspecao/blob/main/lado%20in%20e%20lado%20ex.png?raw=true" }, 
+            { t: "Câmara de Combustão", u: "Sem rechupe", tipo: "bin", img: "https://github.com/guxstazzin/honda-inspecao/blob/main/camara.png?raw=true" }, 
+            { t: "Fechamento Molde com Macho", u: "Visual", tipo: "bin", img: "https://github.com/guxstazzin/honda-inspecao/blob/main/fechamento.png?raw=true" }, 
+            { t: "Pontos Fixação Escapamento", u: "Visual", tipo: "bin", img: "https://github.com/guxstazzin/honda-inspecao/blob/main/ponto%20de%20fixa%C3%A7%C3%A3o%20escp.png?raw=true" }, 
+            { t: "Machos de Areia", u: "Sem deformações", tipo: "bin", img: "https://github.com/guxstazzin/honda-inspecao/blob/main/machos.png?raw=true" }, 
+            { t: "Código de Fabricação", u: "Registrar", tipo: "txt", img: "https://github.com/guxstazzin/honda-inspecao/blob/main/codigo.png?raw=true" }, 
+            { t: "Pintura do Massalote", u: "Visual", tipo: "bin", img: "https://github.com/guxstazzin/honda-inspecao/blob/main/massalote.png?raw=true" }, 
+            { t: "Logotipo HONDA", u: "Legível", tipo: "bin", img: "https://github.com/guxstazzin/honda-inspecao/blob/main/logotipo.png?raw=true" }, 
+            { t: "Aspecto Geral", u: "Visual", tipo: "bin", img: "LINK_AQUI.jpg" } 
+        ],
+
+        MACHEIRA_JACKET_K68L: [ 
+            { sec: "Parâmetros Macho Jacket K68L (H-TOP)" }, 
+            { t: "Temperatura Molde Fixo", u: "240 - 280°C", min: 240, max: 280, img: "LINK_AQUI.jpg" }, 
+            { t: "Temperatura Molde Móvel", u: "240 - 280°C", min: 240, max: 280, img: "LINK_AQUI.jpg" }, 
+            { t: "Tempo de Cozimento", u: "25 - 35 Seg", min: 25, max: 35, img: "LINK_AQUI.jpg" }, 
+            { t: "Tempo de Sopro", u: "2 - 4 Seg", min: 2, max: 4, img: "LINK_AQUI.jpg" }, 
+            { t: "Pressão do Sopro", u: "0.4 - 0.8 Mpa", min: 0.4, max: 0.8, img: "LINK_AQUI.jpg" }, 
+            { t: "Pressão do Ar", u: "0.4 - 0.8 Mpa", min: 0.4, max: 0.8, img: "LINK_AQUI.jpg" }, 
+            { sec: "Qualidade do Macho (Dimensional)" }, 
+            { t: "Nome do Modelo", u: '"K68L"', tipo: "bin", img: "LINK_AQUI.jpg" }, 
+            { t: "Área de Rebarbação", u: "Isento na junção", tipo: "bin", img: "LINK_AQUI.jpg" }, 
+            { t: "Coloração da Peça", u: "Marrom e Uniforme", tipo: "bin", img: "LINK_AQUI.jpg" }, 
+            { t: "Canal do Sopro", u: "Sem excessos", tipo: "bin", img: "LINK_AQUI.jpg" }, 
+            { t: "Marca Extração na Peça", u: "0.0 - 0.2mm", min: 0.0, max: 0.2, img: "LINK_AQUI.jpg" }, 
+            { t: "Altura Inserto Região Comando", u: "48.6 - 48.8mm", min: 48.6, max: 48.8, img: "LINK_AQUI.jpg" }, 
+            { t: "Aspecto Geral", u: "Visual", tipo: "bin", img: "LINK_AQUI.jpg" } 
+        ],
+        MACHEIRA_POTTON_K68L: [ 
+            { sec: "Parâmetros Macho Potton K68L (V-TOP)" }, 
+            { t: "Temperatura Molde Fixo", u: "290 - 330°C", min: 290, max: 330, img: "LINK_AQUI.jpg" }, 
+            { t: "Temperatura Molde Móvel", u: "290 - 330°C", min: 290, max: 330, img: "LINK_AQUI.jpg" }, 
+            { t: "Pressão de Operação do Ar", u: "0.4 - 0.6 Mpa", min: 0.4, max: 0.6, img: "LINK_AQUI.jpg" }, 
+            { t: "Pressão do Sopro", u: "0.2 - 0.4 Mpa", min: 0.2, max: 0.4, img: "LINK_AQUI.jpg" }, 
+            { t: "Tempo de Sopro", u: "2 - 4 Seg", min: 2, max: 4, img: "LINK_AQUI.jpg" }, 
+            { t: "Tempo de Cozimento", u: "25 - 35 Seg", min: 25, max: 35, img: "LINK_AQUI.jpg" }, 
+            { sec: "Qualidade do Macho (Dimensional)" }, 
+            { t: "Nome do Modelo", u: '"K68L"', tipo: "bin", img: "LINK_AQUI.jpg" }, 
+            { t: "Junção Fixo/Móvel", u: "Isento desencontro/rebarba", tipo: "bin", img: "LINK_AQUI.jpg" }, 
+            { t: "Coloração da Peça", u: "Marrom e Uniforme", tipo: "bin", img: "LINK_AQUI.jpg" }, 
+            { t: "Marca de Extração", u: "0.0 - 0.2 mm", min: 0.0, max: 0.2, img: "LINK_AQUI.jpg" }, 
+            { t: "Armazenagem Macho de Areia", u: "Máx 14 jogos/bandeja", tipo: "bin", img: "LINK_AQUI.jpg" }, 
+            { t: "Medida Macho Potton IN", u: "26.0 (+0.3/-0.2 mm)", min: 25.8, max: 26.3, img: "LINK_AQUI.jpg" }, 
+            { t: "Diâmetro Potton IN (1)", u: "25.7 (+0.3/-0.2 mm)", min: 25.5, max: 26.0, img: "LINK_AQUI.jpg" }, 
+            { t: "Diâmetro Potton IN (2)", u: "25.7 (+0.3/-0.2 mm)", min: 25.5, max: 26.0, img: "LINK_AQUI.jpg" }, 
+            { t: "Medida Apoio Potton IN (1)", u: "10.2 (+0.3/-0.2 mm)", min: 10.0, max: 10.5, img: "LINK_AQUI.jpg" }, 
+            { t: "Medida Apoio Potton IN (2)", u: "10.2 (+0.3/-0.2 mm)", min: 10.0, max: 10.5, img: "LINK_AQUI.jpg" }, 
+            { t: "Medida Apoio Potton IN (3)", u: "8.3 (+0.3/-0.2 mm)", min: 8.1, max: 8.6, img: "LINK_AQUI.jpg" }, 
+            { t: "Medida Apoio Potton IN (4)", u: "12.2 (+0.3/-0.2 mm)", min: 12.0, max: 12.5, img: "LINK_AQUI.jpg" }, 
+            { t: "Apoio Reg. Guia Tensor", u: "Isento rebarba", tipo: "bin", img: "LINK_AQUI.jpg" }, 
+            { t: "Medida Macho Potton EX", u: "23.7 (+0.3/-0.2 mm)", min: 23.5, max: 24.0, img: "LINK_AQUI.jpg" }, 
+            { t: "Diâmetro Potton EX (1)", u: "26.2 (+0.3/-0.2 mm)", min: 26.0, max: 26.5, img: "LINK_AQUI.jpg" }, 
+            { t: "Diâmetro Potton EX (2)", u: "26.2 (+0.3/-0.2 mm)", min: 26.0, max: 26.5, img: "LINK_AQUI.jpg" }, 
+            { t: "Medida Apoio Potton EX (1)", u: "8.2 (+0.3/-0.2 mm)", min: 8.0, max: 8.5, img: "LINK_AQUI.jpg" }, 
+            { t: "Medida Apoio Potton EX (2)", u: "8.2 (+0.3/-0.2 mm)", min: 8.0, max: 8.5, img: "LINK_AQUI.jpg" }, 
+            { t: "Medida Apoio Potton EX (3)", u: "12.2 (+0.3/-0.2 mm)", min: 12.0, max: 12.5, img: "LINK_AQUI.jpg" }, 
+            { t: "Medida Apoio Potton EX (4)", u: "10.2 (+0.3/-0.2 mm)", min: 10.0, max: 10.5, img: "LINK_AQUI.jpg" }, 
+            { t: "Aspecto Geral", u: "Visual", tipo: "bin", img: "LINK_AQUI.jpg" } 
+        ]
     };
 
     let templateAtivo = []; let res = {};
 
     function atualizarTemplate() {
         const inj = document.getElementById('inj').value; const mod = document.getElementById('mod').value; const corpo = document.getElementById('lista-corpo');
+        
+        // 🔥 CÉREBRO ATUALIZADO PARA RECONHECER TODOS OS MODELOS NOVOS!
         if (inj.includes('HTOP')) templateAtivo = (mod === 'K68L') ? TEMPLATES.MACHEIRA_JACKET_K68L : TEMPLATES.MACHEIRA_JACKET_PADRAO;
         else if (inj.includes('VTOP')) templateAtivo = (mod === 'K68L') ? TEMPLATES.MACHEIRA_POTTON_K68L : TEMPLATES.MACHEIRA_POTTON_PADRAO;
         else if (mod === 'KVK') templateAtivo = TEMPLATES.LPDC_KVK;
-        else if (mod === 'K2GF') templateAtivo = TEMPLATES.LPDC_K2GF; // 🔥 AVISA QUE O K2GF TEM FICHA PRÓPRIA AGORA!
+        else if (mod === 'K2GF') templateAtivo = TEMPLATES.LPDC_K2GF;
+        else if (mod === 'K1SG') templateAtivo = TEMPLATES.LPDC_K1SG;
+        else if (mod === 'K68L') templateAtivo = TEMPLATES.LPDC_K68L;
+        else if (mod === 'KVSP') templateAtivo = TEMPLATES.LPDC_KVSP;
+        else if (mod === 'KRET') templateAtivo = TEMPLATES.LPDC_KRET;
         else templateAtivo = TEMPLATES.LPDC_PADRAO;
         
         corpo.innerHTML = ""; res = {}; let c = 0;
@@ -410,7 +580,6 @@
                 <div class="item" id="card-${c}">
                     <div class="item-header">
                         <div style="flex:1;">
-                            <!-- 🔥 A MÁGICA: PASSA O LINK DA FOTO PARA O MODAL -->
                             <div class="item-texto" onclick="abrirFotoItem('${it.t}', '${it.img}')">
                                 ${c+1}. ${it.t}
                                 <span style="font-size:16px;">📷</span>
