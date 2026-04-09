@@ -85,7 +85,7 @@
         .btn-pendente { background: linear-gradient(135deg, var(--danger), var(--danger-dark)); }
         
         .bloco-topo { display: flex; justify-content: space-between; align-items: stretch; margin: 20px; gap: 20px; flex-wrap: wrap; }
-        .info-ficha { background: #f8fafc; padding: 20px; border-radius: 12px; border: 1px solid #e2e8f0; display: grid; grid-template-columns: 1fr 1fr; gap: 15px; font-size: 15px; box-shadow: inset 0 2px 4px rgba(0,0,0,0.02); flex: 1; min-width: 300px; }
+        .info-ficha { background: #f8fafc; padding: 20px; border-radius: 12px; border: 1px solid #e2e8f0; display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 15px; font-size: 15px; box-shadow: inset 0 2px 4px rgba(0,0,0,0.02); flex: 1; min-width: 300px; }
         .info-ficha b { color: var(--blue-dark); }
         
         .chefia-container { flex: 1; display: flex; background: white; border: 2px solid var(--text-main); border-radius: 8px; overflow: hidden; min-width: 350px; }
@@ -118,10 +118,10 @@
         .btn-acao { width: 100%; padding: 12px; background: linear-gradient(135deg, var(--blue-dark), var(--blue)); color: white; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; transition: 0.2s; }
         .btn-acao:hover { opacity: 0.9; }
 
-        .print-duas-colunas { display: block; }
+        .print-duas-colunas { display: flex; width: 100%; gap: 20px;}
         .print-coluna { flex: 1; }
 
-        @media (max-width: 768px) { .wrapper-quadro { flex-direction: column; } .grid-turnos { grid-template-columns: 1fr; } .info-ficha { grid-template-columns: 1fr; } }
+        @media (max-width: 768px) { .wrapper-quadro { flex-direction: column; } .grid-turnos { grid-template-columns: 1fr; } .info-ficha { grid-template-columns: 1fr; } .print-duas-colunas { flex-direction: column; } }
         
         @media print {
             @page { size: A4 portrait; margin: 1cm; }
@@ -139,7 +139,8 @@
             .modal-header h2 { font-size: 15px !important; margin: 0 !important; font-weight: bold !important; }
             
             .bloco-topo { margin: 15px 0 !important; gap: 15px !important; align-items: stretch !important;}
-            .info-ficha { padding: 10px 15px !important; font-size: 10px !important; grid-template-columns: 1fr 1fr !important; gap: 8px !important; border: 1.5px solid #cbd5e1 !important; border-radius: 8px !important; background: #f8fafc !important; }
+            /* 🔥 Ajuste para as 3 colunas de info no papel */
+            .info-ficha { padding: 10px 15px !important; font-size: 10px !important; grid-template-columns: 1fr 1fr 1fr !important; gap: 8px !important; border: 1.5px solid #cbd5e1 !important; border-radius: 8px !important; background: #f8fafc !important; }
             
             .chefia-container { min-width: auto !important; border: 1.5px solid #cbd5e1 !important; border-radius: 8px !important; background: white !important; }
             .chefia-tit { font-size: 8px !important; padding: 5px !important; height: auto !important; background: #e2e8f0 !important; border-bottom: 1.5px solid #cbd5e1 !important; color: var(--blue-dark) !important; font-weight: bold !important; }
@@ -306,15 +307,11 @@
 
 <script>
     // =====================================================================
-    // ⚠️ ATENÇÃO FALCÃO: COLOQUE AQUI O SEU LINK DO RENDER! ⚠️
-    // =====================================================================
     const API_URL = "https://gestao-a-vista-r9uv.onrender.com"; 
-    // Exemplo: "https://honda-app-backend.onrender.com"
     // =====================================================================
 
     const headers = { "ngrok-skip-browser-warning": "69420", 'Cache-Control': 'no-cache', 'Content-Type': 'application/json' };
     
-    // Agora o sistema sabe onde procurar o motor!
     function getUrlLimpa(url) { return API_URL + url + '?nocache=' + new Date().getTime(); }
 
     const maqLpdcLista = [4, 5, 6, 7, 9, 11, 12, 13, 14, 15, 16]; 
@@ -595,11 +592,15 @@
         const b_ana = renderAssinaturaCaixa(f.analista, 'analista', 'Analista', chaveFicha, f.mes);
         const b_cq = renderAssinaturaCaixa(f.chefe_cq, 'chefe_cq', 'Chefe C.Q.', chaveFicha, f.mes);
 
+        // 🔥 O CABEÇALHO AGORA MOSTRA A MATRIZ E ESTÁ EM 3 COLUNAS
         document.getElementById('bloco-topo-ficha').innerHTML = `
             <div class="info-ficha">
-                <div><b>Modelo:</b> ${f.modelo}</div><div><b>Máquina:</b> ${f.injetora.includes('TOP') ? f.injetora.replace('HTOP', 'H-TOP ').replace('VTOP', 'V-TOP ') : 'INJ ' + f.injetora.replace('HPDC','')}</div>
-                <div><b>Data:</b> ${f.dia}/${f.mes}/2026</div><div><b>Horário:</b> ${horarioSalvo}</div>
-                <div><b>Turno:</b> ${f.turno}º Turno</div><div><b>Inspeção:</b> ${f.inspecao}ª do Turno</div>
+                <div><b>Modelo:</b> ${f.modelo}</div>
+                <div><b>Matriz/Cav:</b> <span style="color:#ef4444; font-weight:900;">${f.matriz || '---'}</span></div>
+                <div><b>Máquina:</b> ${f.injetora.includes('TOP') ? f.injetora.replace('HTOP', 'H-TOP ').replace('VTOP', 'V-TOP ') : 'INJ ' + f.injetora.replace('HPDC','')}</div>
+                <div><b>Data:</b> ${f.dia}/${f.mes}/2026</div>
+                <div><b>Horário:</b> ${horarioSalvo}</div>
+                <div><b>Inspeção:</b> ${f.inspecao}ª do ${f.turno}º Turno</div>
             </div>
             <div class="chefia-container">
                 <div class="chefia-box"><div class="chefia-tit">INSPETOR</div><div class="chefia-val" style="padding:0;">${b_insp}</div></div>
@@ -620,10 +621,39 @@
             const nomeExibicao = dado.nome || `Parâmetro ${parseInt(key)+1}`; 
             
             let controleHtml = ""; let boxNcHtml = "";
-            if (dado.valor !== undefined && dado.valor !== null) {
-                const cor = (dado.status === "C") ? "v-ok" : "v-nc";
-                controleHtml = `<div class="valor-lido ${cor}">${dado.valor}</div>`;
-            } else { controleHtml = `<div class="botoes-visual-wrapper"><div class="btn-v ${dado.status=='C'?'v-ok':''}">C</div><div class="btn-v ${dado.status=='NC'?'v-nc':''}">NC</div></div>`; }
+            
+            // 🔥 LEITOR BIMODAL (Lê tanto ficha com ESQ/DIR quanto as antigas)
+            if (dado.lados) {
+                // É Ficha NOVA (Tem Lado Esquerdo e Lado Direito)
+                const renderLado = (ladoInfo, label) => {
+                    const cor = ladoInfo.status === 'C' ? 'v-ok' : (ladoInfo.status === 'NC' ? 'v-nc' : '');
+                    return `
+                    <div style="display:flex; flex-direction:column; align-items:center;">
+                        <span style="font-size:9px; color:#64748b; font-weight:900; letter-spacing:0.5px; margin-bottom:2px;">${label}</span>
+                        <div class="valor-lido ${cor}" style="padding: 4px 10px; min-width: 40px;">${ladoInfo.valor}</div>
+                    </div>`;
+                };
+                controleHtml = `
+                <div style="display:flex; gap: 15px; align-items: center; justify-content: center;">
+                    ${renderLado(dado.lados.esq, 'ESQ')}
+                    ${renderLado(dado.lados.dir, 'DIR')}
+                </div>`;
+            } 
+            else {
+                // É Ficha ANTIGA (Só tem um valor)
+                if (dado.valor !== undefined && dado.valor !== null && !String(dado.valor).includes('Esq:')) {
+                    const cor = (dado.status === "C") ? "v-ok" : "v-nc";
+                    controleHtml = `<div class="valor-lido ${cor}">${dado.valor}</div>`;
+                } else if (String(dado.valor).includes('Esq:')) {
+                    // Fallback de segurança
+                    const cor = (dado.status === "C") ? "v-ok" : "v-nc";
+                    controleHtml = `<div class="valor-lido ${cor}" style="font-size: 11px;">${dado.valor}</div>`;
+                } else { 
+                    controleHtml = `<div class="botoes-visual-wrapper"><div class="btn-v ${dado.status=='C'?'v-ok':''}">C</div><div class="btn-v ${dado.status=='NC'?'v-nc':''}">NC</div></div>`; 
+                }
+            }
+
+            // Exibição do Defeito
             if (dado.status === "NC") { boxNcHtml = `<div class="box-nc"><div class="box-nc-desc"><b>❌ PROBLEMA:</b> ${dado.descricao}</div><div class="box-nc-trat"><b>✅ SOLUÇÃO:</b> ${dado.tratativa}</div></div>`; }
             
             const html = `<div class="item-view-container"><div class="item-main"><span class="texto-item"><b>${index+1}.</b> ${nomeExibicao}</span><div class="modal-controle-container">${controleHtml}</div></div>${boxNcHtml}</div>`;
