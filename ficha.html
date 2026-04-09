@@ -44,12 +44,11 @@
         .item-texto:hover { color: var(--blue); }
         .item-unidade { display: block; font-size: 11px; color: #94a3b8; font-weight: 500; margin-top: 4px; }
         
-        .input-valor { text-align: center; font-weight: 800; margin-bottom: 0 !important; background: #fff !important; font-size: 15px !important; padding: 10px !important;}
+        .input-valor { text-align: center; font-weight: 800; margin-bottom: 0 !important; background: #fff !important; font-size: 15px !important; padding: 10px !important; border: 2px solid #e2e8f0;}
         .fora-tolerancia { border-color: var(--nc) !important; background: #fef2f2 !important; color: var(--nc); }
         .dentro-tolerancia { border-color: var(--ok) !important; background: #ecfdf5 !important; color: var(--ok); }
         
-        .botoes { display: flex; gap: 6px; }
-        .btn-status { border: 2px solid #e2e8f0; border-radius: 8px; font-weight: 800; background: #f8fafc; cursor: pointer; color: #94a3b8; transition: all 0.2s; font-family: 'Inter', sans-serif; font-size: 13px; }
+        .btn-status { border: 2px solid #e2e8f0; font-weight: 800; background: #f8fafc; cursor: pointer; color: #94a3b8; transition: all 0.2s; font-family: 'Inter', sans-serif; font-size: 13px; }
         .btn-status:active { transform: scale(0.95); }
         .active-c { background: linear-gradient(135deg, var(--ok), #059669) !important; color: white !important; border-color: transparent !important; box-shadow: 0 4px 10px rgba(16,185,129,0.3); }
         .active-nc { background: linear-gradient(135deg, var(--nc), #dc2626) !important; color: white !important; border-color: transparent !important; box-shadow: 0 4px 10px rgba(239,68,68,0.3); }
@@ -522,31 +521,37 @@
             
             let ctrl = "";
             
-            // 🔥 MÁGICA DOS 2 LADOS PARA NÚMEROS
+            // 🔥 MÁGICA DOS 2 LADOS PARA NÚMEROS (ESQ E DIR LADO A LADO)
             if (it.min !== undefined) {
                 ctrl = `
-                <div style="display: flex; gap: 4px;">
-                    <input type="number" class="input-valor" placeholder="Esq" oninput="validarDuplo(${c}, 'esq', this, ${it.min}, ${it.max})" style="width: 65px !important; font-size: 13px !important; padding: 10px 5px !important;">
-                    <input type="number" class="input-valor" placeholder="Dir" oninput="validarDuplo(${c}, 'dir', this, ${it.min}, ${it.max})" style="width: 65px !important; font-size: 13px !important; padding: 10px 5px !important;">
+                <div style="display: flex; gap: 10px; justify-content: flex-end;">
+                    <div style="display: flex; flex-direction: column; align-items: center; gap: 5px;">
+                        <span style="font-size:10px; color:#64748b; font-weight:900; letter-spacing: 0.5px;">ESQ</span>
+                        <input type="number" class="input-valor" placeholder="..." oninput="validarDuplo(${c}, 'esq', this, ${it.min}, ${it.max})" style="width: 55px !important; height: 38px !important; font-size: 13px !important; padding: 5px !important; border-radius: 8px;">
+                    </div>
+                    <div style="display: flex; flex-direction: column; align-items: center; gap: 5px;">
+                        <span style="font-size:10px; color:#64748b; font-weight:900; letter-spacing: 0.5px;">DIR</span>
+                        <input type="number" class="input-valor" placeholder="..." oninput="validarDuplo(${c}, 'dir', this, ${it.min}, ${it.max})" style="width: 55px !important; height: 38px !important; font-size: 13px !important; padding: 5px !important; border-radius: 8px;">
+                    </div>
                 </div>`;
             } 
             // TEXTO ÚNICO (Para Código de Fabricação, etc)
             else if (it.tipo === "txt") {
-                ctrl = `<input type="text" class="input-valor" placeholder="..." style="width: 100px !important;" oninput="res[${c}].valor=this.value; res[${c}].status='C'; verificarAutoNC(${c});">`;
+                ctrl = `<input type="text" class="input-valor" placeholder="..." style="width: 100px !important; border-radius: 8px;" oninput="res[${c}].valor=this.value; res[${c}].status='C'; verificarAutoNC(${c});">`;
             } 
-            // 🔥 MÁGICA DOS 2 LADOS PARA C/NC (INSPEÇÃO VISUAL E BINÁRIA)
+            // 🔥 MÁGICA DOS 2 LADOS PARA C/NC (ESQ E DIR LADO A LADO)
             else {
                 ctrl = `
-                <div style="display: flex; flex-direction: column; gap: 6px;">
-                    <div class="botoes" style="justify-content: flex-end;">
-                        <span style="font-size:11px; color:#64748b; font-weight:800; align-self:center; margin-right:4px;">ESQ</span>
-                        <button class="btn-status" id="c-esq-${c}" onclick="setBinDuplo(${c}, 'esq', 'C')" style="height: 38px; width: 42px; padding:0;">C</button>
-                        <button class="btn-status" id="nc-esq-${c}" onclick="setBinDuplo(${c}, 'esq', 'NC')" style="height: 38px; width: 42px; padding:0;">NC</button>
+                <div style="display: flex; gap: 12px; justify-content: flex-end;">
+                    <div style="display: flex; flex-direction: column; align-items: center; gap: 5px;">
+                        <span style="font-size:10px; color:#64748b; font-weight:900; letter-spacing: 0.5px;">ESQ</span>
+                        <button class="btn-status" id="c-esq-${c}" onclick="setBinDuplo(${c}, 'esq', 'C')" style="height: 34px; width: 42px; padding:0; border-radius:6px;">C</button>
+                        <button class="btn-status" id="nc-esq-${c}" onclick="setBinDuplo(${c}, 'esq', 'NC')" style="height: 34px; width: 42px; padding:0; border-radius:6px;">NC</button>
                     </div>
-                    <div class="botoes" style="justify-content: flex-end;">
-                        <span style="font-size:11px; color:#64748b; font-weight:800; align-self:center; margin-right:4px;">DIR</span>
-                        <button class="btn-status" id="c-dir-${c}" onclick="setBinDuplo(${c}, 'dir', 'C')" style="height: 38px; width: 42px; padding:0;">C</button>
-                        <button class="btn-status" id="nc-dir-${c}" onclick="setBinDuplo(${c}, 'dir', 'NC')" style="height: 38px; width: 42px; padding:0;">NC</button>
+                    <div style="display: flex; flex-direction: column; align-items: center; gap: 5px;">
+                        <span style="font-size:10px; color:#64748b; font-weight:900; letter-spacing: 0.5px;">DIR</span>
+                        <button class="btn-status" id="c-dir-${c}" onclick="setBinDuplo(${c}, 'dir', 'C')" style="height: 34px; width: 42px; padding:0; border-radius:6px;">C</button>
+                        <button class="btn-status" id="nc-dir-${c}" onclick="setBinDuplo(${c}, 'dir', 'NC')" style="height: 34px; width: 42px; padding:0; border-radius:6px;">NC</button>
                     </div>
                 </div>`;
             }
@@ -634,7 +639,7 @@
         verificarAutoNC(id);
     }
 
-    // 🔥 INTELIGÊNCIA ARTIFICIAL ATUALIZADA PARA BOTÕES DUPLOS
+    // 🔥 INTELIGÊNCIA ARTIFICIAL ATUALIZADA PARA BOTÕES DUPLOS LADO A LADO
     function verificarAutoNC(idModificado) {
         let idAspecto = -1; let temNCVisual = false;
         for(let k in res) {
