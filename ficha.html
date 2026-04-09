@@ -328,8 +328,8 @@
     }
     function fecharFotoItem() { document.getElementById('modalVisualizadorItem').style.display = 'none'; }
 
-    // =======================================================================================
-    // 🔥 BANCO DE FICHAS COM FOTOS E ITEM DO NOME DO MODELO 🔥
+   // =======================================================================================
+    // 🔥 BANCO DE FICHAS COM FOTOS, MODELOS NOVOS E MACHEIRAS RESTAURADAS 🔥
     // =======================================================================================
     const TEMPLATES = {
         LPDC_PADRAO: [ { sec: "Parâmetros de Processo da Injetora" }, { t: "Temperatura do Molde", u: "330-390°C", min: 330, max: 390 }, { t: "Temperatura do Banho", u: "685-710°C", min: 685, max: 710 }, { t: "Tempo de Abertura", u: "15-20 seg", min: 15, max: 20 }, { t: "Tempo de Pressurização", u: "190-210 seg", min: 190, max: 210 }, { t: "Refrigeração Base Inferior", u: "5 ±1 Kgf/cm²", min: 4, max: 6 }, { t: "Refrigeração Base Superior", u: "3 ±1 Kgf/cm²", min: 2, max: 4 }, { t: "Mangueiras da Refrigeração", u: "Visual (Sem obstrução)", tipo: "bin" }, { t: "Gráfico de Injeção", u: "Painel da Máquina", tipo: "bin" }, { t: "Programa", u: "Painel (Ex: A-1, B-3)", tipo: "txt" }, { t: "Teste Tridimensional", u: "Visual / CNC", tipo: "bin" }, { t: "Desumidificador", u: "Tela Limpa / Área Verde", tipo: "bin" }, { t: "Checar Forno e Banho", u: "Visual", tipo: "bin" }, { sec: "Checagem Visual (Peça)" }, { t: "Guias de Fundição", u: "Sem deformações", tipo: "bin" }, { t: "Pré-Furo do Prisioneiro", u: "Sem deformações", tipo: "bin" }, { t: "Referência de Usinagem", u: "Sem falhas/aderências", tipo: "bin" }, { t: "Aloj. Guias e Sedes de Válvula", u: "Sem rebarbas", tipo: "bin" }, { t: "Canais de Admissão/Escape", u: "Sem macho quebrado", tipo: "bin" }, { t: "Câmara de Combustão", u: "Sem rechupe", tipo: "bin" }, { t: "Fechamento Molde com Macho", u: "Visual", tipo: "bin" }, { t: "Pontos Fixação Escapamento", u: "Visual", tipo: "bin" }, { t: "Machos de Areia", u: "Sem deformações", tipo: "bin" }, { t: "Código de Fabricação", u: "Registrar", tipo: "txt" }, { t: "Pintura do Massalote", u: "Visual", tipo: "bin" }, { t: "Logotipo HONDA", u: "Legível", tipo: "bin" }, { t: "Aspecto Geral", u: "Visual", tipo: "bin" } ],
@@ -488,6 +488,104 @@
             { t: "Código de Fabricação", u: "Registrar", tipo: "txt", img: "https://github.com/guxstazzin/honda-inspecao/blob/main/codigo.png?raw=true" }, 
             { t: "Pintura do Massalote", u: "Visual", tipo: "bin", img: "https://github.com/guxstazzin/honda-inspecao/blob/main/massalote.png?raw=true" }, 
             { t: "Logotipo HONDA", u: "Legível", tipo: "bin", img: "https://github.com/guxstazzin/honda-inspecao/blob/main/logotipo.png?raw=true" }, 
+            { t: "Aspecto Geral", u: "Visual", tipo: "bin", img: "LINK_AQUI.jpg" } 
+        ],
+
+        // 🔥 MACHEIRAS RESTAURADAS COM SUCESSO!
+        MACHEIRA_JACKET_PADRAO: [ 
+            { sec: "Parâmetros Macho Jacket (H-TOP)" }, 
+            { t: "Temperatura Molde Fixo", u: "240 - 280°C", min: 240, max: 280, img: "LINK_AQUI.jpg" }, 
+            { t: "Temperatura Molde Móvel", u: "240 - 280°C", min: 240, max: 280, img: "LINK_AQUI.jpg" }, 
+            { t: "Tempo de Cozimento", u: "25 - 35 Seg", min: 25, max: 35, img: "LINK_AQUI.jpg" }, 
+            { t: "Tempo de Sopro", u: "2 - 4 Seg", min: 2, max: 4, img: "LINK_AQUI.jpg" }, 
+            { t: "Pressão do Sopro", u: "0.4 - 0.6 Mpa", min: 0.4, max: 0.6, img: "LINK_AQUI.jpg" }, 
+            { t: "Pressão do Ar", u: "0.4 - 0.6 Mpa", min: 0.4, max: 0.6, img: "LINK_AQUI.jpg" }, 
+            { sec: "Qualidade do Macho (Dimensional)" }, 
+            { t: "Área de Rebarbação", u: "Isento na junção", tipo: "bin", img: "LINK_AQUI.jpg" }, 
+            { t: "Coloração da Peça", u: "Marrom e Uniforme", tipo: "bin", img: "LINK_AQUI.jpg" }, 
+            { t: "Canal do Sopro", u: "Sem excessos", tipo: "bin", img: "LINK_AQUI.jpg" }, 
+            { t: "Marca Extração na Peça", u: "0.0 - 0.2mm", min: 0.0, max: 0.2, img: "LINK_AQUI.jpg" }, 
+            { t: "Altura Inserto Região Comando", u: "48.6 - 48.8mm", min: 48.6, max: 48.8, img: "LINK_AQUI.jpg" }, 
+            { t: "Aspecto Geral", u: "Visual", tipo: "bin", img: "LINK_AQUI.jpg" } 
+        ],
+        
+        MACHEIRA_POTTON_PADRAO: [ 
+            { sec: "Parâmetros Macho Potton (V-TOP)" }, 
+            { t: "Temperatura Molde Fixo", u: "290 - 330°C", min: 290, max: 330, img: "LINK_AQUI.jpg" }, 
+            { t: "Temperatura Molde Móvel", u: "290 - 330°C", min: 290, max: 330, img: "LINK_AQUI.jpg" }, 
+            { t: "Pressão de Operação do Ar", u: "0.4 - 0.6 Mpa", min: 0.4, max: 0.6, img: "LINK_AQUI.jpg" }, 
+            { t: "Pressão do Sopro", u: "0.2 - 0.4 Mpa", min: 0.2, max: 0.4, img: "LINK_AQUI.jpg" }, 
+            { t: "Tempo de Sopro", u: "2 - 4 Seg", min: 2, max: 4, img: "LINK_AQUI.jpg" }, 
+            { t: "Tempo de Cozimento", u: "25 - 35 Seg", min: 25, max: 35, img: "LINK_AQUI.jpg" }, 
+            { sec: "Qualidade do Macho (Dimensional)" }, 
+            { t: "Junção Fixo/Móvel", u: "Isento desencontro/rebarba", tipo: "bin", img: "LINK_AQUI.jpg" }, 
+            { t: "Coloração da Peça", u: "Marrom e Uniforme", tipo: "bin", img: "LINK_AQUI.jpg" }, 
+            { t: "Marca de Extração", u: "0.0 - 0.2 mm", min: 0.0, max: 0.2, img: "LINK_AQUI.jpg" }, 
+            { t: "Armazenagem Macho de Areia", u: "Máx 14 jogos/bandeja", tipo: "bin", img: "LINK_AQUI.jpg" }, 
+            { t: "Medida Macho Potton IN", u: "27.8 (+0.3/-0.2 mm)", min: 27.6, max: 28.1, img: "LINK_AQUI.jpg" }, 
+            { t: "Diâmetro Potton IN (1)", u: "25.2 (+0.3/-0.2 mm)", min: 25.0, max: 25.5, img: "LINK_AQUI.jpg" }, 
+            { t: "Diâmetro Potton IN (2)", u: "25.2 (+0.3/-0.2 mm)", min: 25.0, max: 25.5, img: "LINK_AQUI.jpg" }, 
+            { t: "Medida Apoio Potton IN (1)", u: "10.2 (+0.3/-0.2 mm)", min: 10.0, max: 10.5, img: "LINK_AQUI.jpg" }, 
+            { t: "Medida Apoio Potton IN (2)", u: "10.2 (+0.3/-0.2 mm)", min: 10.0, max: 10.5, img: "LINK_AQUI.jpg" }, 
+            { t: "Medida Apoio Potton IN (3)", u: "8.3 (+0.3/-0.2 mm)", min: 8.1, max: 8.6, img: "LINK_AQUI.jpg" }, 
+            { t: "Medida Apoio Potton IN (4)", u: "12.3 (+0.3/-0.2 mm)", min: 12.1, max: 12.6, img: "LINK_AQUI.jpg" }, 
+            { t: "Medida Macho Potton EX", u: "25.8 (+0.3/-0.2 mm)", min: 25.6, max: 26.1, img: "LINK_AQUI.jpg" }, 
+            { t: "Diâmetro Potton EX (1)", u: "26.2 (+0.3/-0.2 mm)", min: 26.0, max: 26.5, img: "LINK_AQUI.jpg" }, 
+            { t: "Diâmetro Potton EX (2)", u: "26.2 (+0.3/-0.2 mm)", min: 26.0, max: 26.5, img: "LINK_AQUI.jpg" }, 
+            { t: "Medida Apoio Potton EX (1)", u: "8.2 (+0.3/-0.2 mm)", min: 8.0, max: 8.5, img: "LINK_AQUI.jpg" }, 
+            { t: "Medida Apoio Potton EX (2)", u: "8.2 (+0.3/-0.2 mm)", min: 8.0, max: 8.5, img: "LINK_AQUI.jpg" }, 
+            { t: "Medida Apoio Potton EX (3)", u: "12.2 (+0.3/-0.2 mm)", min: 12.0, max: 12.5, img: "LINK_AQUI.jpg" }, 
+            { t: "Medida Apoio Potton EX (4)", u: "10.1 (+0.3/-0.2 mm)", min: 9.9, max: 10.4, img: "LINK_AQUI.jpg" }, 
+            { t: "Aspecto Geral", u: "Visual", tipo: "bin", img: "LINK_AQUI.jpg" } 
+        ],
+
+        MACHEIRA_JACKET_K68L: [ 
+            { sec: "Parâmetros Macho Jacket K68L (H-TOP)" }, 
+            { t: "Temperatura Molde Fixo", u: "240 - 280°C", min: 240, max: 280, img: "LINK_AQUI.jpg" }, 
+            { t: "Temperatura Molde Móvel", u: "240 - 280°C", min: 240, max: 280, img: "LINK_AQUI.jpg" }, 
+            { t: "Tempo de Cozimento", u: "25 - 35 Seg", min: 25, max: 35, img: "LINK_AQUI.jpg" }, 
+            { t: "Tempo de Sopro", u: "2 - 4 Seg", min: 2, max: 4, img: "LINK_AQUI.jpg" }, 
+            { t: "Pressão do Sopro", u: "0.4 - 0.8 Mpa", min: 0.4, max: 0.8, img: "LINK_AQUI.jpg" }, 
+            { t: "Pressão do Ar", u: "0.4 - 0.8 Mpa", min: 0.4, max: 0.8, img: "LINK_AQUI.jpg" }, 
+            { sec: "Qualidade do Macho (Dimensional)" }, 
+            { t: "Nome do Modelo", u: '"K68L"', tipo: "bin", img: "LINK_AQUI.jpg" }, 
+            { t: "Área de Rebarbação", u: "Isento na junção", tipo: "bin", img: "LINK_AQUI.jpg" }, 
+            { t: "Coloração da Peça", u: "Marrom e Uniforme", tipo: "bin", img: "LINK_AQUI.jpg" }, 
+            { t: "Canal do Sopro", u: "Sem excessos", tipo: "bin", img: "LINK_AQUI.jpg" }, 
+            { t: "Marca Extração na Peça", u: "0.0 - 0.2mm", min: 0.0, max: 0.2, img: "LINK_AQUI.jpg" }, 
+            { t: "Altura Inserto Região Comando", u: "48.6 - 48.8mm", min: 48.6, max: 48.8, img: "LINK_AQUI.jpg" }, 
+            { t: "Aspecto Geral", u: "Visual", tipo: "bin", img: "LINK_AQUI.jpg" } 
+        ],
+        
+        MACHEIRA_POTTON_K68L: [ 
+            { sec: "Parâmetros Macho Potton K68L (V-TOP)" }, 
+            { t: "Temperatura Molde Fixo", u: "290 - 330°C", min: 290, max: 330, img: "LINK_AQUI.jpg" }, 
+            { t: "Temperatura Molde Móvel", u: "290 - 330°C", min: 290, max: 330, img: "LINK_AQUI.jpg" }, 
+            { t: "Pressão de Operação do Ar", u: "0.4 - 0.6 Mpa", min: 0.4, max: 0.6, img: "LINK_AQUI.jpg" }, 
+            { t: "Pressão do Sopro", u: "0.2 - 0.4 Mpa", min: 0.2, max: 0.4, img: "LINK_AQUI.jpg" }, 
+            { t: "Tempo de Sopro", u: "2 - 4 Seg", min: 2, max: 4, img: "LINK_AQUI.jpg" }, 
+            { t: "Tempo de Cozimento", u: "25 - 35 Seg", min: 25, max: 35, img: "LINK_AQUI.jpg" }, 
+            { sec: "Qualidade do Macho (Dimensional)" }, 
+            { t: "Nome do Modelo", u: '"K68L"', tipo: "bin", img: "LINK_AQUI.jpg" }, 
+            { t: "Junção Fixo/Móvel", u: "Isento desencontro/rebarba", tipo: "bin", img: "LINK_AQUI.jpg" }, 
+            { t: "Coloração da Peça", u: "Marrom e Uniforme", tipo: "bin", img: "LINK_AQUI.jpg" }, 
+            { t: "Marca de Extração", u: "0.0 - 0.2 mm", min: 0.0, max: 0.2, img: "LINK_AQUI.jpg" }, 
+            { t: "Armazenagem Macho de Areia", u: "Máx 14 jogos/bandeja", tipo: "bin", img: "LINK_AQUI.jpg" }, 
+            { t: "Medida Macho Potton IN", u: "26.0 (+0.3/-0.2 mm)", min: 25.8, max: 26.3, img: "LINK_AQUI.jpg" }, 
+            { t: "Diâmetro Potton IN (1)", u: "25.7 (+0.3/-0.2 mm)", min: 25.5, max: 26.0, img: "LINK_AQUI.jpg" }, 
+            { t: "Diâmetro Potton IN (2)", u: "25.7 (+0.3/-0.2 mm)", min: 25.5, max: 26.0, img: "LINK_AQUI.jpg" }, 
+            { t: "Medida Apoio Potton IN (1)", u: "10.2 (+0.3/-0.2 mm)", min: 10.0, max: 10.5, img: "LINK_AQUI.jpg" }, 
+            { t: "Medida Apoio Potton IN (2)", u: "10.2 (+0.3/-0.2 mm)", min: 10.0, max: 10.5, img: "LINK_AQUI.jpg" }, 
+            { t: "Medida Apoio Potton IN (3)", u: "8.3 (+0.3/-0.2 mm)", min: 8.1, max: 8.6, img: "LINK_AQUI.jpg" }, 
+            { t: "Medida Apoio Potton IN (4)", u: "12.2 (+0.3/-0.2 mm)", min: 12.0, max: 12.5, img: "LINK_AQUI.jpg" }, 
+            { t: "Apoio Reg. Guia Tensor", u: "Isento rebarba", tipo: "bin", img: "LINK_AQUI.jpg" }, 
+            { t: "Medida Macho Potton EX", u: "23.7 (+0.3/-0.2 mm)", min: 23.5, max: 24.0, img: "LINK_AQUI.jpg" }, 
+            { t: "Diâmetro Potton EX (1)", u: "26.2 (+0.3/-0.2 mm)", min: 26.0, max: 26.5, img: "LINK_AQUI.jpg" }, 
+            { t: "Diâmetro Potton EX (2)", u: "26.2 (+0.3/-0.2 mm)", min: 26.0, max: 26.5, img: "LINK_AQUI.jpg" }, 
+            { t: "Medida Apoio Potton EX (1)", u: "8.2 (+0.3/-0.2 mm)", min: 8.0, max: 8.5, img: "LINK_AQUI.jpg" }, 
+            { t: "Medida Apoio Potton EX (2)", u: "8.2 (+0.3/-0.2 mm)", min: 8.0, max: 8.5, img: "LINK_AQUI.jpg" }, 
+            { t: "Medida Apoio Potton EX (3)", u: "12.2 (+0.3/-0.2 mm)", min: 12.0, max: 12.5, img: "LINK_AQUI.jpg" }, 
+            { t: "Medida Apoio Potton EX (4)", u: "10.2 (+0.3/-0.2 mm)", min: 10.0, max: 10.5, img: "LINK_AQUI.jpg" }, 
             { t: "Aspecto Geral", u: "Visual", tipo: "bin", img: "LINK_AQUI.jpg" } 
         ]
     };
