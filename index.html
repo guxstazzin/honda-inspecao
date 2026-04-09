@@ -9,6 +9,13 @@
         :root { --blue: #0056b3; --blue-dark: #003d82; --success: #10b981; --success-dark: #059669; --danger: #ef4444; --danger-dark: #dc2626; --bg: #f3f4f6; --text-main: #1f2937; }
         body { font-family: 'Inter', sans-serif; background: var(--bg); margin: 0; padding-bottom: 50px; text-align: center; color: var(--text-main); -webkit-font-smoothing: antialiased; }
         
+        /* 🔥 CSS DA TELA DE CARREGAMENTO 🔥 */
+        .tela-loading { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 30, 70, 0.95); z-index: 100000; display: none; flex-direction: column; justify-content: center; align-items: center; backdrop-filter: blur(5px); color: white; text-align: center; padding: 20px; box-sizing: border-box; }
+        .spinner { width: 60px; height: 60px; border: 6px solid rgba(255,255,255,0.2); border-top-color: var(--success); border-radius: 50%; animation: spin 1s linear infinite; margin-bottom: 20px; }
+        @keyframes spin { to { transform: rotate(360deg); } }
+        .loading-tit { font-family: 'Montserrat', sans-serif; font-size: 20px; font-weight: 900; letter-spacing: 1px; margin: 0 0 10px 0; }
+        .loading-sub { font-size: 14px; font-weight: 500; color: #cbd5e1; max-width: 350px; line-height: 1.5; }
+
         .header { background: linear-gradient(135deg, var(--blue-dark), var(--blue)); color: white; padding: 35px 20px; box-shadow: 0 10px 25px rgba(0,86,179,0.2); }
         .header h1 { font-family: 'Montserrat', sans-serif; margin: 0; font-size: 2.5rem; letter-spacing: 2px; text-shadow: 2px 2px 4px rgba(0,0,0,0.2); }
         .subtitulo-lpdc { margin: 12px 0 0; font-size: 1.2rem; color: #e2e8f0; font-weight: 500; letter-spacing: 1px; }
@@ -139,7 +146,6 @@
             .modal-header h2 { font-size: 15px !important; margin: 0 !important; font-weight: bold !important; }
             
             .bloco-topo { margin: 15px 0 !important; gap: 15px !important; align-items: stretch !important;}
-            /* 🔥 Ajuste para as 3 colunas de info no papel */
             .info-ficha { padding: 10px 15px !important; font-size: 10px !important; grid-template-columns: 1fr 1fr 1fr !important; gap: 8px !important; border: 1.5px solid #cbd5e1 !important; border-radius: 8px !important; background: #f8fafc !important; }
             
             .chefia-container { min-width: auto !important; border: 1.5px solid #cbd5e1 !important; border-radius: 8px !important; background: white !important; }
@@ -179,6 +185,14 @@
     </style>
 </head>
 <body>
+    
+    <!-- 🔥 TELA DE CARREGAMENTO (AMNÉSIA) 🔥 -->
+    <div id="loader-geral" class="tela-loading">
+        <div class="spinner"></div>
+        <p class="loading-tit">ACORDANDO SERVIDOR...</p>
+        <p class="loading-sub">Buscando os dados da produção na nuvem. Pode levar até 40 segundos se for o primeiro acesso do dia.<br><br>Por favor, aguarde na tela!</p>
+    </div>
+
     <div class="header">
         <h1 id="h1">HONDA</h1>
         <div id="sub" class="subtitulo-lpdc">GESTÃO À VISTA</div>
@@ -322,6 +336,10 @@
     let telaAtual = "HOME"; 
     let turnoDoSistemaVisualizacao = 3;
 
+    // 🔥 FUNÇÕES DO LOADER 🔥
+    function mostrarLoader() { document.getElementById('loader-geral').style.display = 'flex'; }
+    function esconderLoader() { document.getElementById('loader-geral').style.display = 'none'; }
+
     function definirTurnoParaVisualizacao() {
         const agora = new Date();
         const horaAtual = agora.getHours();
@@ -349,7 +367,10 @@
             document.getElementById('col-esq').style.display = "block";
             document.getElementById('tit-col-esq').textContent = "HPDC";
         }
-        definirTurnoParaVisualizacao(); carregarMaquinas();
+        definirTurnoParaVisualizacao(); 
+        
+        // Passa "true" para mostrar o loading no primeiro clique
+        carregarMaquinas(true); 
     }
 
     function voltarTela() {
@@ -379,12 +400,18 @@
         return '#1e3a8a';
     }
 
-    function carregarMaquinas() {
-        document.getElementById('wrapper-quadro').style.display = "flex"; document.getElementById('painel-unico').style.display = "none";
-        document.getElementById('painel-esq').innerHTML = ""; document.getElementById('painel-dir').innerHTML = "";
+    function carregarMaquinas(isInitialLoad = false) {
+        if (isInitialLoad) mostrarLoader();
+
         let mesHoje = new Date().getMonth() + 1; let diaHoje = new Date().getDate();
 
         Promise.all([ fetch(getUrlLimpa('/maquinas'), {headers}).then(r=>r.json()), fetch(getUrlLimpa('/obter-quadro'), {headers}).then(r=>r.json()) ]).then(([maquinas, quadroSalvo]) => {
+            
+            document.getElementById('wrapper-quadro').style.display = "flex"; document.getElementById('painel-unico').style.display = "none";
+            document.getElementById('painel-esq').innerHTML = ""; document.getElementById('painel-dir').innerHTML = "";
+            
+            if (isInitialLoad) esconderLoader();
+
             maquinas.forEach(m => {
                 if (setorAtivo === "LPDC" && m.setor === "HPDC") return;
                 if (setorAtivo === "HPDC" && m.setor !== "HPDC") return;
@@ -427,6 +454,7 @@
                 }).catch(()=> document.getElementById(`insp-nome-${m.id}`).textContent = "---");
             })
         }).catch(err => {
+            if (isInitialLoad) esconderLoader();
             console.error("Erro ao carregar máquinas:", err);
             alert("⚠️ Erro de conexão! O site não conseguiu encontrar o motor no Render. Verifique se o link do Render foi colocado corretamente no código.");
         });
@@ -578,8 +606,17 @@
     }
 
     function buscarEabrirFicha(idM, idMes, dia, turno, insp) {
+        mostrarLoader(); // 🔥 LIGA O CARREGAMENTO AO CLICAR EM "VER FICHA"
         fetch(getUrlLimpa(`/ver-ficha/${idM}/${idMes}/${dia}/${turno}/${insp}`), {headers})
-        .then(r=>r.json()).then(f=>{ if(f.erro || f.detail) { alert("❌ Erro ao buscar a ficha."); } else if (!f.modelo) { alert("⚠️ Ficha corrompida."); } else { abrirModal(f); } });
+        .then(r=>r.json()).then(f=>{ 
+            esconderLoader(); // 🔥 DESLIGA QUANDO RESPONDER
+            if(f.erro || f.detail) { alert("❌ Erro ao buscar a ficha."); } 
+            else if (!f.modelo) { alert("⚠️ Ficha corrompida."); } 
+            else { abrirModal(f); } 
+        }).catch(e => {
+            esconderLoader();
+            alert("❌ Erro ao buscar a ficha.");
+        });
     }
 
     function abrirModal(f) {
@@ -592,7 +629,6 @@
         const b_ana = renderAssinaturaCaixa(f.analista, 'analista', 'Analista', chaveFicha, f.mes);
         const b_cq = renderAssinaturaCaixa(f.chefe_cq, 'chefe_cq', 'Chefe C.Q.', chaveFicha, f.mes);
 
-        // 🔥 O CABEÇALHO AGORA MOSTRA A MATRIZ E ESTÁ EM 3 COLUNAS
         document.getElementById('bloco-topo-ficha').innerHTML = `
             <div class="info-ficha">
                 <div><b>Modelo:</b> ${f.modelo}</div>
@@ -622,9 +658,7 @@
             
             let controleHtml = ""; let boxNcHtml = "";
             
-            // 🔥 LEITOR BIMODAL (Lê tanto ficha com ESQ/DIR quanto as antigas)
             if (dado.lados) {
-                // É Ficha NOVA (Tem Lado Esquerdo e Lado Direito)
                 const renderLado = (ladoInfo, label) => {
                     const cor = ladoInfo.status === 'C' ? 'v-ok' : (ladoInfo.status === 'NC' ? 'v-nc' : '');
                     return `
@@ -640,12 +674,10 @@
                 </div>`;
             } 
             else {
-                // É Ficha ANTIGA (Só tem um valor)
                 if (dado.valor !== undefined && dado.valor !== null && !String(dado.valor).includes('Esq:')) {
                     const cor = (dado.status === "C") ? "v-ok" : "v-nc";
                     controleHtml = `<div class="valor-lido ${cor}">${dado.valor}</div>`;
                 } else if (String(dado.valor).includes('Esq:')) {
-                    // Fallback de segurança
                     const cor = (dado.status === "C") ? "v-ok" : "v-nc";
                     controleHtml = `<div class="valor-lido ${cor}" style="font-size: 11px;">${dado.valor}</div>`;
                 } else { 
@@ -653,7 +685,6 @@
                 }
             }
 
-            // Exibição do Defeito
             if (dado.status === "NC") { boxNcHtml = `<div class="box-nc"><div class="box-nc-desc"><b>❌ PROBLEMA:</b> ${dado.descricao}</div><div class="box-nc-trat"><b>✅ SOLUÇÃO:</b> ${dado.tratativa}</div></div>`; }
             
             const html = `<div class="item-view-container"><div class="item-main"><span class="texto-item"><b>${index+1}.</b> ${nomeExibicao}</span><div class="modal-controle-container">${controleHtml}</div></div>${boxNcHtml}</div>`;
@@ -682,11 +713,12 @@
     }
 
     // =====================================================================
-    // 📡 RADAR DO JARVIS: ATUALIZAÇÃO AUTOMÁTICA DO PAINEL
+    // 📡 RADAR DO JARVIS: ATUALIZAÇÃO AUTOMÁTICA DO PAINEL (A CADA 30s)
     // =====================================================================
     setInterval(() => {
         if (telaAtual === "DASHBOARD") {
-            carregarMaquinas();
+            // Passa "false" para não mostrar a tela preta e não piscar a tela da chefia
+            carregarMaquinas(false);
         }
     }, 30000); 
 
