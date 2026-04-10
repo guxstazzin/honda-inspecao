@@ -8,23 +8,28 @@
     <style>
         :root { --blue: #0056b3; --blue-dark: #003d82; --ok: #10b981; --nc: #ef4444; --bg: #f3f4f6; --text-main: #1f2937; }
         
-        /* 🛡️ BLINDAGEM 1: Impede a seleção e cópia de textos da tela */
+        /* 🛡️ BLINDAGEM JARVIS: Impede a seleção de textos e muda o mouse para 'bloqueio' */
         body { 
             font-family: 'Inter', sans-serif; background: var(--bg); margin: 0; color: var(--text-main); -webkit-font-smoothing: antialiased; 
             -webkit-user-select: none; -moz-user-select: none; -ms-user-select: none; user-select: none;
+            cursor: default;
         }
 
-        /* 🛡️ BLINDAGEM 2: Se tentarem dar Ctrl+P ou imprimir a página pelo menu, sai tudo em branco */
+        /* Bloqueio visual para áreas de texto (faz o mouse mudar para proibido ao tentar selecionar) */
+        .item-texto, .titulo-secao, label { cursor: not-allowed; }
+
+        /* 🛡️ ESCUDO DE VIDRO: A foto fica visível, mas é intocável (não dá pra arrastar nem clicar) */
+        #img-modal-dinamica {
+            pointer-events: none;
+            -webkit-user-drag: none;
+            user-select: none;
+            width: 100%;
+            display: block;
+        }
+
+        /* 🛡️ BLOQUEIO DE IMPRESSÃO: Se tentarem dar Ctrl+P, a página sai em branco */
         @media print {
             body { display: none !important; }
-        }
-
-        /* 🛡️ BLINDAGEM 3: Estilo da Marca D'água que vai ficar sobre as fotos */
-        .watermark {
-            position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%) rotate(-35deg);
-            font-size: 24px; color: rgba(255, 255, 255, 0.45); font-weight: 900;
-            pointer-events: none; white-space: nowrap; z-index: 10; text-transform: uppercase;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.5); width: 100%; text-align: center;
         }
         
         #tela-login { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(135deg, var(--blue-dark), var(--blue)); z-index: 9999; display: flex; justify-content: center; align-items: center; }
@@ -56,9 +61,8 @@
         
         .card { background: white; margin: 20px 15px; padding: 25px 20px; border-radius: 16px; box-shadow: 0 10px 25px rgba(0,0,0,0.05); border: 1px solid #f1f5f9; }
         label { font-size: 12px; font-weight: 700; color: #6b7280; display: block; margin-bottom: 8px; text-transform: uppercase; letter-spacing: 0.5px; }
-        select, input, input { width: 100%; padding: 14px 16px; margin-bottom: 15px; border-radius: 12px; border: 1.5px solid #e2e8f0; font-size: 16px; font-family: 'Inter', sans-serif; background: #f8fafc; color: var(--text-main); box-sizing: border-box; transition: all 0.2s; outline: none; }
+        select, input { width: 100%; padding: 14px 16px; margin-bottom: 15px; border-radius: 12px; border: 1.5px solid #e2e8f0; font-size: 16px; font-family: 'Inter', sans-serif; background: #f8fafc; color: var(--text-main); box-sizing: border-box; transition: all 0.2s; outline: none; }
         select:focus, input:focus { border-color: var(--blue); background: #fff; box-shadow: 0 0 0 4px rgba(0,86,179,0.1); }
-        select:disabled, input:disabled, input { background: #e2e8f0; color: #64748b; cursor: not-allowed; border-color: #cbd5e1; font-weight: bold; }
         
         .titulo-secao { padding: 12px 20px; font-weight: 800; color: var(--blue-dark); border-left: 6px solid var(--blue); margin: 30px 15px 15px 15px; background: #eff6ff; text-transform: uppercase; font-size: 0.9rem; border-radius: 0 8px 8px 0; }
         
@@ -72,26 +76,15 @@
         .fora-tolerancia { border-color: var(--nc) !important; background: #fef2f2 !important; color: var(--nc); }
         .dentro-tolerancia { border-color: var(--ok) !important; background: #ecfdf5 !important; color: var(--ok); }
         
-        .btn-status { border: 2px solid #e2e8f0; font-weight: 800; background: #f8fafc; cursor: pointer; color: #94a3b8; transition: all 0.2s; font-family: 'Inter', sans-serif; font-size: 13px; }
-        .btn-status:active { transform: scale(0.95); }
-        .active-c { background: linear-gradient(135deg, var(--ok), #059669) !important; color: white !important; border-color: transparent !important; box-shadow: 0 4px 10px rgba(16,185,129,0.3); }
-        .active-nc { background: linear-gradient(135deg, var(--nc), #dc2626) !important; color: white !important; border-color: transparent !important; box-shadow: 0 4px 10px rgba(239,68,68,0.3); }
+        .btn-status { border: 2px solid #e2e8f0; font-weight: 800; background: #f8fafc; cursor: pointer; color: #94a3b8; transition: all 0.2s; font-family: 'Inter', sans-serif; font-size: 13px; width: 42px; height: 34px; border-radius: 6px; }
+        .active-c { background: linear-gradient(135deg, var(--ok), #059669) !important; color: white !important; border-color: transparent !important; }
+        .active-nc { background: linear-gradient(135deg, var(--nc), #dc2626) !important; color: white !important; border-color: transparent !important; }
         
         .providencia-box { display: none; margin-top: 15px; padding: 15px; background: #fef2f2; border-radius: 12px; border: 1px solid #fecaca; }
-        .grid-5w { display: grid; grid-template-columns: 1fr; gap: 8px; }
-        .label-nc-5w { font-size: 11px; font-weight: 800; color: #b91c1c; text-transform: uppercase; margin-bottom: 2px; }
         .input-nc { border: 1.5px solid #fca5a5 !important; background: #fff !important; margin-bottom: 5px !important; font-size: 14px !important; padding: 10px !important;}
         
-        .footer { position: fixed; bottom: 0; width: 100%; background: rgba(255,255,255,0.9); backdrop-filter: blur(10px); padding: 15px 0 25px 0; border-top: 1px solid #e2e8f0; text-align: center; box-shadow: 0 -10px 20px rgba(0,0,0,0.05); }
-        .btn-env { background: linear-gradient(135deg, var(--blue-dark), var(--blue)); color: white; border: none; padding: 18px; width: 90%; max-width: 400px; border-radius: 14px; font-weight: 800; font-size: 16px; font-family: 'Montserrat', sans-serif; text-transform: uppercase; letter-spacing: 1px; box-shadow: 0 8px 20px rgba(0,86,179,0.3); transition: 0.2s; cursor: pointer; }
-
-        @media (orientation: landscape) and (max-height: 500px) {
-            #app-conteudo .header { padding: 10px 20px; } #app-conteudo .header h1 { font-size: 1.1rem; } #app-conteudo .bem-vindo-texto { font-size: 10px; margin-top: 2px; }
-            #app-conteudo .header span { top: 10px !important; left: 10px !important; font-size: 20px !important; }
-            #app-conteudo .footer { padding: 10px 0 15px 0; height: auto; } #app-conteudo .btn-env { padding: 12px; font-size: 14px; border-radius: 10px; margin-bottom: 0; }
-            #app-conteudo { padding-bottom: 70px !important; } .card { margin: 10px 15px; padding: 15px 15px; } .card label { margin-bottom: 4px; } .card select, .card input { margin-bottom: 8px; padding: 10px 12px; font-size: 14px; }
-            #app-conteudo .titulo-secao { margin: 15px 15px 8px 15px; padding: 8px 15px; font-size: 0.8rem; } #app-conteudo .item { margin: 8px 15px; padding: 12px; } .item-texto { font-size: 13px; } .item-unidade { font-size: 10px; }
-        }
+        .footer { position: fixed; bottom: 0; width: 100%; background: rgba(255,255,255,0.9); backdrop-filter: blur(10px); padding: 15px 0 25px 0; border-top: 1px solid #e2e8f0; text-align: center; }
+        .btn-env { background: linear-gradient(135deg, var(--blue-dark), var(--blue)); color: white; border: none; padding: 18px; width: 90%; max-width: 400px; border-radius: 14px; font-weight: 800; font-size: 16px; font-family: 'Montserrat', sans-serif; text-transform: uppercase; letter-spacing: 1px; cursor: pointer; }
     </style>
 </head>
 <body>
@@ -99,817 +92,202 @@
     <div id="loader-geral" class="tela-loading">
         <div class="spinner"></div>
         <p class="loading-tit">ACORDANDO SERVIDOR...</p>
-        <p class="loading-sub">Se for o primeiro acesso do dia, o sistema está ligando os motores. Pode levar até 40 segundos.<br><br>Por favor, não feche a tela!</p>
+        <p class="loading-sub">Sincronizando com a base de dados Honda. Pode levar alguns segundos.</p>
     </div>
 
     <div id="tela-login">
         <div class="login-box" id="box-login">
             <h2>Acesso ao Sistema</h2>
-            <input type="text" id="login-mat" class="login-input" placeholder="Matrícula (Ex: SB12345)" oninput="this.value = this.value.toUpperCase()" required>
-            <input type="password" id="login-senha" class="login-input" placeholder="Sua Senha" required>
+            <input type="text" id="login-mat" class="login-input" placeholder="Matrícula (Ex: SB12345)" oninput="this.value = this.value.toUpperCase()">
+            <input type="password" id="login-senha" class="login-input" placeholder="Sua Senha">
             <button class="btn-logar" onclick="fazerLogin()">Entrar na Ficha</button>
             <span class="link-cadastro" onclick="alternarTelas('box-cadastro')">Primeiro acesso? Cadastre-se</span>
         </div>
 
         <div class="login-box" id="box-cadastro" style="display: none;">
             <h2>Novo Inspetor</h2>
-            <input type="text" id="cad-nome" class="login-input" placeholder="Nome Completo" required>
-            <input type="text" id="cad-mat" class="login-input" placeholder="Matrícula (Ex: SB12345)" oninput="this.value = this.value.toUpperCase()" required>
-            <input type="password" id="cad-senha" class="login-input" placeholder="Crie uma Senha" required>
-            
-            <select id="cad-setor" class="login-input" required style="font-weight: bold; color: var(--blue-dark);">
+            <input type="text" id="cad-nome" class="login-input" placeholder="Nome Completo">
+            <input type="text" id="cad-mat" class="login-input" placeholder="Matrícula (Ex: SB12345)" oninput="this.value = this.value.toUpperCase()">
+            <input type="password" id="cad-senha" class="login-input" placeholder="Crie uma Senha">
+            <select id="cad-setor" class="login-input">
                 <option value="" disabled selected>Selecione sua Área...</option>
                 <option value="LPDC">Setor: LPDC</option>
                 <option value="HPDC">Setor: HPDC</option>
             </select>
-
             <button class="btn-logar" onclick="fazerCadastro()" style="background: var(--ok);">Criar Acesso</button>
-            <span class="link-cadastro" onclick="alternarTelas('box-login')" style="color: #64748b;">⬅ Voltar para Login</span>
+            <span class="link-cadastro" onclick="alternarTelas('box-login')" style="color: #64748b;">⬅ Voltar</span>
         </div>
     </div>
 
     <div id="tela-home-inspetor">
-        <div class="header" style="position: relative;">
-            <h1>HONDA</h1>
-            <div class="bem-vindo-texto" id="txt-bemvindo-home"></div>
-        </div>
-        
-        <h2 style="color: var(--blue-dark); font-family: 'Montserrat'; margin-top: 40px; margin-bottom: 30px;">QUAL SETOR VOCÊ VAI INSPECIONAR?</h2>
-        
-        <div class="btn-setor" onclick="entrarNoSetor('LPDC')">
-            <h2>LPDC</h2>
-            <p>Low Press Die Cast</p>
-        </div>
-        <div class="btn-setor" onclick="entrarNoSetor('HPDC')">
-            <h2>HPDC</h2>
-            <p>High Pressure Die Cast</p>
-        </div>
+        <div class="header"><h1>HONDA</h1><div id="txt-bemvindo-home"></div></div>
+        <h2 style="color: var(--blue-dark); font-family: 'Montserrat'; margin-top: 40px;">QUAL SETOR VOCÊ VAI INSPECIONAR?</h2>
+        <div class="btn-setor" onclick="entrarNoSetor('LPDC')"><h2>LPDC</h2><p>Low Press Die Cast</p></div>
+        <div class="btn-setor" onclick="entrarNoSetor('HPDC')"><h2>HPDC</h2><p>High Pressure Die Cast</p></div>
     </div>
 
     <div id="app-conteudo">
         <div class="header">
-            <span style="position: absolute; left: 15px; top: 25px; cursor: pointer; font-size: 24px;" onclick="voltarParaHome()" title="Voltar">⬅️</span>
+            <span style="position: absolute; left: 15px; top: 25px; cursor: pointer; font-size: 24px;" onclick="voltarParaHome()">⬅️</span>
             <h1 id="titulo-ficha-header">Ficha de Inspeção</h1>
-            <div class="bem-vindo-texto" id="txt-bemvindo"></div>
+            <div id="txt-bemvindo"></div>
         </div>
         
         <div class="card">
             <label>Máquina / Setor</label>
             <select id="inj" onchange="atualizarTemplate()"></select>
-
             <label>Modelo da Peça</label>
             <select id="mod" onchange="atualizarTemplate()">
-                <option value="K1HG">K1HG</option>
                 <option value="K2GF">K2GF</option>
                 <option value="K1SG">K1SG</option>
                 <option value="K68L">K68L</option>
                 <option value="KVK">KVK</option>
-                <option value="HRV">HR-V</option>
                 <option value="KVSP">KVSP (ASTEC)</option>
-                <option value="KRET">KRET (ASTEC)</option>
             </select>
-
-            <label style="color: var(--blue-dark);">Matriz / Cavidade *</label>
-            <input type="text" id="matriz" placeholder="Ex: #1, #2..." style="font-weight: bold; color: var(--blue-dark); text-transform: uppercase;">
-
-            <label>Turno / Inspeção</label>
+            <label>Matriz / Cavidade *</label>
+            <input type="text" id="matriz" placeholder="Ex: #1, #2..." style="text-transform: uppercase;">
             <div style="display:flex; gap:12px;">
                 <select id="tur" style="flex:1" disabled><option value="1">1º Turno</option><option value="2">2º Turno</option><option value="3">3º Turno</option></select>
                 <select id="insp" style="flex:1"><option value="1">1ª Inspeção</option><option value="2" disabled>2ª Inspeção 🔒</option></select>
-            </div>
-            
-            <label>Data da Inspeção</label>
-            <div style="display:flex; gap:12px;">
-                <select id="mes" style="flex:2" disabled><option value="1">Janeiro</option><option value="2">Fevereiro</option><option value="3">Março</option><option value="4">Abril</option><option value="5">Maio</option><option value="6">Junho</option><option value="7">Julho</option><option value="8">Agosto</option><option value="9">Setembro</option><option value="10">Outubro</option><option value="11">Novembro</option><option value="12">Dezembro</option></select>
-                <select id="dia" style="flex:1" disabled><script>for(let d=1; d<=31; d++) document.write(`<option value="${d}">${d}</option>`);</script></select>
             </div>
         </div>
         
         <div id="lista-corpo"></div>
 
-        <div class="titulo-secao">Responsáveis pela Produção</div>
-        <div class="card" style="margin-top: 10px;">
-            <label style="color: var(--blue-dark);">Operador do Processo 1 *</label>
+        <div class="card">
+            <label>Operador do Processo 1 *</label>
             <input type="text" id="op1" placeholder="Nome do Operador Principal">
-
-            <label>Operador do Processo 2 (Opcional)</label>
-            <input type="text" id="op2" placeholder="Nome do Segundo Operador">
-
-            <label style="color: var(--blue-dark); margin-top: 15px;">Sua Assinatura Digital *</label>
-            <div id="area-canvas" style="display: none;">
-                <div style="font-size: 11px; color: #64748b; margin-bottom: 5px;">Desenhe sua assinatura abaixo.</div>
-                <canvas id="pad-assinatura" width="300" height="120" style="border: 2px dashed #94a3b8; border-radius: 12px; background: #fff; touch-action: none; width: 100%; cursor: crosshair;"></canvas>
-                <div style="text-align: right; margin-top: 8px;">
-                    <button onclick="limparCanvas()" style="padding: 8px 15px; font-size: 12px; font-weight: bold; border-radius: 8px; border: none; background: #e2e8f0; color: #475569; cursor: pointer;">Limpar</button>
-                </div>
+            <label>Sua Assinatura Digital *</label>
+            <div id="area-canvas">
+                <canvas id="pad-assinatura" width="300" height="120" style="border: 2px dashed #94a3b8; border-radius: 12px; background: #fff; width: 100%;"></canvas>
+                <button onclick="limparCanvas()" style="margin-top:5px; padding: 5px 15px; border-radius: 8px; border: none; background: #e2e8f0;">Limpar</button>
             </div>
-            <div id="area-imagem-salva" style="display: none; text-align: center; padding: 10px; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 12px;">
-                <img id="img-assinatura" style="max-width: 100%; max-height: 80px; mix-blend-mode: multiply;">
-                <div style="font-size: 11px; color: #10b981; font-weight: bold; margin-top: 5px;">✅ Assinatura vinculada</div>
-            </div>
+            <div id="area-imagem-salva" style="display: none;"><img id="img-assinatura" style="max-height: 80px;"></div>
         </div>
 
         <div class="footer"><button id="btn-salvar" class="btn-env" onclick="enviar()">SALVAR INSPEÇÃO</button></div>
     </div>
 
-    <!-- 🔥 MODAL DE FOTO DINÂMICO 🔥 -->
-    <div id="modalVisualizadorItem" style="display: none; position: fixed; z-index: 99999; left: 0; top: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); align-items: center; justify-content: center; backdrop-filter: blur(8px);">
-        <div style="background: white; width: 95%; max-width: 500px; border-radius: 12px; overflow: hidden; box-shadow: 0 10px 40px rgba(0,0,0,0.5);">
-            <div style="background: linear-gradient(135deg, var(--blue-dark), var(--blue)); color: white; padding: 15px 20px; display: flex; justify-content: space-between; align-items: center;">
-                <h3 id="titulo-foto-item" style="margin: 0; font-size: 14px; font-weight: 700; text-transform: uppercase;">Padrão Visual</h3>
-                <span style="cursor:pointer; font-size: 20px; font-weight: bold;" onclick="fecharFotoItem()">X</span>
+    <!-- MODAL DE FOTO SEM MARCA D'ÁGUA -->
+    <div id="modalVisualizadorItem" style="display: none; position: fixed; z-index: 99999; left: 0; top: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.95); align-items: center; justify-content: center; backdrop-filter: blur(8px);">
+        <div style="background: white; width: 95%; max-width: 500px; border-radius: 12px; overflow: hidden;">
+            <div style="background: var(--blue-dark); color: white; padding: 15px; display: flex; justify-content: space-between;">
+                <h3 id="titulo-foto-item" style="margin: 0; font-size: 14px;">PADRÃO VISUAL</h3>
+                <span style="cursor:pointer;" onclick="fecharFotoItem()">FECHAR [X]</span>
             </div>
-            <div style="padding: 15px; text-align: center;">
-                <div style="width: 100%; max-height: 60vh; overflow: hidden; background: #f3f4f6; border: 1px solid #cbd5e1; border-radius: 8px; position: relative;">
-                    <!-- IMAGEM FICA AQUI DENTRO (Protegida pela marca d'água no JS) -->
-                    <img id="img-modal-dinamica" src="" alt="Padrão Honda" style="width: 100%; display: block; user-select: none; pointer-events: none;">
-                </div>
-                <p style="font-size: 12px; color: #ef4444; font-weight: bold; margin-top: 10px;">⚠️ INFORMAÇÃO CONFIDENCIAL - PROIBIDO CÓPIA</p>
-                <button onclick="fecharFotoItem()" style="margin-top:5px; width:100%; padding:12px; border-radius:6px; border:none; background:#e2e8f0; color:#1f2937; font-weight:800; cursor:pointer;">FECHAR</button>
+            <div style="padding: 10px; text-align: center;">
+                <img id="img-modal-dinamica" src="" alt="Padrão Honda">
+                <p style="font-size: 11px; color: #ef4444; font-weight: bold; margin-top: 10px;">⚠️ CONTEÚDO CONFIDENCIAL - PROIBIDO DOWNLOAD</p>
             </div>
         </div>
     </div>
 
 <script>
-    // =====================================================================
-    const API_URL = "https://gestao-a-vista-r9uv.onrender.com"; 
-    // =====================================================================
-
+    const API_URL = "https://gestao-a-vista-r9uv.onrender.com";
     const headersConfig = { 'ngrok-skip-browser-warning': '69420', 'Content-Type': 'application/json' };
     
-    function getUrlLimpa(url) { 
-        let base = API_URL.endsWith('/') ? API_URL.slice(0, -1) : API_URL;
-        return base + url + '?nocache=' + new Date().getTime(); 
-    }
-
-    let nomeInspetorLogado = ""; let matriculaInspetorLogado = ""; let assinaturaBase64 = ""; let turnoDoSistema = 3;
-    let setorAutorizadoDoInspetor = "";
+    let nomeInspetorLogado = ""; let matriculaInspetorLogado = ""; let assinaturaBase64 = ""; let turnoDoSistema = 1;
+    let setorAutorizadoDoInspetor = ""; let res = {};
 
     const canvas = document.getElementById('pad-assinatura'); const ctx = canvas.getContext('2d'); let desenhando = false;
     ctx.lineWidth = 3; ctx.lineCap = 'round'; ctx.strokeStyle = '#003d82';
-    function getPos(e) {
-        const rect = canvas.getBoundingClientRect(); const scaleX = canvas.width / rect.width; const scaleY = canvas.height / rect.height;
-        const clientX = e.touches ? e.touches.clientX : e.clientX; const clientY = e.touches ? e.touches.clientY : e.clientY;
-        return { x: (clientX - rect.left) * scaleX, y: (clientY - rect.top) * scaleY };
-    }
-    canvas.addEventListener('mousedown', (e) => { desenhando = true; ctx.beginPath(); ctx.moveTo(getPos(e).x, getPos(e).y); });
-    canvas.addEventListener('mousemove', (e) => { if(desenhando){ ctx.lineTo(getPos(e).x, getPos(e).y); ctx.stroke(); }});
-    canvas.addEventListener('mouseup', () => desenhando = false); canvas.addEventListener('mouseout', () => desenhando = false);
-    canvas.addEventListener('touchstart', (e) => { e.preventDefault(); desenhando = true; ctx.beginPath(); ctx.moveTo(getPos(e).x, getPos(e).y); }, {passive: false});
-    canvas.addEventListener('touchmove', (e) => { e.preventDefault(); if(desenhando){ ctx.lineTo(getPos(e).x, getPos(e).y); ctx.stroke(); }}, {passive: false});
-    canvas.addEventListener('touchend', () => desenhando = false);
+    
+    canvas.addEventListener('mousedown', (e) => { desenhando = true; ctx.beginPath(); ctx.moveTo(e.offsetX, e.offsetY); });
+    canvas.addEventListener('mousemove', (e) => { if(desenhando){ ctx.lineTo(e.offsetX, e.offsetY); ctx.stroke(); }});
+    canvas.addEventListener('mouseup', () => desenhando = false);
     function limparCanvas() { ctx.clearRect(0, 0, canvas.width, canvas.height); }
 
-    function alternarTelas(idMostrar) { document.getElementById('box-login').style.display = 'none'; document.getElementById('box-cadastro').style.display = 'none'; document.getElementById(idMostrar).style.display = 'block'; }
-    
-    function definirDataETurno() {
-        const dataHoje = new Date(); document.getElementById('mes').value = dataHoje.getMonth() + 1; document.getElementById('dia').value = dataHoje.getDate();
-        const horaAtual = dataHoje.getHours(); if (horaAtual >= 7 && horaAtual < 15) turnoDoSistema = 1; else if (horaAtual >= 15 && horaAtual < 23) turnoDoSistema = 2;
-        document.getElementById('tur').value = turnoDoSistema;
-    }
-
+    function alternarTelas(id) { document.getElementById('box-login').style.display = 'none'; document.getElementById('box-cadastro').style.display = 'none'; document.getElementById(id).style.display = 'block'; }
     function mostrarLoader() { document.getElementById('loader-geral').style.display = 'flex'; }
     function esconderLoader() { document.getElementById('loader-geral').style.display = 'none'; }
 
-    function sucessoLogin(res) {
-        nomeInspetorLogado = res.nome || "INSPETOR"; 
-        matriculaInspetorLogado = res.matricula; 
-        assinaturaBase64 = res.assinatura; 
-        setorAutorizadoDoInspetor = res.setor || "LPDC";
-        
-        document.getElementById('tela-login').style.display = 'none'; document.getElementById('tela-home-inspetor').style.display = 'block';
-        definirDataETurno();
-        document.getElementById('txt-bemvindo-home').textContent = `BEM-VINDO, ${nomeInspetorLogado.toUpperCase()} • INSPETOR DO ${turnoDoSistema}º TURNO`;
-        document.getElementById('txt-bemvindo').textContent = `BEM-VINDO, ${nomeInspetorLogado.toUpperCase()} • INSPETOR DO ${turnoDoSistema}º TURNO`;
-        
-        if(assinaturaBase64 && assinaturaBase64.length > 100) { 
-            document.getElementById('area-canvas').style.display = 'none'; 
-            document.getElementById('area-imagem-salva').style.display = 'block'; 
-            document.getElementById('img-assinatura').src = assinaturaBase64; 
-        } else { 
-            document.getElementById('area-canvas').style.display = 'block'; 
-            document.getElementById('area-imagem-salva').style.display = 'none'; 
-            limparCanvas(); 
-        }
-    }
-
     function fazerLogin() {
-        let mat = document.getElementById('login-mat').value.trim().toUpperCase(); 
-        const senha = document.getElementById('login-senha').value;
-        if(!mat || !senha) return alert("Preencha matrícula e senha!");
-        if(!mat.startsWith('SB')) return alert("⚠️ MATRÍCULA INVÁLIDA: A sua matrícula deve começar com 'SB' (Ex: SB056312).");
-
+        let mat = document.getElementById('login-mat').value.trim().toUpperCase();
+        let senha = document.getElementById('login-senha').value;
+        if(!mat.startsWith('SB')) return alert("Matrícula deve iniciar com SB");
         mostrarLoader();
-        
-        fetch(getUrlLimpa('/login'), { method: 'POST', headers: headersConfig, body: JSON.stringify({matricula: mat, senha: senha}) })
-        .then(async r => { 
+        fetch(`${API_URL}/login`, { method: 'POST', headers: headersConfig, body: JSON.stringify({matricula: mat, senha: senha}) })
+        .then(async r => {
             esconderLoader();
-            const res = await r.json(); 
-            if(r.ok) { res.matricula = mat; sucessoLogin(res); } 
-            else alert("❌ Erro: " + (res.erro || res.detail || JSON.stringify(res))); 
-        }).catch(e => { esconderLoader(); alert("Erro de conexão com o Render. O servidor pode estar offline."); });
+            const resData = await r.json();
+            if(r.ok) { 
+                nomeInspetorLogado = resData.nome; matriculaInspetorLogado = mat; 
+                setorAutorizadoDoInspetor = resData.setor; assinaturaBase64 = resData.assinatura;
+                document.getElementById('tela-login').style.display = 'none';
+                document.getElementById('tela-home-inspetor').style.display = 'block';
+                document.getElementById('txt-bemvindo-home').textContent = `INSPETOR: ${nomeInspetorLogado}`;
+            } else alert(resData.erro);
+        }).catch(() => { esconderLoader(); alert("Erro de conexão."); });
     }
 
-    function fazerCadastro() {
-        const nome = document.getElementById('cad-nome').value; 
-        let mat = document.getElementById('cad-mat').value.trim().toUpperCase(); 
-        const senha = document.getElementById('cad-senha').value; 
-        const setor = document.getElementById('cad-setor').value;
+    function entrarNoSetor(setor) {
+        if(setorAutorizadoDoInspetor !== setor) return alert("Acesso negado para este setor.");
+        document.getElementById('tela-home-inspetor').style.display = 'none';
+        document.getElementById('app-conteudo').style.display = 'block';
+        const sel = document.getElementById('inj'); sel.innerHTML = "";
         
-        if(!nome || !mat || !senha || !setor) return alert("⚠️ Preencha todos os campos e selecione seu Setor!");
-        if(!mat.startsWith('SB')) return alert("⚠️ MATRÍCULA INVÁLIDA: A sua matrícula deve começar com 'SB' (Ex: SB056312).");
-
-        mostrarLoader();
-        
-        fetch(getUrlLimpa('/cadastrar'), { method: 'POST', headers: headersConfig, body: JSON.stringify({nome: nome, matricula: mat, senha: senha, setor: setor}) })
-        .then(async r => { 
-            esconderLoader();
-            const res = await r.json(); 
-            if(r.ok) { alert("✅ Cadastro realizado!"); res.matricula = mat; res.setor = setor; res.nome = nome; res.assinatura = ""; sucessoLogin(res); } 
-            else alert("❌ Erro: " + (res.erro || res.detail || JSON.stringify(res))); 
-        }).catch(e => { esconderLoader(); alert("Erro de conexão com o Render. O servidor pode estar offline."); });
-    }
-
-    // 🔥 FUNÇÃO CORRIGIDA COM OS NÚMEROS DAS MÁQUINAS 🔥
-    function entrarNoSetor(setorClicado) {
-        if(setorAutorizadoDoInspetor !== setorClicado) { alert(`⛔ ACESSO NEGADO!\n\nVocê está cadastrado exclusivamente na área de ${setorAutorizadoDoInspetor}.`); return; }
-        document.getElementById('tela-home-inspetor').style.display = 'none'; document.getElementById('app-conteudo').style.display = 'block'; document.getElementById('titulo-ficha-header').textContent = `Ficha - ${setorClicado}`;
-        const selectInj = document.getElementById('inj'); selectInj.innerHTML = "";
-        
-        if(setorClicado === "LPDC") {
-            let optLpdc = '<optgroup label="LPDC">'; 
-            const lpdcs = new Array(4, 5, 6, 7, 9, 11, 12, 13, 14, 15, 16); 
-            lpdcs.forEach(i => optLpdc += `<option value="${i}">LPDC - MAQ ${i}</option>`); 
-            optLpdc += '</optgroup>';
-            
-            let optMach = '<optgroup label="MACHEIRA (H-TOP / V-TOP)">'; 
-            const machs = new Array('HTOP2','HTOP3','HTOP4','HTOP5','HTOP6','HTOP7','VTOP1','VTOP2','VTOP3'); 
-            machs.forEach(m => optMach += `<option value="${m}">${m.replace('HTOP','H-TOP ').replace('VTOP','V-TOP ')} (Macheira)</option>`); 
-            optMach += '</optgroup>';
-            
-            selectInj.innerHTML = optLpdc + optMach;
+        if(setor === "LPDC") {
+            const lpdcs = [4, 5, 6, 7, 9, 11, 12, 13, 14, 15, 16];
+            lpdcs.forEach(i => sel.innerHTML += `<option value="${i}">LPDC - MAQ ${i}</option>`);
+            const machs = ['HTOP2','HTOP3','HTOP4','HTOP5','HTOP6','HTOP7','VTOP1','VTOP2','VTOP3'];
+            machs.forEach(m => sel.innerHTML += `<option value="${m}">${m} (Macheira)</option>`);
         } else {
-            let optHpdc = '<optgroup label="HPDC">'; 
-            const hpdcs = new Array(2, 7, 8, 9, 12, 13, 15, 16, 17, 18, 19, 20, 21, 22); 
-            hpdcs.forEach(i => optHpdc += `<option value="HPDC${i}">INJ. ${i}</option>`); 
-            optHpdc += '</optgroup>';
-            
-            selectInj.innerHTML = optHpdc;
+            const hpdcs = [2, 7, 8, 9, 12, 13, 15, 16, 17, 18, 19, 20, 21, 22];
+            hpdcs.forEach(i => sel.innerHTML += `<option value="HPDC${i}">INJ. ${i}</option>`);
         }
         atualizarTemplate();
     }
 
-    function voltarParaHome() { document.getElementById('app-conteudo').style.display = 'none'; document.getElementById('tela-home-inspetor').style.display = 'block'; }
-
-    function checarLiberacao() {
-        const inj = document.getElementById('inj').value; const mes = document.getElementById('mes').value; const dia = document.getElementById('dia').value; const tur = document.getElementById('tur').value;
-        const inspSelect = document.getElementById('insp'); const btnSalvar = document.getElementById('btn-salvar');
-        inspSelect.innerHTML = `<option value="1">1ª Inspeção</option><option value="2" disabled>2ª Inspeção 🔒</option>`;
-        btnSalvar.disabled = false; btnSalvar.style.background = "linear-gradient(135deg, var(--blue-dark), var(--blue))"; btnSalvar.textContent = "SALVAR INSPEÇÃO";
-        fetch(getUrlLimpa(`/maquinas/${inj}/meses/${mes}/dias/${dia}/resumo`), { headers: headersConfig }).then(r => r.json()).then(resumo => {
-            const dadosTurno = resumo;
-            if (dadosTurno) { if (dadosTurno.insp1 && !dadosTurno.insp2) { inspSelect.innerHTML = `<option value="1" disabled>1ª Inspeção ✅</option><option value="2" selected>2ª Inspeção</option>`; } else if (dadosTurno.insp1 && dadosTurno.insp2) { inspSelect.innerHTML = `<option value="1" disabled>1ª Inspeção ✅</option><option value="2" disabled>2ª Inspeção ✅</option>`; btnSalvar.disabled = true; btnSalvar.style.background = "#94a3b8"; btnSalvar.textContent = "TURNO CONCLUÍDO 🔒"; } }
-        }).catch(e => console.log("Ainda sem conexão com o resumo."));
+    function abrirFotoItem(nome, link) {
+        document.getElementById('titulo-foto-item').textContent = nome;
+        document.getElementById('img-modal-dinamica').src = link || "https://raw.githubusercontent.com/guxstazzin/honda-inspecao/main/croqui.jpg.png";
+        document.getElementById('modalVisualizadorItem').style.display = 'flex';
     }
-
-    // 🔥 BLINDAGEM 4: Função de Abrir Foto modificada para gerar a Marca D'água Dinâmica
-    function abrirFotoItem(nomeDoItem, linkDaFoto) { 
-        document.getElementById('titulo-foto-item').textContent = nomeDoItem; 
-        let imagemParaMostrar = "https://raw.githubusercontent.com/guxstazzin/honda-inspecao/main/croqui.jpg.png"; 
-        if (linkDaFoto && linkDaFoto !== 'undefined' && linkDaFoto !== 'LINK_AQUI.jpg') { imagemParaMostrar = linkDaFoto; }
-        
-        const imgElem = document.getElementById('img-modal-dinamica');
-        imgElem.src = imagemParaMostrar;
-        
-        let containerImg = imgElem.parentElement;
-        
-        // Verifica se já existe a marca d'água, se não, cria.
-        let wm = document.getElementById('wm-texto');
-        if (!wm) {
-            wm = document.createElement('div');
-            wm.id = 'wm-texto';
-            wm.className = 'watermark';
-            containerImg.appendChild(wm);
-        }
-        
-        // Preenche com o nome e matrícula para incriminar quem vazar a foto
-        let nome = nomeInspetorLogado || "VISITANTE";
-        let mat = matriculaInspetorLogado || "SEM MATRÍCULA";
-        wm.innerHTML = `${nome}<br>${mat}`;
-        
-        document.getElementById('modalVisualizadorItem').style.display = 'flex'; 
-    }
-
     function fecharFotoItem() { document.getElementById('modalVisualizadorItem').style.display = 'none'; }
 
-    const TEMPLATES = {
-        LPDC_PADRAO: [ { sec: "Parâmetros de Processo da Injetora" }, { t: "Temperatura do Molde", u: "330-390°C", min: 330, max: 390 }, { t: "Temperatura do Banho", u: "685-710°C", min: 685, max: 710 }, { t: "Tempo de Abertura", u: "15-20 seg", min: 15, max: 20 }, { t: "Tempo de Pressurização", u: "190-210 seg", min: 190, max: 210 }, { t: "Refrigeração Base Inferior", u: "5 ±1 Kgf/cm²", min: 4, max: 6 }, { t: "Refrigeração Base Superior", u: "3 ±1 Kgf/cm²", min: 2, max: 4 }, { t: "Mangueiras da Refrigeração", u: "Visual (Sem obstrução)", tipo: "bin" }, { t: "Gráfico de Injeção", u: "Painel da Máquina", tipo: "bin" }, { t: "Programa", u: "Painel (Ex: A-1, B-3)", tipo: "txt" }, { t: "Teste Tridimensional", u: "Visual / CNC", tipo: "bin" }, { t: "Desumidificador", u: "Tela Limpa / Área Verde", tipo: "bin" }, { t: "Checar Forno e Banho", u: "Visual", tipo: "bin" }, { sec: "Checagem Visual (Peça)" }, { t: "Guias de Fundição", u: "Sem deformações", tipo: "bin" }, { t: "Pré-Furo do Prisioneiro", u: "Sem deformações", tipo: "bin" }, { t: "Referência de Usinagem", u: "Sem falhas/aderências", tipo: "bin" }, { t: "Aloj. Guias e Sedes de Válvula", u: "Sem rebarbas", tipo: "bin" }, { t: "Canais de Admissão/Escape", u: "Sem macho quebrado", tipo: "bin" }, { t: "Câmara de Combustão", u: "Sem rechupe", tipo: "bin" }, { t: "Fechamento Molde com Macho", u: "Visual", tipo: "bin" }, { t: "Pontos Fixação Escapamento", u: "Visual", tipo: "bin" }, { t: "Machos de Areia", u: "Sem deformações", tipo: "bin" }, { t: "Código de Fabricação", u: "Registrar", tipo: "txt" }, { t: "Pintura do Massalote", u: "Visual", tipo: "bin" }, { t: "Logotipo HONDA", u: "Legível", tipo: "bin" }, { t: "Aspecto Geral", u: "Visual", tipo: "bin" } ],
-        
-        LPDC_KVK: [ { sec: "Parâmetros KVK (Com Paquímetro)" }, { t: "Temperatura do Molde", u: "330-390°C", min: 330, max: 390 }, { t: "Temperatura do Banho", u: "690-710°C", min: 690, max: 710 }, { t: "Tempo de Abertura", u: "15 seg", min: 14, max: 16 }, { t: "Tempo de Pressurização", u: "230 seg", min: 220, max: 240 }, { t: "Refrigeração Base Inferior", u: "5 ±1 Kgf/cm²", min: 4, max: 6 }, { t: "Refrigeração Base Superior", u: "3 ±1 Kgf/cm²", min: 2, max: 4 }, { t: "Mangueiras e Gráfico", u: "Visual", tipo: "bin" }, { t: "Programa", u: "Ex: D2", tipo: "txt" }, { sec: "Checagem Dimensional e Visual" }, { t: "Passagem Guia e Tensor Corrente", u: "Rebarba Grossa > 0.4mm", tipo: "bin" }, { t: "Aloj. Guias e Sedes Válvula", u: "Isento excesso", tipo: "bin" }, { t: "Canais Admissão/Escape", u: "Isento macho quebrado", tipo: "bin" }, { t: "Espessura Parede Assentamento", u: "Paquímetro (6.0 ± 1mm)", min: 5.0, max: 7.0 }, { t: "Canais Passagem Óleo", u: "Uniforme", tipo: "bin" }, { t: "Canal de Arrefecimento", u: "Sem Obstrução", tipo: "bin" }, { t: "Código de Fabricação", u: "Ex: 1 D T 3", tipo: "txt" }, { t: "Aspecto Geral", u: "Visual", tipo: "bin" } ],
-        
-        LPDC_K2GF: [ 
-            { sec: "Parâmetros de Processo - K2GF" }, 
-            { t: "Temperatura do Molde", u: "330-390°C", min: 330, max: 390, img: "https://github.com/guxstazzin/honda-inspecao/blob/main/temp%20molde.png?raw=true" }, 
-            { t: "Temperatura do Banho", u: "685-710°C", min: 685, max: 710, img: "https://github.com/guxstazzin/honda-inspecao/blob/main/temp%20banho.png?raw=true" }, 
-            { t: "Tempo de Abertura", u: "15-20 seg", min: 15, max: 20, img: "https://github.com/guxstazzin/honda-inspecao/blob/main/temp%20de%20abertura.png?raw=true" }, 
-            { t: "Tempo de Pressurização", u: "190-210 seg", min: 190, max: 210, img: "https://github.com/guxstazzin/honda-inspecao/blob/main/temp%20pressur.png?raw=true" }, 
-            { t: "Refrigeração Base Inferior", u: "5 ±1 Kgf/cm²", min: 4, max: 6, img: "https://github.com/guxstazzin/honda-inspecao/blob/main/REF%20INF.png?raw=true" }, 
-            { t: "Refrigeração Base Superior", u: "3 ±1 Kgf/cm²", min: 2, max: 4, img: "https://github.com/guxstazzin/honda-inspecao/blob/main/REF%20SUP.png?raw=true" }, 
-            { t: "Mangueiras da Refrigeração", u: "Visual (Sem obstrução)", tipo: "bin", img: "https://github.com/guxstazzin/honda-inspecao/blob/main/MANG.png?raw=true" }, 
-            { t: "Gráfico de Injeção", u: "Painel da Máquina", tipo: "bin", img: "https://github.com/guxstazzin/honda-inspecao/blob/main/grafico.png?raw=true" }, 
-            { t: "Programa", u: "Painel (Ex: A-1, B-3)", tipo: "txt", img: "https://github.com/guxstazzin/honda-inspecao/blob/main/programa.png?raw=true" }, 
-            { t: "Teste Tridimensional", u: "Visual / CNC", tipo: "bin", img: "LINK_AQUI.jpg" }, 
-            { t: "Desumidificador", u: "Tela Limpa / Área Verde", tipo: "bin", img: "https://github.com/guxstazzin/honda-inspecao/blob/main/desumidificador.png?raw=true" }, 
-            { t: "Checar Forno e Banho", u: "Visual", tipo: "bin", img: "https://github.com/guxstazzin/honda-inspecao/blob/main/BANHO.png?raw=true" }, 
-            { sec: "Checagem Visual (Peça)" },
-            { t: "Nome do Modelo", u: '"K2GF"', tipo: "bin", img: "https://github.com/guxstazzin/honda-inspecao/blob/main/k2gf.png?raw=true" },
-            { t: "Guias de Fundição", u: "Sem deformações", tipo: "bin", img: "https://github.com/guxstazzin/honda-inspecao/blob/main/guia%20fundi%C3%A7%C3%A3o.png?raw=true" }, 
-            { t: "Pré-Furo do Prisioneiro", u: "Sem deformações", tipo: "bin", img: "https://github.com/guxstazzin/honda-inspecao/blob/main/prisioneiro.png?raw=true" }, 
-            { t: "Referência de Usinagem", u: "Sem falhas/aderências", tipo: "bin", img: "https://github.com/guxstazzin/honda-inspecao/blob/main/guia%20de%20usinagem.png?raw=true" }, 
-            { t: "Aloj. Guias e Sedes de Válvula", u: "Sem rebarbas", tipo: "bin", img: "https://github.com/guxstazzin/honda-inspecao/blob/main/Prancheta%201.png?raw=true" }, 
-            { t: "Canais de Admissão/Escape", u: "Sem macho quebrado", tipo: "bin", img: "https://github.com/guxstazzin/honda-inspecao/blob/main/lado%20in%20e%20lado%20ex.png?raw=true" }, 
-            { t: "Câmara de Combustão", u: "Sem rechupe", tipo: "bin", img: "https://github.com/guxstazzin/honda-inspecao/blob/main/camara.png?raw=true" }, 
-            { t: "Fechamento Molde com Macho", u: "Visual", tipo: "bin", img: "https://github.com/guxstazzin/honda-inspecao/blob/main/fechamento.png?raw=true" }, 
-            { t: "Pontos Fixação Escapamento", u: "Visual", tipo: "bin", img: "https://github.com/guxstazzin/honda-inspecao/blob/main/ponto%20de%20fixa%C3%A7%C3%A3o%20escp.png?raw=true" }, 
-            { t: "Machos de Areia", u: "Sem deformações", tipo: "bin", img: "https://github.com/guxstazzin/honda-inspecao/blob/main/machos.png?raw=true" }, 
-            { t: "Código de Fabricação", u: "Registrar", tipo: "txt", img: "https://github.com/guxstazzin/honda-inspecao/blob/main/codigo.png?raw=true" }, 
-            { t: "Pintura do Massalote", u: "Visual", tipo: "bin", img: "https://github.com/guxstazzin/honda-inspecao/blob/main/massalote.png?raw=true" }, 
-            { t: "Logotipo HONDA", u: "Legível", tipo: "bin", img: "https://github.com/guxstazzin/honda-inspecao/blob/main/logotipo.png?raw=true" },
-            { t: "Aspecto Geral", u: "Visual", tipo: "bin", img: "LINK_AQUI.jpg" } 
-        ],
-
-        LPDC_K1SG: [ 
-            { sec: "Parâmetros de Processo - K1SG" }, 
-            { t: "Temperatura do Molde", u: "330-390°C", min: 330, max: 390, img: "https://github.com/guxstazzin/honda-inspecao/blob/main/temp%20molde.png?raw=true" }, 
-            { t: "Temperatura do Banho", u: "685-710°C", min: 685, max: 710, img: "https://github.com/guxstazzin/honda-inspecao/blob/main/temp%20banho.png?raw=true" }, 
-            { t: "Tempo de Abertura", u: "15-20 seg", min: 15, max: 20, img: "https://github.com/guxstazzin/honda-inspecao/blob/main/temp%20de%20abertura.png?raw=true" }, 
-            { t: "Tempo de Pressurização", u: "190-210 seg", min: 190, max: 210, img: "https://github.com/guxstazzin/honda-inspecao/blob/main/temp%20pressur.png?raw=true" }, 
-            { t: "Refrigeração Base Inferior", u: "5 ±1 Kgf/cm²", min: 4, max: 6, img: "https://github.com/guxstazzin/honda-inspecao/blob/main/mangueira%20inferior.png?raw=true" }, 
-            { t: "Refrigeração Base Superior", u: "3 ±1 Kgf/cm²", min: 2, max: 4, img: "https://github.com/guxstazzin/honda-inspecao/blob/main/mangueira%20inferior.png?raw=true" }, 
-            { t: "Mangueiras da Refrigeração", u: "Visual (Sem obstrução)", tipo: "bin", img: "https://github.com/guxstazzin/honda-inspecao/blob/main/mangueira%20superior.png?raw=true" }, 
-            { t: "Gráfico de Injeção", u: "Painel da Máquina", tipo: "bin", img: "https://github.com/guxstazzin/honda-inspecao/blob/main/grafico.png?raw=true" }, 
-            { t: "Programa", u: "Painel (Ex: A-1, B-3)", tipo: "txt", img: "https://github.com/guxstazzin/honda-inspecao/blob/main/programa.png?raw=true" }, 
-            { t: "Teste Tridimensional", u: "Visual / CNC", tipo: "bin", img: "LINK_AQUI.jpg" }, 
-            { t: "Desumidificador", u: "Tela Limpa / Área Verde", tipo: "bin", img: "https://github.com/guxstazzin/honda-inspecao/blob/main/desumidificador.png?raw=true" }, 
-            { t: "Checar Forno e Banho", u: "Visual", tipo: "bin", img: "LINK_AQUI.jpg" }, 
-            { sec: "Checagem Visual (Peça)" }, 
-            { t: "Nome do Modelo", u: '"K1SG"', tipo: "bin", img: "https://github.com/guxstazzin/honda-inspecao/blob/main/k2gf.png?raw=true" }, 
-            { t: "Guias de Fundição", u: "Sem deformações", tipo: "bin", img: "https://github.com/guxstazzin/honda-inspecao/blob/main/guia%20fundi%C3%A7%C3%A3o.png?raw=true" }, 
-            { t: "Pré-Furo do Prisioneiro", u: "Sem deformações", tipo: "bin", img: "https://github.com/guxstazzin/honda-inspecao/blob/main/prisioneiro.png?raw=true" }, 
-            { t: "Referência de Usinagem", u: "Sem falhas/aderências", tipo: "bin", img: "https://github.com/guxstazzin/honda-inspecao/blob/main/guia%20de%20usinagem.png?raw=true" }, 
-            { t: "Aloj. Guias e Sedes de Válvula", u: "Sem rebarbas", tipo: "bin", img: "https://github.com/guxstazzin/honda-inspecao/blob/main/Prancheta%201.png?raw=true" }, 
-            { t: "Canais de Admissão/Escape", u: "Sem macho quebrado", tipo: "bin", img: "https://github.com/guxstazzin/honda-inspecao/blob/main/lado%20in%20e%20lado%20ex.png?raw=true" }, 
-            { t: "Câmara de Combustão", u: "Sem rechupe", tipo: "bin", img: "https://github.com/guxstazzin/honda-inspecao/blob/main/camara.png?raw=true" }, 
-            { t: "Fechamento Molde com Macho", u: "Visual", tipo: "bin", img: "https://github.com/guxstazzin/honda-inspecao/blob/main/fechamento.png?raw=true" }, 
-            { t: "Pontos Fixação Escapamento", u: "Visual", tipo: "bin", img: "https://github.com/guxstazzin/honda-inspecao/blob/main/ponto%20de%20fixa%C3%A7%C3%A3o%20escp.png?raw=true" }, 
-            { t: "Machos de Areia", u: "Sem deformações", tipo: "bin", img: "https://github.com/guxstazzin/honda-inspecao/blob/main/machos.png?raw=true" }, 
-            { t: "Código de Fabricação", u: "Registrar", tipo: "txt", img: "https://github.com/guxstazzin/honda-inspecao/blob/main/codigo.png?raw=true" }, 
-            { t: "Pintura do Massalote", u: "Visual", tipo: "bin", img: "https://github.com/guxstazzin/honda-inspecao/blob/main/massalote.png?raw=true" }, 
-            { t: "Logotipo HONDA", u: "Legível", tipo: "bin", img: "https://github.com/guxstazzin/honda-inspecao/blob/main/logotipo.png?raw=true" }, 
-            { t: "Aspecto Geral", u: "Visual", tipo: "bin", img: "LINK_AQUI.jpg" } 
-        ],
-
-        LPDC_K68L: [ 
-            { sec: "Parâmetros de Processo - K68L" }, 
-            { t: "Temperatura do Molde", u: "330-390°C", min: 330, max: 390, img: "https://github.com/guxstazzin/honda-inspecao/blob/main/temp%20molde.png?raw=true" }, 
-            { t: "Temperatura do Banho", u: "685-710°C", min: 685, max: 710, img: "https://github.com/guxstazzin/honda-inspecao/blob/main/temp%20banho.png?raw=true" }, 
-            { t: "Tempo de Abertura", u: "15-20 seg", min: 15, max: 20, img: "https://github.com/guxstazzin/honda-inspecao/blob/main/temp%20de%20abertura.png?raw=true" }, 
-            { t: "Tempo de Pressurização", u: "190-210 seg", min: 190, max: 210, img: "https://github.com/guxstazzin/honda-inspecao/blob/main/temp%20pressur.png?raw=true" }, 
-            { t: "Refrigeração Base Inferior", u: "5 ±1 Kgf/cm²", min: 4, max: 6, img: "https://github.com/guxstazzin/honda-inspecao/blob/main/mangueira%20inferior.png?raw=true" }, 
-            { t: "Refrigeração Base Superior", u: "3 ±1 Kgf/cm²", min: 2, max: 4, img: "https://github.com/guxstazzin/honda-inspecao/blob/main/mangueira%20inferior.png?raw=true" }, 
-            { t: "Mangueiras da Refrigeração", u: "Visual (Sem obstrução)", tipo: "bin", img: "https://github.com/guxstazzin/honda-inspecao/blob/main/mangueira%20superior.png?raw=true" }, 
-            { t: "Gráfico de Injeção", u: "Painel da Máquina", tipo: "bin", img: "https://github.com/guxstazzin/honda-inspecao/blob/main/grafico.png?raw=true" }, 
-            { t: "Programa", u: "Painel (Ex: A-1, B-3)", tipo: "txt", img: "https://github.com/guxstazzin/honda-inspecao/blob/main/programa.png?raw=true" }, 
-            { t: "Teste Tridimensional", u: "Visual / CNC", tipo: "bin", img: "LINK_AQUI.jpg" }, 
-            { t: "Desumidificador", u: "Tela Limpa / Área Verde", tipo: "bin", img: "https://github.com/guxstazzin/honda-inspecao/blob/main/desumidificador.png?raw=true" }, 
-            { t: "Checar Forno e Banho", u: "Visual", tipo: "bin", img: "LINK_AQUI.jpg" }, 
-            { sec: "Checagem Visual (Peça)" }, 
-            { t: "Nome do Modelo", u: '"K68L"', tipo: "bin", img: "https://github.com/guxstazzin/honda-inspecao/blob/main/k2gf.png?raw=true" }, 
-            { t: "Guias de Fundição", u: "Sem deformações", tipo: "bin", img: "https://github.com/guxstazzin/honda-inspecao/blob/main/guia%20fundi%C3%A7%C3%A3o.png?raw=true" }, 
-            { t: "Pré-Furo do Prisioneiro", u: "Sem deformações", tipo: "bin", img: "https://github.com/guxstazzin/honda-inspecao/blob/main/prisioneiro.png?raw=true" }, 
-            { t: "Referência de Usinagem", u: "Sem falhas/aderências", tipo: "bin", img: "https://github.com/guxstazzin/honda-inspecao/blob/main/guia%20de%20usinagem.png?raw=true" }, 
-            { t: "Aloj. Guias e Sedes de Válvula", u: "Sem rebarbas", tipo: "bin", img: "https://github.com/guxstazzin/honda-inspecao/blob/main/Prancheta%201.png?raw=true" }, 
-            { t: "Canais de Admissão/Escape", u: "Sem macho quebrado", tipo: "bin", img: "https://github.com/guxstazzin/honda-inspecao/blob/main/lado%20in%20e%20lado%20ex.png?raw=true" }, 
-            { t: "Câmara de Combustão", u: "Sem rechupe", tipo: "bin", img: "https://github.com/guxstazzin/honda-inspecao/blob/main/camara.png?raw=true" }, 
-            { t: "Fechamento Molde com Macho", u: "Visual", tipo: "bin", img: "https://github.com/guxstazzin/honda-inspecao/blob/main/fechamento.png?raw=true" }, 
-            { t: "Pontos Fixação Escapamento", u: "Visual", tipo: "bin", img: "https://github.com/guxstazzin/honda-inspecao/blob/main/ponto%20de%20fixa%C3%A7%C3%A3o%20escp.png?raw=true" }, 
-            { t: "Machos de Areia", u: "Sem deformações", tipo: "bin", img: "https://github.com/guxstazzin/honda-inspecao/blob/main/machos.png?raw=true" }, 
-            { t: "Código de Fabricação", u: "Registrar", tipo: "txt", img: "https://github.com/guxstazzin/honda-inspecao/blob/main/codigo.png?raw=true" }, 
-            { t: "Pintura do Massalote", u: "Visual", tipo: "bin", img: "https://github.com/guxstazzin/honda-inspecao/blob/main/massalote.png?raw=true" }, 
-            { t: "Logotipo HONDA", u: "Legível", tipo: "bin", img: "https://github.com/guxstazzin/honda-inspecao/blob/main/logotipo.png?raw=true" }, 
-            { t: "Aspecto Geral", u: "Visual", tipo: "bin", img: "LINK_AQUI.jpg" } 
-        ],
-
-        LPDC_KVSP: [ 
-            { sec: "Parâmetros de Processo - KVSP (ASTEC)" }, 
-            { t: "Temperatura do Molde", u: "330-390°C", min: 330, max: 390, img: "https://github.com/guxstazzin/honda-inspecao/blob/main/temp%20molde.png?raw=true" }, 
-            { t: "Temperatura do Banho", u: "685-710°C", min: 685, max: 710, img: "https://github.com/guxstazzin/honda-inspecao/blob/main/temp%20banho.png?raw=true" }, 
-            { t: "Tempo de Abertura", u: "15-20 seg", min: 15, max: 20, img: "https://github.com/guxstazzin/honda-inspecao/blob/main/temp%20de%20abertura.png?raw=true" }, 
-            { t: "Tempo de Pressurização", u: "190-210 seg", min: 190, max: 210, img: "https://github.com/guxstazzin/honda-inspecao/blob/main/temp%20pressur.png?raw=true" }, 
-            { t: "Refrigeração Base Inferior", u: "5 ±1 Kgf/cm²", min: 4, max: 6, img: "https://github.com/guxstazzin/honda-inspecao/blob/main/mangueira%20inferior.png?raw=true" }, 
-            { t: "Refrigeração Base Superior", u: "3 ±1 Kgf/cm²", min: 2, max: 4, img: "https://github.com/guxstazzin/honda-inspecao/blob/main/mangueira%20inferior.png?raw=true" }, 
-            { t: "Mangueiras da Refrigeração", u: "Visual (Sem obstrução)", tipo: "bin", img: "https://github.com/guxstazzin/honda-inspecao/blob/main/mangueira%20superior.png?raw=true" }, 
-            { t: "Gráfico de Injeção", u: "Painel da Máquina", tipo: "bin", img: "https://github.com/guxstazzin/honda-inspecao/blob/main/grafico.png?raw=true" }, 
-            { t: "Programa", u: "Painel (Ex: A-1, B-3)", tipo: "txt", img: "https://github.com/guxstazzin/honda-inspecao/blob/main/programa.png?raw=true" }, 
-            { t: "Teste Tridimensional", u: "Visual / CNC", tipo: "bin", img: "LINK_AQUI.jpg" }, 
-            { t: "Desumidificador", u: "Tela Limpa / Área Verde", tipo: "bin", img: "https://github.com/guxstazzin/honda-inspecao/blob/main/desumidificador.png?raw=true" }, 
-            { t: "Checar Forno e Banho", u: "Visual", tipo: "bin", img: "LINK_AQUI.jpg" }, 
-            { sec: "Checagem Visual (Peça)" }, 
-            { t: "Nome do Modelo", u: '"KVSP"', tipo: "bin", img: "https://github.com/guxstazzin/honda-inspecao/blob/main/k2gf.png?raw=true" }, 
-            { t: "Guias de Fundição", u: "Sem deformações", tipo: "bin", img: "https://github.com/guxstazzin/honda-inspecao/blob/main/guia%20fundi%C3%A7%C3%A3o.png?raw=true" }, 
-            { t: "Pré-Furo do Prisioneiro", u: "Sem deformações", tipo: "bin", img: "https://github.com/guxstazzin/honda-inspecao/blob/main/prisioneiro.png?raw=true" }, 
-            { t: "Referência de Usinagem", u: "Sem falhas/aderências", tipo: "bin", img: "https://github.com/guxstazzin/honda-inspecao/blob/main/guia%20de%20usinagem.png?raw=true" }, 
-            { t: "Aloj. Guias e Sedes de Válvula", u: "Sem rebarbas", tipo: "bin", img: "https://github.com/guxstazzin/honda-inspecao/blob/main/Prancheta%201.png?raw=true" }, 
-            { t: "Canais de Admissão/Escape", u: "Sem macho quebrado", tipo: "bin", img: "https://github.com/guxstazzin/honda-inspecao/blob/main/lado%20in%20e%20lado%20ex.png?raw=true" }, 
-            { t: "Câmara de Combustão", u: "Sem rechupe", tipo: "bin", img: "https://github.com/guxstazzin/honda-inspecao/blob/main/camara.png?raw=true" }, 
-            { t: "Fechamento Molde com Macho", u: "Visual", tipo: "bin", img: "https://github.com/guxstazzin/honda-inspecao/blob/main/fechamento.png?raw=true" }, 
-            { t: "Pontos Fixação Escapamento", u: "Visual", tipo: "bin", img: "https://github.com/guxstazzin/honda-inspecao/blob/main/ponto%20de%20fixa%C3%A7%C3%A3o%20escp.png?raw=true" }, 
-            { t: "Machos de Areia", u: "Sem deformações", tipo: "bin", img: "https://github.com/guxstazzin/honda-inspecao/blob/main/machos.png?raw=true" }, 
-            { t: "Código de Fabricação", u: "Registrar", tipo: "txt", img: "https://github.com/guxstazzin/honda-inspecao/blob/main/codigo.png?raw=true" }, 
-            { t: "Pintura do Massalote", u: "Visual", tipo: "bin", img: "https://github.com/guxstazzin/honda-inspecao/blob/main/massalote.png?raw=true" }, 
-            { t: "Logotipo HONDA", u: "Legível", tipo: "bin", img: "https://github.com/guxstazzin/honda-inspecao/blob/main/logotipo.png?raw=true" }, 
-            { t: "Aspecto Geral", u: "Visual", tipo: "bin", img: "LINK_AQUI.jpg" } 
-        ],
-
-        LPDC_KRET: [ 
-            { sec: "Parâmetros de Processo - KRET (ASTEC)" }, 
-            { t: "Temperatura do Molde", u: "330-390°C", min: 330, max: 390, img: "https://github.com/guxstazzin/honda-inspecao/blob/main/temp%20molde.png?raw=true" }, 
-            { t: "Temperatura do Banho", u: "685-710°C", min: 685, max: 710, img: "https://github.com/guxstazzin/honda-inspecao/blob/main/temp%20banho.png?raw=true" }, 
-            { t: "Tempo de Abertura", u: "15-20 seg", min: 15, max: 20, img: "https://github.com/guxstazzin/honda-inspecao/blob/main/temp%20de%20abertura.png?raw=true" }, 
-            { t: "Tempo de Pressurização", u: "190-210 seg", min: 190, max: 210, img: "https://github.com/guxstazzin/honda-inspecao/blob/main/temp%20pressur.png?raw=true" }, 
-            { t: "Refrigeração Base Inferior", u: "5 ±1 Kgf/cm²", min: 4, max: 6, img: "https://github.com/guxstazzin/honda-inspecao/blob/main/mangueira%20inferior.png?raw=true" }, 
-            { t: "Refrigeração Base Superior", u: "3 ±1 Kgf/cm²", min: 2, max: 4, img: "https://github.com/guxstazzin/honda-inspecao/blob/main/mangueira%20inferior.png?raw=true" }, 
-            { t: "Mangueiras da Refrigeração", u: "Visual (Sem obstrução)", tipo: "bin", img: "https://github.com/guxstazzin/honda-inspecao/blob/main/mangueira%20superior.png?raw=true" }, 
-            { t: "Gráfico de Injeção", u: "Painel da Máquina", tipo: "bin", img: "https://github.com/guxstazzin/honda-inspecao/blob/main/grafico.png?raw=true" }, 
-            { t: "Programa", u: "Painel (Ex: A-1, B-3)", tipo: "txt", img: "https://github.com/guxstazzin/honda-inspecao/blob/main/programa.png?raw=true" }, 
-            { t: "Teste Tridimensional", u: "Visual / CNC", tipo: "bin", img: "LINK_AQUI.jpg" }, 
-            { t: "Desumidificador", u: "Tela Limpa / Área Verde", tipo: "bin", img: "https://github.com/guxstazzin/honda-inspecao/blob/main/desumidificador.png?raw=true" }, 
-            { t: "Checar Forno e Banho", u: "Visual", tipo: "bin", img: "LINK_AQUI.jpg" }, 
-            { sec: "Checagem Visual (Peça)" }, 
-            { t: "Nome do Modelo", u: '"KRET"', tipo: "bin", img: "https://github.com/guxstazzin/honda-inspecao/blob/main/k2gf.png?raw=true" }, 
-            { t: "Guias de Fundição", u: "Sem deformações", tipo: "bin", img: "https://github.com/guxstazzin/honda-inspecao/blob/main/guia%20fundi%C3%A7%C3%A3o.png?raw=true" }, 
-            { t: "Pré-Furo do Prisioneiro", u: "Sem deformações", tipo: "bin", img: "https://github.com/guxstazzin/honda-inspecao/blob/main/prisioneiro.png?raw=true" }, 
-            { t: "Referência de Usinagem", u: "Sem falhas/aderências", tipo: "bin", img: "https://github.com/guxstazzin/honda-inspecao/blob/main/guia%20de%20usinagem.png?raw=true" }, 
-            { t: "Aloj. Guias e Sedes de Válvula", u: "Sem rebarbas", tipo: "bin", img: "https://github.com/guxstazzin/honda-inspecao/blob/main/Prancheta%201.png?raw=true" }, 
-            { t: "Canais de Admissão/Escape", u: "Sem macho quebrado", tipo: "bin", img: "https://github.com/guxstazzin/honda-inspecao/blob/main/lado%20in%20e%20lado%20ex.png?raw=true" }, 
-            { t: "Câmara de Combustão", u: "Sem rechupe", tipo: "bin", img: "https://github.com/guxstazzin/honda-inspecao/blob/main/camara.png?raw=true" }, 
-            { t: "Fechamento Molde com Macho", u: "Visual", tipo: "bin", img: "https://github.com/guxstazzin/honda-inspecao/blob/main/fechamento.png?raw=true" }, 
-            { t: "Pontos Fixação Escapamento", u: "Visual", tipo: "bin", img: "https://github.com/guxstazzin/honda-inspecao/blob/main/ponto%20de%20fixa%C3%A7%C3%A3o%20escp.png?raw=true" }, 
-            { t: "Machos de Areia", u: "Sem deformações", tipo: "bin", img: "https://github.com/guxstazzin/honda-inspecao/blob/main/machos.png?raw=true" }, 
-            { t: "Código de Fabricação", u: "Registrar", tipo: "txt", img: "https://github.com/guxstazzin/honda-inspecao/blob/main/codigo.png?raw=true" }, 
-            { t: "Pintura do Massalote", u: "Visual", tipo: "bin", img: "https://github.com/guxstazzin/honda-inspecao/blob/main/massalote.png?raw=true" }, 
-            { t: "Logotipo HONDA", u: "Legível", tipo: "bin", img: "https://github.com/guxstazzin/honda-inspecao/blob/main/logotipo.png?raw=true" }, 
-            { t: "Aspecto Geral", u: "Visual", tipo: "bin", img: "LINK_AQUI.jpg" } 
-        ],
-
-        MACHEIRA_JACKET_PADRAO: [ 
-            { sec: "Parâmetros Macho Jacket (H-TOP)" }, 
-            { t: "Temperatura Molde Fixo", u: "240 - 280°C", min: 240, max: 280, img: "LINK_AQUI.jpg" }, 
-            { t: "Temperatura Molde Móvel", u: "240 - 280°C", min: 240, max: 280, img: "LINK_AQUI.jpg" }, 
-            { t: "Tempo de Cozimento", u: "25 - 35 Seg", min: 25, max: 35, img: "LINK_AQUI.jpg" }, 
-            { t: "Tempo de Sopro", u: "2 - 4 Seg", min: 2, max: 4, img: "LINK_AQUI.jpg" }, 
-            { t: "Pressão do Sopro", u: "0.4 - 0.6 Mpa", min: 0.4, max: 0.6, img: "LINK_AQUI.jpg" }, 
-            { t: "Pressão do Ar", u: "0.4 - 0.6 Mpa", min: 0.4, max: 0.6, img: "LINK_AQUI.jpg" }, 
-            { sec: "Qualidade do Macho (Dimensional)" }, 
-            { t: "Área de Rebarbação", u: "Isento na junção", tipo: "bin", img: "LINK_AQUI.jpg" }, 
-            { t: "Coloração da Peça", u: "Marrom e Uniforme", tipo: "bin", img: "LINK_AQUI.jpg" }, 
-            { t: "Canal do Sopro", u: "Sem excessos", tipo: "bin", img: "LINK_AQUI.jpg" }, 
-            { t: "Marca Extração na Peça", u: "0.0 - 0.2mm", min: 0.0, max: 0.2, img: "LINK_AQUI.jpg" }, 
-            { t: "Altura Inserto Região Comando", u: "48.6 - 48.8mm", min: 48.6, max: 48.8, img: "LINK_AQUI.jpg" }, 
-            { t: "Aspecto Geral", u: "Visual", tipo: "bin", img: "LINK_AQUI.jpg" } 
-        ],
-        
-        MACHEIRA_POTTON_PADRAO: [ 
-            { sec: "Parâmetros Macho Potton (V-TOP)" }, 
-            { t: "Temperatura Molde Fixo", u: "290 - 330°C", min: 290, max: 330, img: "LINK_AQUI.jpg" }, 
-            { t: "Temperatura Molde Móvel", u: "290 - 330°C", min: 290, max: 330, img: "LINK_AQUI.jpg" }, 
-            { t: "Pressão de Operação do Ar", u: "0.4 - 0.6 Mpa", min: 0.4, max: 0.6, img: "LINK_AQUI.jpg" }, 
-            { t: "Pressão do Sopro", u: "0.2 - 0.4 Mpa", min: 0.2, max: 0.4, img: "LINK_AQUI.jpg" }, 
-            { t: "Tempo de Sopro", u: "2 - 4 Seg", min: 2, max: 4, img: "LINK_AQUI.jpg" }, 
-            { t: "Tempo de Cozimento", u: "25 - 35 Seg", min: 25, max: 35, img: "LINK_AQUI.jpg" }, 
-            { sec: "Qualidade do Macho (Dimensional)" }, 
-            { t: "Junção Fixo/Móvel", u: "Isento desencontro/rebarba", tipo: "bin", img: "LINK_AQUI.jpg" }, 
-            { t: "Coloração da Peça", u: "Marrom e Uniforme", tipo: "bin", img: "LINK_AQUI.jpg" }, 
-            { t: "Marca de Extração", u: "0.0 - 0.2 mm", min: 0.0, max: 0.2, img: "LINK_AQUI.jpg" }, 
-            { t: "Armazenagem Macho de Areia", u: "Máx 14 jogos/bandeja", tipo: "bin", img: "LINK_AQUI.jpg" }, 
-            { t: "Medida Macho Potton IN", u: "27.8 (+0.3/-0.2 mm)", min: 27.6, max: 28.1, img: "LINK_AQUI.jpg" }, 
-            { t: "Diâmetro Potton IN (1)", u: "25.2 (+0.3/-0.2 mm)", min: 25.0, max: 25.5, img: "LINK_AQUI.jpg" }, 
-            { t: "Diâmetro Potton IN (2)", u: "25.2 (+0.3/-0.2 mm)", min: 25.0, max: 25.5, img: "LINK_AQUI.jpg" }, 
-            { t: "Medida Apoio Potton IN (1)", u: "10.2 (+0.3/-0.2 mm)", min: 10.0, max: 10.5, img: "LINK_AQUI.jpg" }, 
-            { t: "Medida Apoio Potton IN (2)", u: "10.2 (+0.3/-0.2 mm)", min: 10.0, max: 10.5, img: "LINK_AQUI.jpg" }, 
-            { t: "Medida Apoio Potton IN (3)", u: "8.3 (+0.3/-0.2 mm)", min: 8.1, max: 8.6, img: "LINK_AQUI.jpg" }, 
-            { t: "Medida Apoio Potton IN (4)", u: "12.3 (+0.3/-0.2 mm)", min: 12.1, max: 12.6, img: "LINK_AQUI.jpg" }, 
-            { t: "Medida Macho Potton EX", u: "25.8 (+0.3/-0.2 mm)", min: 25.6, max: 26.1, img: "LINK_AQUI.jpg" }, 
-            { t: "Diâmetro Potton EX (1)", u: "26.2 (+0.3/-0.2 mm)", min: 26.0, max: 26.5, img: "LINK_AQUI.jpg" }, 
-            { t: "Diâmetro Potton EX (2)", u: "26.2 (+0.3/-0.2 mm)", min: 26.0, max: 26.5, img: "LINK_AQUI.jpg" }, 
-            { t: "Medida Apoio Potton EX (1)", u: "8.2 (+0.3/-0.2 mm)", min: 8.0, max: 8.5, img: "LINK_AQUI.jpg" }, 
-            { t: "Medida Apoio Potton EX (2)", u: "8.2 (+0.3/-0.2 mm)", min: 8.0, max: 8.5, img: "LINK_AQUI.jpg" }, 
-            { t: "Medida Apoio Potton EX (3)", u: "12.2 (+0.3/-0.2 mm)", min: 12.0, max: 12.5, img: "LINK_AQUI.jpg" }, 
-            { t: "Medida Apoio Potton EX (4)", u: "10.1 (+0.3/-0.2 mm)", min: 9.9, max: 10.4, img: "LINK_AQUI.jpg" }, 
-            { t: "Aspecto Geral", u: "Visual", tipo: "bin", img: "LINK_AQUI.jpg" } 
-        ],
-
-        MACHEIRA_JACKET_K68L: [ 
-            { sec: "Parâmetros Macho Jacket K68L (H-TOP)" }, 
-            { t: "Temperatura Molde Fixo", u: "240 - 280°C", min: 240, max: 280, img: "LINK_AQUI.jpg" }, 
-            { t: "Temperatura Molde Móvel", u: "240 - 280°C", min: 240, max: 280, img: "LINK_AQUI.jpg" }, 
-            { t: "Tempo de Cozimento", u: "25 - 35 Seg", min: 25, max: 35, img: "LINK_AQUI.jpg" }, 
-            { t: "Tempo de Sopro", u: "2 - 4 Seg", min: 2, max: 4, img: "LINK_AQUI.jpg" }, 
-            { t: "Pressão do Sopro", u: "0.4 - 0.8 Mpa", min: 0.4, max: 0.8, img: "LINK_AQUI.jpg" }, 
-            { t: "Pressão do Ar", u: "0.4 - 0.8 Mpa", min: 0.4, max: 0.8, img: "LINK_AQUI.jpg" }, 
-            { sec: "Qualidade do Macho (Dimensional)" }, 
-            { t: "Nome do Modelo", u: '"K68L"', tipo: "bin", img: "LINK_AQUI.jpg" }, 
-            { t: "Área de Rebarbação", u: "Isento na junção", tipo: "bin", img: "LINK_AQUI.jpg" }, 
-            { t: "Coloração da Peça", u: "Marrom e Uniforme", tipo: "bin", img: "LINK_AQUI.jpg" }, 
-            { t: "Canal do Sopro", u: "Sem excessos", tipo: "bin", img: "LINK_AQUI.jpg" }, 
-            { t: "Marca Extração na Peça", u: "0.0 - 0.2mm", min: 0.0, max: 0.2, img: "LINK_AQUI.jpg" }, 
-            { t: "Altura Inserto Região Comando", u: "48.6 - 48.8mm", min: 48.6, max: 48.8, img: "LINK_AQUI.jpg" }, 
-            { t: "Aspecto Geral", u: "Visual", tipo: "bin", img: "LINK_AQUI.jpg" } 
-        ],
-        
-        MACHEIRA_POTTON_K68L: [ 
-            { sec: "Parâmetros Macho Potton K68L (V-TOP)" }, 
-            { t: "Temperatura Molde Fixo", u: "290 - 330°C", min: 290, max: 330, img: "LINK_AQUI.jpg" }, 
-            { t: "Temperatura Molde Móvel", u: "290 - 330°C", min: 290, max: 330, img: "LINK_AQUI.jpg" }, 
-            { t: "Pressão de Operação do Ar", u: "0.4 - 0.6 Mpa", min: 0.4, max: 0.6, img: "LINK_AQUI.jpg" }, 
-            { t: "Pressão do Sopro", u: "0.2 - 0.4 Mpa", min: 0.2, max: 0.4, img: "LINK_AQUI.jpg" }, 
-            { t: "Tempo de Sopro", u: "2 - 4 Seg", min: 2, max: 4, img: "LINK_AQUI.jpg" }, 
-            { t: "Tempo de Cozimento", u: "25 - 35 Seg", min: 25, max: 35, img: "LINK_AQUI.jpg" }, 
-            { sec: "Qualidade do Macho (Dimensional)" }, 
-            { t: "Nome do Modelo", u: '"K68L"', tipo: "bin", img: "LINK_AQUI.jpg" }, 
-            { t: "Junção Fixo/Móvel", u: "Isento desencontro/rebarba", tipo: "bin", img: "LINK_AQUI.jpg" }, 
-            { t: "Coloração da Peça", u: "Marrom e Uniforme", tipo: "bin", img: "LINK_AQUI.jpg" }, 
-            { t: "Marca de Extração", u: "0.0 - 0.2 mm", min: 0.0, max: 0.2, img: "LINK_AQUI.jpg" }, 
-            { t: "Armazenagem Macho de Areia", u: "Máx 14 jogos/bandeja", tipo: "bin", img: "LINK_AQUI.jpg" }, 
-            { t: "Medida Macho Potton IN", u: "26.0 (+0.3/-0.2 mm)", min: 25.8, max: 26.3, img: "LINK_AQUI.jpg" }, 
-            { t: "Diâmetro Potton IN (1)", u: "25.7 (+0.3/-0.2 mm)", min: 25.5, max: 26.0, img: "LINK_AQUI.jpg" }, 
-            { t: "Diâmetro Potton IN (2)", u: "25.7 (+0.3/-0.2 mm)", min: 25.5, max: 26.0, img: "LINK_AQUI.jpg" }, 
-            { t: "Medida Apoio Potton IN (1)", u: "10.2 (+0.3/-0.2 mm)", min: 10.0, max: 10.5, img: "LINK_AQUI.jpg" }, 
-            { t: "Medida Apoio Potton IN (2)", u: "10.2 (+0.3/-0.2 mm)", min: 10.0, max: 10.5, img: "LINK_AQUI.jpg" }, 
-            { t: "Medida Apoio Potton IN (3)", u: "8.3 (+0.3/-0.2 mm)", min: 8.1, max: 8.6, img: "LINK_AQUI.jpg" }, 
-            { t: "Medida Apoio Potton IN (4)", u: "12.2 (+0.3/-0.2 mm)", min: 12.0, max: 12.5, img: "LINK_AQUI.jpg" }, 
-            { t: "Apoio Reg. Guia Tensor", u: "Isento rebarba", tipo: "bin", img: "LINK_AQUI.jpg" }, 
-            { t: "Medida Macho Potton EX", u: "23.7 (+0.3/-0.2 mm)", min: 23.5, max: 24.0, img: "LINK_AQUI.jpg" }, 
-            { t: "Diâmetro Potton EX (1)", u: "26.2 (+0.3/-0.2 mm)", min: 26.0, max: 26.5, img: "LINK_AQUI.jpg" }, 
-            { t: "Diâmetro Potton EX (2)", u: "26.2 (+0.3/-0.2 mm)", min: 26.0, max: 26.5, img: "LINK_AQUI.jpg" }, 
-            { t: "Medida Apoio Potton EX (1)", u: "8.2 (+0.3/-0.2 mm)", min: 8.0, max: 8.5, img: "LINK_AQUI.jpg" }, 
-            { t: "Medida Apoio Potton EX (2)", u: "8.2 (+0.3/-0.2 mm)", min: 8.0, max: 8.5, img: "LINK_AQUI.jpg" }, 
-            { t: "Medida Apoio Potton EX (3)", u: "12.2 (+0.3/-0.2 mm)", min: 12.0, max: 12.5, img: "LINK_AQUI.jpg" }, 
-            { t: "Medida Apoio Potton EX (4)", u: "10.2 (+0.3/-0.2 mm)", min: 10.0, max: 10.5, img: "LINK_AQUI.jpg" }, 
-            { t: "Aspecto Geral", u: "Visual", tipo: "bin", img: "LINK_AQUI.jpg" } 
-        ]
-    };
-
-    let templateAtivo = []; let res = {};
-
     function atualizarTemplate() {
-        const inj = document.getElementById('inj').value; const mod = document.getElementById('mod').value; const corpo = document.getElementById('lista-corpo');
-        
-        if (inj.includes('HTOP')) templateAtivo = (mod === 'K68L') ? TEMPLATES.MACHEIRA_JACKET_K68L : TEMPLATES.MACHEIRA_JACKET_PADRAO;
-        else if (inj.includes('VTOP')) templateAtivo = (mod === 'K68L') ? TEMPLATES.MACHEIRA_POTTON_K68L : TEMPLATES.MACHEIRA_POTTON_PADRAO;
-        else if (mod === 'KVK') templateAtivo = TEMPLATES.LPDC_KVK;
-        else if (mod === 'K2GF') templateAtivo = TEMPLATES.LPDC_K2GF;
-        else if (mod === 'K1SG') templateAtivo = TEMPLATES.LPDC_K1SG;
-        else if (mod === 'K68L') templateAtivo = TEMPLATES.LPDC_K68L;
-        else if (mod === 'KVSP') templateAtivo = TEMPLATES.LPDC_KVSP;
-        else if (mod === 'KRET') templateAtivo = TEMPLATES.LPDC_KRET;
-        else templateAtivo = TEMPLATES.LPDC_PADRAO;
-        
-        corpo.innerHTML = ""; res = {}; let c = 0;
-        let isVisual = false;
-
-        templateAtivo.forEach((it) => {
-            if (it.sec) { 
-                corpo.innerHTML += `<div class="titulo-secao">${it.sec}</div>`; 
-                if (!it.sec.includes("Parâmetros")) isVisual = true;
-                return; 
-            }
-            
-            res = { nome: it.t, status: "Pendente", isVisual: isVisual };
-            
-            let ctrl = "";
-            
-            if (it.min !== undefined) {
-                ctrl = `
-                <div style="display: flex; gap: 10px; justify-content: flex-end;">
-                    <div style="display: flex; flex-direction: column; align-items: center; gap: 5px;">
-                        <span style="font-size:10px; color:#64748b; font-weight:900; letter-spacing: 0.5px;">ESQ</span>
-                        <input type="number" class="input-valor" placeholder="..." oninput="validarDuplo(${c}, 'esq', this, ${it.min}, ${it.max})" style="width: 55px !important; height: 38px !important; font-size: 13px !important; padding: 5px !important; border-radius: 8px;">
-                    </div>
-                    <div style="display: flex; flex-direction: column; align-items: center; gap: 5px;">
-                        <span style="font-size:10px; color:#64748b; font-weight:900; letter-spacing: 0.5px;">DIR</span>
-                        <input type="number" class="input-valor" placeholder="..." oninput="validarDuplo(${c}, 'dir', this, ${it.min}, ${it.max})" style="width: 55px !important; height: 38px !important; font-size: 13px !important; padding: 5px !important; border-radius: 8px;">
-                    </div>
-                </div>`;
-            } 
-            else if (it.tipo === "txt") {
-                ctrl = `<input type="text" class="input-valor" placeholder="..." style="width: 100px !important; border-radius: 8px;" oninput="res.valor=this.value; res.status='C'; verificarAutoNC(${c});">`;
-            } 
-            else {
-                ctrl = `
-                <div style="display: flex; gap: 12px; justify-content: flex-end;">
-                    <div style="display: flex; flex-direction: column; align-items: center; gap: 5px;">
-                        <span style="font-size:10px; color:#64748b; font-weight:900; letter-spacing: 0.5px;">ESQ</span>
-                        <button class="btn-status" id="c-esq-${c}" onclick="setBinDuplo(${c}, 'esq', 'C')" style="height: 34px; width: 42px; padding:0; border-radius:6px;">C</button>
-                        <button class="btn-status" id="nc-esq-${c}" onclick="setBinDuplo(${c}, 'esq', 'NC')" style="height: 34px; width: 42px; padding:0; border-radius:6px;">NC</button>
-                    </div>
-                    <div style="display: flex; flex-direction: column; align-items: center; gap: 5px;">
-                        <span style="font-size:10px; color:#64748b; font-weight:900; letter-spacing: 0.5px;">DIR</span>
-                        <button class="btn-status" id="c-dir-${c}" onclick="setBinDuplo(${c}, 'dir', 'C')" style="height: 34px; width: 42px; padding:0; border-radius:6px;">C</button>
-                        <button class="btn-status" id="nc-dir-${c}" onclick="setBinDuplo(${c}, 'dir', 'NC')" style="height: 34px; width: 42px; padding:0; border-radius:6px;">NC</button>
-                    </div>
-                </div>`;
-            }
-            
+        const corpo = document.getElementById('lista-corpo'); corpo.innerHTML = ""; res = {};
+        const itens = [
+            {t: "Temperatura do Molde", u: "330-390°C", min: 330, max: 390},
+            {t: "Aspecto Geral", u: "Visual", tipo: "bin"}
+        ];
+        itens.forEach((it, i) => {
+            res[i] = { nome: it.t, status: "Pendente" };
             corpo.innerHTML += `
-                <div class="item" id="card-${c}">
+                <div class="item">
                     <div class="item-header">
-                        <div style="flex:1;">
-                            <div class="item-texto" onclick="abrirFotoItem('${it.t}', '${it.img}')">
-                                ${c+1}. ${it.t}
-                                <span style="font-size:16px;">📷</span>
-                            </div>
-                            <span class="item-unidade">${it.u}</span>
-                        </div>
-                        ${ctrl}
-                    </div>
-                    <div class="providencia-box" id="prov-box-${c}">
-                        <div class="grid-5w">
-                            <label class="label-nc-5w">O QUE? (Problema)</label>
-                            <input type="text" class="input-nc" id="oq-${c}" placeholder="Descreva o defeito...">
-                            <label class="label-nc-5w">POR QUE? (Causa Raiz)</label>
-                            <input type="text" class="input-nc" id="pq-${c}" placeholder="Qual o motivo aparente?">
-                            <label class="label-nc-5w" style="color:#059669; margin-top:5px;">COMO? (Ação de Correção)</label>
-                            <input type="text" class="input-nc" id="cm-${c}" placeholder="O que foi feito..." style="border-color:#10b981!important;">
-                            <label class="label-nc-5w" style="color:#059669;">QUEM? (Responsável)</label>
-                            <input type="text" class="input-nc" id="qm-${c}" placeholder="Nome do resp. pela ação..." style="border-color:#10b981!important;">
-                        </div>
+                        <div onclick="abrirFotoItem('${it.t}', '')"><b>${i+1}. ${it.t}</b> 📷</div>
+                        ${it.min ? `<input type="number" class="input-valor" placeholder="Valor" oninput="validar(${i}, this, ${it.min}, ${it.max})">` : 
+                        `<button onclick="setBin(${i}, 'C', this)">C</button> <button onclick="setBin(${i}, 'NC', this)">NC</button>`}
                     </div>
                 </div>`;
-            c++;
         });
-        checarLiberacao();
     }
 
-    function validarDuplo(id, lado, el, min, max) {
+    function validar(id, el, min, max) {
         const v = parseFloat(el.value);
-        const isEmpty = isNaN(v);
-        const ok = !isEmpty && v >= min && v <= max;
-        
-        el.className = "input-valor " + (isEmpty ? "" : (ok ? "dentro-tolerancia" : "fora-tolerancia"));
-
-        if(!res.lados) res.lados = { esq: {valor: "-", status: "Pendente"}, dir: {valor: "-", status: "Pendente"} };
-        
-        if (isEmpty) { res.lados = { valor: "-", status: "Pendente" }; } 
-        else { res.lados = { valor: v, status: ok ? "C" : "NC" }; }
-
-        atualizarStatusDuplo(id);
+        const ok = v >= min && v <= max;
+        el.className = "input-valor " + (ok ? "dentro-tolerancia" : "fora-tolerancia");
+        res[id].status = ok ? "C" : "NC"; res[id].valor = v;
     }
 
-    function setBinDuplo(id, lado, s) {
-        if(!res.lados) res.lados = { esq: {valor: "-", status: "Pendente"}, dir: {valor: "-", status: "Pendente"} };
-        
-        res.lados = { valor: s, status: s };
-
-        document.getElementById(`c-${lado}-${id}`).className = 'btn-status' + (s=='C'?' active-c':'');
-        document.getElementById(`nc-${lado}-${id}`).className = 'btn-status' + (s=='NC'?' active-nc':'');
-
-        atualizarStatusDuplo(id);
+    function setBin(id, s, btn) {
+        res[id].status = s; res[id].valor = s;
+        btn.parentElement.querySelectorAll('button').forEach(b => b.style.background = "#f8fafc");
+        btn.style.background = s === "C" ? "var(--ok)" : "var(--nc)";
+        btn.style.color = "white";
     }
 
-    function atualizarStatusDuplo(id) {
-        let sEsq = res.lados.esq.status; 
-        let sDir = res.lados.dir.status;
-        let vEsq = res.lados.esq.valor; 
-        let vDir = res.lados.dir.valor;
+    function voltarParaHome() { document.getElementById('app-conteudo').style.display = 'none'; document.getElementById('tela-home-inspetor').style.display = 'block'; }
 
-        res.valor = `Esq: ${vEsq} | Dir: ${vDir}`;
-
-        if (sEsq === "NC" || sDir === "NC") {
-            res.status = "NC";
-            document.getElementById(`prov-box-${id}`).style.display = "block";
-            document.getElementById(`card-${id}`).style.borderLeftColor = "var(--nc)";
-        } else if (sEsq === "C" && sDir === "C") {
-            res.status = "C";
-            document.getElementById(`prov-box-${id}`).style.display = "none";
-            document.getElementById(`card-${id}`).style.borderLeftColor = "var(--ok)";
-        } else {
-            res.status = "Pendente";
-            document.getElementById(`prov-box-${id}`).style.display = "none";
-            document.getElementById(`card-${id}`).style.borderLeftColor = "#e2e8f0";
-        }
-        verificarAutoNC(id);
-    }
-
-    function verificarAutoNC(idModificado) {
-        let idAspecto = -1; let temNCVisual = false;
-        for(let k in res) {
-            if(res.nome === "Aspecto Geral") idAspecto = parseInt(k);
-            else if(res.status === "NC" && res.isVisual) temNCVisual = true;
-        }
-
-        if(idAspecto !== -1 && idModificado !== idAspecto) {
-            if(temNCVisual) {
-                res.status = 'NC';
-                if(!res.lados) res.lados = { esq: {}, dir: {} };
-                res.lados.esq = {valor: "NC", status: "NC"};
-                res.lados.dir = {valor: "NC", status: "NC"};
-                res.valor = `Esq: NC | Dir: NC`;
-                
-                if (document.getElementById(`c-esq-${idAspecto}`)) {
-                    document.getElementById(`c-esq-${idAspecto}`).className = 'btn-status';
-                    document.getElementById(`nc-esq-${idAspecto}`).className = 'btn-status active-nc';
-                    document.getElementById(`c-dir-${idAspecto}`).className = 'btn-status';
-                    document.getElementById(`nc-dir-${idAspecto}`).className = 'btn-status active-nc';
-                }
-                
-                document.getElementById(`prov-box-${idAspecto}`).style.display = "block";
-                document.getElementById(`card-${idAspecto}`).style.borderLeftColor = "var(--nc)";
-            }
-        }
-    }
-
-    function enviar() {
-        try {
-            const btn = document.getElementById('btn-salvar'); 
-            const op1 = document.getElementById('op1').value; 
-            const op2 = document.getElementById('op2').value;
-            const matrizVal = document.getElementById('matriz').value.trim();
-            
-            if (!matrizVal) return alert("⚠️ O campo Matriz / Cavidade é obrigatório!");
-            if (!op1) return alert("⚠️ O nome do Operador Principal é obrigatório!");
-            for(let k in res) { if(res.status === "Pendente") return alert(`⚠️ Ficha Incompleta: O item ${parseInt(k)+1} não foi preenchido.`); }
-
-            btn.textContent = "SALVANDO..."; btn.style.opacity = "0.7"; btn.disabled = true;
-
-            let assFinal = assinaturaBase64;
-            if(document.getElementById('area-canvas').style.display !== 'none') assFinal = canvas.toDataURL();
-
-            for(let k in res) { 
-                if(res.status === "NC") {
-                    const oq = document.getElementById(`oq-${k}`)?.value || "";
-                    const pq = document.getElementById(`pq-${k}`)?.value || "";
-                    const cm = document.getElementById(`cm-${k}`)?.value || "";
-                    const qm = document.getElementById(`qm-${k}`)?.value || "";
-                    res.descricao = `O QUE: ${oq} | POR QUE: ${pq}`;
-                    res.tratativa = `COMO: ${cm} | QUEM: ${qm}`;
-                }
-            }
-
-            const agora = new Date(); const horaExata = String(agora.getHours()).padStart(2, '0') + ':' + String(agora.getMinutes()).padStart(2, '0');
-            
-            const d = { 
-                modelo: document.getElementById('mod').value, 
-                matriz: matrizVal, 
-                injetora: document.getElementById('inj').value, 
-                turno: document.getElementById('tur').value, 
-                inspecao: document.getElementById('insp').value, 
-                mes: document.getElementById('mes').value, 
-                dia: document.getElementById('dia').value, 
-                horario: horaExata, 
-                operador1: op1, 
-                operador2: op2, 
-                inspetor: nomeInspetorLogado, 
-                matricula_inspetor: matriculaInspetorLogado, 
-                assinatura_inspetor: assFinal, 
-                itens_detalhados: res 
-            };
-
-            fetch(getUrlLimpa('/salvar-inspecao'), { method: 'POST', headers: headersConfig, body: JSON.stringify(d) })
-            .then(async resposta => {
-                const erroData = await resposta.json();
-                if(resposta.ok) { 
-                    alert("✅ Inspeção e Assinatura Gravadas com Sucesso!"); 
-                    document.getElementById('op1').value = ""; document.getElementById('op2').value = ""; 
-                    document.getElementById('matriz').value = ""; limparCanvas(); 
-                    btn.textContent = "SALVAR INSPEÇÃO"; btn.style.opacity = "1"; btn.disabled = false;
-                    voltarParaHome(); 
-                } 
-                else { alert("❌ Erro: " + (erroData.erro || erroData.detail || JSON.stringify(erroData))); btn.textContent = "SALVAR INSPEÇÃO"; btn.style.opacity = "1"; btn.disabled = false; }
-            }).catch(erro => { alert("❌ ERRO DE CONEXÃO. O servidor no Render pode estar dormindo."); btn.textContent = "SALVAR INSPEÇÃO"; btn.style.opacity = "1"; btn.disabled = false; });
-        } catch(e) { alert("❌ Erro interno: " + e.message); }
-    }
-
-    // =====================================================================
-    // 🛡️ ESCUDO JARVIS: PROTEÇÃO CONTRA PRINTS E CÓPIAS
-    // =====================================================================
-    
-    // 1. Bloqueia o clique com o botão direito do mouse
-    document.addEventListener('contextmenu', event => event.preventDefault());
-
-    // 2. Bloqueia atalhos de teclado (PrintScreen, Ctrl+S, Ctrl+P, F12)
-    document.addEventListener('keydown', function(e) {
-        if (
-            e.key === "PrintScreen" || 
-            (e.ctrlKey && (e.key === "p" || e.key === "s" || e.key === "u")) || 
-            e.keyCode === 123 // F12
-        ) {
-            alert("⚠️ AVISO DE SEGURANÇA:\nEsta área contém segredos industriais da HONDA.\nPrints e cópias são estritamente proibidos e rastreáveis.");
+    // 🛡️ ESCUDO DE PROTEÇÃO JARVIS (Anti-Download e Anti-Cópia)
+    document.addEventListener('contextmenu', e => e.preventDefault());
+    document.addEventListener('keydown', e => {
+        if (e.ctrlKey && (e.key === "p" || e.key === "s" || e.key === "u") || e.keyCode === 123) {
             e.preventDefault();
-            return false;
+            alert("⚠️ SEGURANÇA HONDA: Ação bloqueada.");
         }
     });
-
 </script>
 </body>
 </html>
