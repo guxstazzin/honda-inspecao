@@ -8,17 +8,14 @@
     <style>
         :root { --blue: #0056b3; --blue-dark: #003d82; --ok: #10b981; --nc: #ef4444; --bg: #f3f4f6; --text-main: #1f2937; }
         
-        /* 🛡️ BLINDAGEM JARVIS: Impede a seleção de textos e muda o mouse para 'bloqueio' */
         body { 
             font-family: 'Inter', sans-serif; background: var(--bg); margin: 0; color: var(--text-main); -webkit-font-smoothing: antialiased; 
             -webkit-user-select: none; -moz-user-select: none; -ms-user-select: none; user-select: none;
             cursor: default;
         }
 
-        /* Bloqueio visual para áreas de texto (faz o mouse mudar para proibido ao tentar selecionar) */
         .item-texto, .titulo-secao, label { cursor: not-allowed; }
 
-        /* 🛡️ ESCUDO DE VIDRO: A foto fica visível, mas é intocável (não dá pra arrastar nem clicar) */
         #img-modal-dinamica {
             pointer-events: none;
             -webkit-user-drag: none;
@@ -27,10 +24,7 @@
             display: block;
         }
 
-        /* 🛡️ BLOQUEIO DE IMPRESSÃO: Se tentarem dar Ctrl+P, a página sai em branco */
-        @media print {
-            body { display: none !important; }
-        }
+        @media print { body { display: none !important; } }
         
         #tela-login { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(135deg, var(--blue-dark), var(--blue)); z-index: 9999; display: flex; justify-content: center; align-items: center; }
         .login-box { background: white; padding: 40px 30px; border-radius: 20px; box-shadow: 0 15px 35px rgba(0,0,0,0.3); width: 90%; max-width: 350px; text-align: center; }
@@ -38,61 +32,50 @@
         .login-input { width: 100%; padding: 15px; margin-bottom: 15px; border-radius: 10px; border: 1.5px solid #e2e8f0; font-size: 16px; box-sizing: border-box; outline: none; transition: 0.2s; background: #f8fafc; }
         .login-input:focus { border-color: var(--blue); box-shadow: 0 0 0 4px rgba(0,86,179,0.1); background: white; }
         .btn-logar { width: 100%; padding: 15px; background: linear-gradient(135deg, var(--blue-dark), var(--blue)); color: white; border: none; border-radius: 10px; font-weight: 800; font-size: 16px; cursor: pointer; text-transform: uppercase; letter-spacing: 1px; transition: 0.2s; box-shadow: 0 5px 15px rgba(0,86,179,0.3); }
-        .btn-logar:active { transform: translateY(2px); }
         .link-cadastro { margin-top: 15px; display: block; font-size: 14px; color: var(--blue); text-decoration: none; font-weight: 600; cursor: pointer; }
         
         .tela-loading { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 30, 70, 0.95); z-index: 100000; display: none; flex-direction: column; justify-content: center; align-items: center; backdrop-filter: blur(5px); color: white; text-align: center; padding: 20px; box-sizing: border-box; }
         .spinner { width: 60px; height: 60px; border: 6px solid rgba(255,255,255,0.2); border-top-color: var(--ok); border-radius: 50%; animation: spin 1s linear infinite; margin-bottom: 20px; }
         @keyframes spin { to { transform: rotate(360deg); } }
         .loading-tit { font-family: 'Montserrat', sans-serif; font-size: 20px; font-weight: 900; letter-spacing: 1px; margin: 0 0 10px 0; }
-        .loading-sub { font-size: 14px; font-weight: 500; color: #cbd5e1; max-width: 300px; line-height: 1.5; }
 
         #tela-home-inspetor { display: none; text-align: center; padding-top: 40px; }
         .btn-setor { background: white; border: 3px solid var(--blue); padding: 40px 20px; border-radius: 24px; cursor: pointer; transition: 0.3s; box-shadow: 0 15px 30px rgba(0,0,0,0.1); width: 90%; max-width: 350px; margin: 0 auto 30px auto; }
-        .btn-setor:hover { transform: translateY(-5px); box-shadow: 0 20px 35px rgba(0,86,179,0.2); background: linear-gradient(135deg, var(--blue), var(--blue-dark)); color: white; border-color: transparent; }
+        .btn-setor:hover { transform: translateY(-5px); background: linear-gradient(135deg, var(--blue), var(--blue-dark)); color: white; }
         .btn-setor h2 { font-size: 2rem; margin: 0 0 10px 0; font-family: 'Montserrat', sans-serif; }
-        .btn-setor p { font-size: 1rem; font-weight: 600; margin: 0; color: #64748b; }
-        .btn-setor:hover p { color: #e2e8f0; }
 
         #app-conteudo { display: none; padding-bottom: 120px; }
-        .header { background: linear-gradient(135deg, var(--blue-dark), var(--blue)); color: white; padding: 25px 20px; text-align: center; position: sticky; top: 0; z-index: 50; box-shadow: 0 4px 15px rgba(0,86,179,0.3); }
-        .header h1 { font-family: 'Montserrat', sans-serif; margin: 0; font-size: 1.5rem; text-transform: uppercase; letter-spacing: 1px; }
-        .bem-vindo-texto { font-size: 12px; color: #a5f3fc; margin-top: 5px; font-weight: 600; }
+        .header { background: linear-gradient(135deg, var(--blue-dark), var(--blue)); color: white; padding: 25px 20px; text-align: center; position: sticky; top: 0; z-index: 50; }
+        .header h1 { font-family: 'Montserrat', sans-serif; margin: 0; font-size: 1.5rem; text-transform: uppercase; }
         
         .card { background: white; margin: 20px 15px; padding: 25px 20px; border-radius: 16px; box-shadow: 0 10px 25px rgba(0,0,0,0.05); border: 1px solid #f1f5f9; }
-        label { font-size: 12px; font-weight: 700; color: #6b7280; display: block; margin-bottom: 8px; text-transform: uppercase; letter-spacing: 0.5px; }
-        select, input { width: 100%; padding: 14px 16px; margin-bottom: 15px; border-radius: 12px; border: 1.5px solid #e2e8f0; font-size: 16px; font-family: 'Inter', sans-serif; background: #f8fafc; color: var(--text-main); box-sizing: border-box; transition: all 0.2s; outline: none; }
-        select:focus, input:focus { border-color: var(--blue); background: #fff; box-shadow: 0 0 0 4px rgba(0,86,179,0.1); }
+        label { font-size: 12px; font-weight: 700; color: #6b7280; display: block; margin-bottom: 8px; text-transform: uppercase; }
+        select, input { width: 100%; padding: 14px 16px; margin-bottom: 15px; border-radius: 12px; border: 1.5px solid #e2e8f0; font-size: 16px; background: #f8fafc; outline: none; box-sizing: border-box;}
         
-        .titulo-secao { padding: 12px 20px; font-weight: 800; color: var(--blue-dark); border-left: 6px solid var(--blue); margin: 30px 15px 15px 15px; background: #eff6ff; text-transform: uppercase; font-size: 0.9rem; border-radius: 0 8px 8px 0; }
+        .titulo-secao { padding: 12px 20px; font-weight: 800; color: var(--blue-dark); border-left: 6px solid var(--blue); margin: 30px 15px 15px 15px; background: #eff6ff; text-transform: uppercase; font-size: 0.9rem; }
         
-        .item { background: white; margin: 12px 15px; padding: 20px; border-radius: 16px; border-left: 6px solid #e2e8f0; box-shadow: 0 4px 10px rgba(0,0,0,0.03); transition: 0.3s; }
+        .item { background: white; margin: 12px 15px; padding: 20px; border-radius: 16px; border-left: 6px solid #e2e8f0; box-shadow: 0 4px 10px rgba(0,0,0,0.03); }
         .item-header { display: flex; justify-content: space-between; align-items: center; }
-        .item-texto { font-size: 14px; font-weight: 700; flex: 1; padding-right: 10px; line-height: 1.3; color: #334155; display: flex; align-items: center; gap: 5px; cursor: pointer; }
-        .item-texto:hover { color: var(--blue); }
-        .item-unidade { display: block; font-size: 11px; color: #94a3b8; font-weight: 500; margin-top: 4px; }
+        .item-texto { font-size: 14px; font-weight: 700; color: #334155; display: flex; align-items: center; gap: 5px; cursor: pointer; }
+        .item-unidade { font-size: 11px; color: #94a3b8; font-weight: 500; }
         
-        .input-valor { text-align: center; font-weight: 800; margin-bottom: 0 !important; background: #fff !important; font-size: 15px !important; padding: 10px !important; border: 2px solid #e2e8f0;}
-        .fora-tolerancia { border-color: var(--nc) !important; background: #fef2f2 !important; color: var(--nc); }
-        .dentro-tolerancia { border-color: var(--ok) !important; background: #ecfdf5 !important; color: var(--ok); }
+        .input-valor { text-align: center; font-weight: 800; margin-bottom: 0 !important; width: 100px !important; }
+        .fora-tolerancia { border-color: var(--nc) !important; color: var(--nc); }
+        .dentro-tolerancia { border-color: var(--ok) !important; color: var(--ok); }
         
-        .btn-status { border: 2px solid #e2e8f0; font-weight: 800; background: #f8fafc; cursor: pointer; color: #94a3b8; transition: all 0.2s; font-family: 'Inter', sans-serif; font-size: 13px; width: 42px; height: 34px; border-radius: 6px; }
-        .active-c { background: linear-gradient(135deg, var(--ok), #059669) !important; color: white !important; border-color: transparent !important; }
-        .active-nc { background: linear-gradient(135deg, var(--nc), #dc2626) !important; color: white !important; border-color: transparent !important; }
-        
-        .providencia-box { display: none; margin-top: 15px; padding: 15px; background: #fef2f2; border-radius: 12px; border: 1px solid #fecaca; }
-        .input-nc { border: 1.5px solid #fca5a5 !important; background: #fff !important; margin-bottom: 5px !important; font-size: 14px !important; padding: 10px !important;}
-        
-        .footer { position: fixed; bottom: 0; width: 100%; background: rgba(255,255,255,0.9); backdrop-filter: blur(10px); padding: 15px 0 25px 0; border-top: 1px solid #e2e8f0; text-align: center; }
-        .btn-env { background: linear-gradient(135deg, var(--blue-dark), var(--blue)); color: white; border: none; padding: 18px; width: 90%; max-width: 400px; border-radius: 14px; font-weight: 800; font-size: 16px; font-family: 'Montserrat', sans-serif; text-transform: uppercase; letter-spacing: 1px; cursor: pointer; }
+        .btn-status { border: 2px solid #e2e8f0; font-weight: 800; background: #f8fafc; width: 45px; height: 35px; border-radius: 6px; cursor: pointer; }
+        .active-c { background: var(--ok) !important; color: white !important; border-color: transparent !important; }
+        .active-nc { background: var(--nc) !important; color: white !important; border-color: transparent !important; }
+
+        .footer { position: fixed; bottom: 0; width: 100%; background: white; padding: 15px 0 25px 0; border-top: 1px solid #e2e8f0; text-align: center; }
+        .btn-env { background: var(--blue-dark); color: white; border: none; padding: 18px; width: 90%; max-width: 400px; border-radius: 14px; font-weight: 800; font-size: 16px; cursor: pointer; }
     </style>
 </head>
 <body>
 
     <div id="loader-geral" class="tela-loading">
         <div class="spinner"></div>
-        <p class="loading-tit">ACORDANDO SERVIDOR...</p>
-        <p class="loading-sub">Sincronizando com a base de dados Honda. Pode levar alguns segundos.</p>
+        <p class="loading-tit">SINCRONIZANDO DADOS...</p>
     </div>
 
     <div id="tela-login">
@@ -115,13 +98,13 @@
                 <option value="HPDC">Setor: HPDC</option>
             </select>
             <button class="btn-logar" onclick="fazerCadastro()" style="background: var(--ok);">Criar Acesso</button>
-            <span class="link-cadastro" onclick="alternarTelas('box-login')" style="color: #64748b;">⬅ Voltar</span>
+            <span class="link-cadastro" onclick="alternarTelas('box-login')">⬅ Voltar</span>
         </div>
     </div>
 
     <div id="tela-home-inspetor">
         <div class="header"><h1>HONDA</h1><div id="txt-bemvindo-home"></div></div>
-        <h2 style="color: var(--blue-dark); font-family: 'Montserrat'; margin-top: 40px;">QUAL SETOR VOCÊ VAI INSPECIONAR?</h2>
+        <h2 style="color: var(--blue-dark); margin-top: 40px;">QUAL SETOR VOCÊ VAI INSPECIONAR?</h2>
         <div class="btn-setor" onclick="entrarNoSetor('LPDC')"><h2>LPDC</h2><p>Low Press Die Cast</p></div>
         <div class="btn-setor" onclick="entrarNoSetor('HPDC')"><h2>HPDC</h2><p>High Pressure Die Cast</p></div>
     </div>
@@ -143,6 +126,7 @@
                 <option value="K68L">K68L</option>
                 <option value="KVK">KVK</option>
                 <option value="KVSP">KVSP (ASTEC)</option>
+                <option value="KRET">KRET (ASTEC)</option>
             </select>
             <label>Matriz / Cavidade *</label>
             <input type="text" id="matriz" placeholder="Ex: #1, #2..." style="text-transform: uppercase;">
@@ -168,16 +152,15 @@
         <div class="footer"><button id="btn-salvar" class="btn-env" onclick="enviar()">SALVAR INSPEÇÃO</button></div>
     </div>
 
-    <!-- MODAL DE FOTO SEM MARCA D'ÁGUA -->
     <div id="modalVisualizadorItem" style="display: none; position: fixed; z-index: 99999; left: 0; top: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.95); align-items: center; justify-content: center; backdrop-filter: blur(8px);">
         <div style="background: white; width: 95%; max-width: 500px; border-radius: 12px; overflow: hidden;">
             <div style="background: var(--blue-dark); color: white; padding: 15px; display: flex; justify-content: space-between;">
                 <h3 id="titulo-foto-item" style="margin: 0; font-size: 14px;">PADRÃO VISUAL</h3>
-                <span style="cursor:pointer;" onclick="fecharFotoItem()">FECHAR [X]</span>
+                <span style="cursor:pointer;" onclick="fecharFotoItem()">[X]</span>
             </div>
             <div style="padding: 10px; text-align: center;">
-                <img id="img-modal-dinamica" src="" alt="Padrão Honda">
-                <p style="font-size: 11px; color: #ef4444; font-weight: bold; margin-top: 10px;">⚠️ CONTEÚDO CONFIDENCIAL - PROIBIDO DOWNLOAD</p>
+                <img id="img-modal-dinamica" src="">
+                <p style="font-size: 11px; color: #ef4444; font-weight: bold; margin-top: 10px;">PROIBIDO DOWNLOAD</p>
             </div>
         </div>
     </div>
@@ -186,16 +169,28 @@
     const API_URL = "https://gestao-a-vista-r9uv.onrender.com";
     const headersConfig = { 'ngrok-skip-browser-warning': '69420', 'Content-Type': 'application/json' };
     
-    let nomeInspetorLogado = ""; let matriculaInspetorLogado = ""; let assinaturaBase64 = ""; let turnoDoSistema = 1;
-    let setorAutorizadoDoInspetor = ""; let res = {};
+    let nomeInspetorLogado = ""; let matriculaInspetorLogado = ""; let assinaturaBase64 = ""; 
+    let setorAutorizadoDoInspetor = ""; let dadosFicha = {};
 
     const canvas = document.getElementById('pad-assinatura'); const ctx = canvas.getContext('2d'); let desenhando = false;
     ctx.lineWidth = 3; ctx.lineCap = 'round'; ctx.strokeStyle = '#003d82';
-    
     canvas.addEventListener('mousedown', (e) => { desenhando = true; ctx.beginPath(); ctx.moveTo(e.offsetX, e.offsetY); });
     canvas.addEventListener('mousemove', (e) => { if(desenhando){ ctx.lineTo(e.offsetX, e.offsetY); ctx.stroke(); }});
     canvas.addEventListener('mouseup', () => desenhando = false);
     function limparCanvas() { ctx.clearRect(0, 0, canvas.width, canvas.height); }
+
+    const TEMPLATES = {
+        LPDC_PADRAO: [
+            { sec: "Parâmetros de Processo" },
+            { t: "Temperatura do Molde", u: "330-390°C", min: 330, max: 390, img: "https://github.com/guxstazzin/honda-inspecao/blob/main/temp%20molde.png?raw=true" },
+            { t: "Temperatura do Banho", u: "685-710°C", min: 685, max: 710, img: "https://github.com/guxstazzin/honda-inspecao/blob/main/temp%20banho.png?raw=true" },
+            { t: "Tempo de Pressurização", u: "190-210 seg", min: 190, max: 210, img: "https://github.com/guxstazzin/honda-inspecao/blob/main/temp%20pressur.png?raw=true" },
+            { sec: "Qualidade Visual" },
+            { t: "Aspecto Geral", u: "Visual", tipo: "bin" },
+            { t: "Logotipo Honda", u: "Legível", tipo: "bin", img: "https://github.com/guxstazzin/honda-inspecao/blob/main/logotipo.png?raw=true" }
+        ],
+        // Adicione outros templates aqui conforme necessário
+    };
 
     function alternarTelas(id) { document.getElementById('box-login').style.display = 'none'; document.getElementById('box-cadastro').style.display = 'none'; document.getElementById(id).style.display = 'block'; }
     function mostrarLoader() { document.getElementById('loader-geral').style.display = 'flex'; }
@@ -204,24 +199,24 @@
     function fazerLogin() {
         let mat = document.getElementById('login-mat').value.trim().toUpperCase();
         let senha = document.getElementById('login-senha').value;
-        if(!mat.startsWith('SB')) return alert("Matrícula deve iniciar com SB");
+        if(!mat.startsWith('SB')) return alert("Matrícula Inválida");
         mostrarLoader();
         fetch(`${API_URL}/login`, { method: 'POST', headers: headersConfig, body: JSON.stringify({matricula: mat, senha: senha}) })
         .then(async r => {
             esconderLoader();
-            const resData = await r.json();
+            const res = await r.json();
             if(r.ok) { 
-                nomeInspetorLogado = resData.nome; matriculaInspetorLogado = mat; 
-                setorAutorizadoDoInspetor = resData.setor; assinaturaBase64 = resData.assinatura;
+                nomeInspetorLogado = res.nome; matriculaInspetorLogado = mat; 
+                setorAutorizadoDoInspetor = res.setor; 
                 document.getElementById('tela-login').style.display = 'none';
                 document.getElementById('tela-home-inspetor').style.display = 'block';
-                document.getElementById('txt-bemvindo-home').textContent = `INSPETOR: ${nomeInspetorLogado}`;
-            } else alert(resData.erro);
-        }).catch(() => { esconderLoader(); alert("Erro de conexão."); });
+                document.getElementById('txt-bemvindo-home').textContent = `BEM-VINDO, ${nomeInspetorLogado}`;
+            } else alert(res.erro);
+        }).catch(() => { esconderLoader(); alert("Servidor Offline"); });
     }
 
     function entrarNoSetor(setor) {
-        if(setorAutorizadoDoInspetor !== setor) return alert("Acesso negado para este setor.");
+        if(setorAutorizadoDoInspetor !== setor) return alert("Acesso Negado para esta área.");
         document.getElementById('tela-home-inspetor').style.display = 'none';
         document.getElementById('app-conteudo').style.display = 'block';
         const sel = document.getElementById('inj'); sel.innerHTML = "";
@@ -229,8 +224,6 @@
         if(setor === "LPDC") {
             const lpdcs = [4, 5, 6, 7, 9, 11, 12, 13, 14, 15, 16];
             lpdcs.forEach(i => sel.innerHTML += `<option value="${i}">LPDC - MAQ ${i}</option>`);
-            const machs = ['HTOP2','HTOP3','HTOP4','HTOP5','HTOP6','HTOP7','VTOP1','VTOP2','VTOP3'];
-            machs.forEach(m => sel.innerHTML += `<option value="${m}">${m} (Macheira)</option>`);
         } else {
             const hpdcs = [2, 7, 8, 9, 12, 13, 15, 16, 17, 18, 19, 20, 21, 22];
             hpdcs.forEach(i => sel.innerHTML += `<option value="HPDC${i}">INJ. ${i}</option>`);
@@ -238,27 +231,20 @@
         atualizarTemplate();
     }
 
-    function abrirFotoItem(nome, link) {
-        document.getElementById('titulo-foto-item').textContent = nome;
-        document.getElementById('img-modal-dinamica').src = link || "https://raw.githubusercontent.com/guxstazzin/honda-inspecao/main/croqui.jpg.png";
-        document.getElementById('modalVisualizadorItem').style.display = 'flex';
-    }
-    function fecharFotoItem() { document.getElementById('modalVisualizadorItem').style.display = 'none'; }
-
     function atualizarTemplate() {
-        const corpo = document.getElementById('lista-corpo'); corpo.innerHTML = ""; res = {};
-        const itens = [
-            {t: "Temperatura do Molde", u: "330-390°C", min: 330, max: 390},
-            {t: "Aspecto Geral", u: "Visual", tipo: "bin"}
-        ];
-        itens.forEach((it, i) => {
-            res[i] = { nome: it.t, status: "Pendente" };
+        const corpo = document.getElementById('lista-corpo'); corpo.innerHTML = ""; dadosFicha = {};
+        const template = TEMPLATES.LPDC_PADRAO; // Use lógica de modelo aqui depois
+        
+        template.forEach((it, i) => {
+            if(it.sec) return corpo.innerHTML += `<div class="titulo-secao">${it.sec}</div>`;
+            dadosFicha[i] = { nome: it.t, status: "Pendente" };
             corpo.innerHTML += `
                 <div class="item">
                     <div class="item-header">
-                        <div onclick="abrirFotoItem('${it.t}', '')"><b>${i+1}. ${it.t}</b> 📷</div>
-                        ${it.min ? `<input type="number" class="input-valor" placeholder="Valor" oninput="validar(${i}, this, ${it.min}, ${it.max})">` : 
-                        `<button onclick="setBin(${i}, 'C', this)">C</button> <button onclick="setBin(${i}, 'NC', this)">NC</button>`}
+                        <div onclick="abrirFotoItem('${it.t}', '${it.img}')" class="item-texto">${it.t} 📷<br><span class="item-unidade">${it.u}</span></div>
+                        ${it.min !== undefined ? 
+                            `<input type="number" class="input-valor" oninput="validar(${i}, this, ${it.min}, ${it.max})">` : 
+                            `<div style="display:flex;gap:5px;"><button class="btn-status" onclick="setBin(${i},'C',this)">C</button><button class="btn-status" onclick="setBin(${i},'NC',this)">NC</button></div>`}
                     </div>
                 </div>`;
         });
@@ -268,26 +254,25 @@
         const v = parseFloat(el.value);
         const ok = v >= min && v <= max;
         el.className = "input-valor " + (ok ? "dentro-tolerancia" : "fora-tolerancia");
-        res[id].status = ok ? "C" : "NC"; res[id].valor = v;
+        dadosFicha[id].status = ok ? "C" : "NC"; dadosFicha[id].valor = v;
     }
 
     function setBin(id, s, btn) {
-        res[id].status = s; res[id].valor = s;
-        btn.parentElement.querySelectorAll('button').forEach(b => b.style.background = "#f8fafc");
-        btn.style.background = s === "C" ? "var(--ok)" : "var(--nc)";
-        btn.style.color = "white";
+        dadosFicha[id].status = s; dadosFicha[id].valor = s;
+        btn.parentElement.querySelectorAll('button').forEach(b => b.className = "btn-status");
+        btn.className = "btn-status " + (s === 'C' ? "active-c" : "active-nc");
     }
 
+    function abrirFotoItem(n, l) {
+        document.getElementById('titulo-foto-item').textContent = n;
+        document.getElementById('img-modal-dinamica').src = l || "";
+        document.getElementById('modalVisualizadorItem').style.display = 'flex';
+    }
+    function fecharFotoItem() { document.getElementById('modalVisualizadorItem').style.display = 'none'; }
     function voltarParaHome() { document.getElementById('app-conteudo').style.display = 'none'; document.getElementById('tela-home-inspetor').style.display = 'block'; }
 
-    // 🛡️ ESCUDO DE PROTEÇÃO JARVIS (Anti-Download e Anti-Cópia)
     document.addEventListener('contextmenu', e => e.preventDefault());
-    document.addEventListener('keydown', e => {
-        if (e.ctrlKey && (e.key === "p" || e.key === "s" || e.key === "u") || e.keyCode === 123) {
-            e.preventDefault();
-            alert("⚠️ SEGURANÇA HONDA: Ação bloqueada.");
-        }
-    });
+    document.addEventListener('keydown', e => { if (e.ctrlKey && (e.key === "p" || e.key === "s") || e.keyCode === 123) e.preventDefault(); });
 </script>
 </body>
 </html>
