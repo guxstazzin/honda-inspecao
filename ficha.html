@@ -249,6 +249,7 @@
         document.getElementById('tur').value = turnoDoSistema;
     }
 
+    // 🔥 FUNÇÕES DE TELA DE CARREGAMENTO 🔥
     function mostrarLoader() { document.getElementById('loader-geral').style.display = 'flex'; }
     function esconderLoader() { document.getElementById('loader-geral').style.display = 'none'; }
 
@@ -356,16 +357,40 @@
     function fecharFotoItem() { document.getElementById('modalVisualizadorItem').style.display = 'none'; }
 
     // =======================================================================================
-    // 🔥 BANCO DE FICHAS COM PARÂMETROS ÚNICOS (MÁQUINA) E DUPLOS (PEÇA) 🔥
+    // 🔥 BANCO DE DADOS DE CODIFICAÇÃO (TABELA DA FOTO) 🔥
+    // =======================================================================================
+    const MAPA_COD = {
+        dia: {1:'1', 2:'2', 3:'3', 4:'4', 5:'5', 6:'6', 7:'7', 8:'8', 9:'9', 10:'0', 11:'A', 12:'B', 13:'C', 14:'D', 15:'E', 16:'F', 17:'G', 18:'H', 19:'J', 20:'K', 21:'L', 22:'M', 23:'N', 24:'P', 25:'R', 26:'S', 27:'T', 28:'V', 29:'X', 30:'Y', 31:'W'},
+        mes: {1:'A', 2:'B', 3:'C', 4:'D', 5:'F', 6:'H', 7:'K', 8:'L', 9:'N', 10:'S', 11:'T', 12:'V'},
+        ano: {2021:'M', 2022:'N', 2023:'P', 2024:'R', 2025:'S', 2026:'T', 2027:'V', 2028:'W', 2029:'X', 2030:'Y', 2031:'1', 2032:'2'},
+        tur: {1:'1', 2:'2', 3:'3'}
+    };
+
+    function gerarCodigoLote() {
+        const dia = parseInt(document.getElementById('dia').value);
+        const mes = parseInt(document.getElementById('mes').value);
+        const ano = new Date().getFullYear();
+        const tur = parseInt(document.getElementById('tur').value);
+        
+        let cDia = MAPA_COD.dia[dia] || '-';
+        let cMes = MAPA_COD.mes[mes] || '-';
+        let cAno = MAPA_COD.ano[ano] || '-';
+        let cTur = MAPA_COD.tur[tur] || '-';
+        
+        return `${cDia}${cMes}${cAno}${cTur}`;
+    }
+
+    // =======================================================================================
+    // 🔥 BANCO DE FICHAS - TEMPERATURA MOLDE RESTAURADA E DEMAIS ÚNICOS 🔥
     // =======================================================================================
     const TEMPLATES = {
-        LPDC_PADRAO: [ { sec: "Parâmetros de Processo da Injetora" }, { t: "Temperatura do Molde", u: "330-390°C", min: 330, max: 390, unico: true }, { t: "Temperatura do Banho", u: "685-710°C", min: 685, max: 710, unico: true }, { t: "Tempo de Abertura", u: "15-20 seg", min: 15, max: 20, unico: true }, { t: "Tempo de Pressurização", u: "190-210 seg", min: 190, max: 210, unico: true }, { t: "Refrigeração Base Inferior", u: "5 ±1 Kgf/cm²", min: 4, max: 6, unico: true }, { t: "Refrigeração Base Superior", u: "3 ±1 Kgf/cm²", min: 2, max: 4, unico: true }, { t: "Mangueiras da Refrigeração", u: "Visual (Sem obstrução)", tipo: "bin", unico: true }, { t: "Gráfico de Injeção", u: "Painel da Máquina", tipo: "bin", unico: true }, { t: "Programa", u: "Painel (Ex: A-1, B-3)", tipo: "txt", unico: true }, { t: "Teste Tridimensional", u: "Visual / CNC", tipo: "bin", unico: true }, { t: "Desumidificador", u: "Tela Limpa / Área Verde", tipo: "bin", unico: true }, { t: "Checar Forno e Banho", u: "Visual", tipo: "bin", unico: true }, { sec: "Checagem Visual (Peça)" }, { t: "Guias de Fundição", u: "Sem deformações", tipo: "bin" }, { t: "Pré-Furo do Prisioneiro", u: "Sem deformações", tipo: "bin" }, { t: "Referência de Usinagem", u: "Sem falhas/aderências", tipo: "bin" }, { t: "Aloj. Guias e Sedes de Válvula", u: "Sem rebarbas", tipo: "bin" }, { t: "Canais de Admissão/Escape", u: "Sem macho quebrado", tipo: "bin" }, { t: "Câmara de Combustão", u: "Sem rechupe", tipo: "bin" }, { t: "Fechamento Molde com Macho", u: "Visual", tipo: "bin" }, { t: "Pontos Fixação Escapamento", u: "Visual", tipo: "bin" }, { t: "Machos de Areia", u: "Sem deformações", tipo: "bin" }, { t: "Código de Fabricação", u: "Registrar", tipo: "txt" }, { t: "Pintura do Massalote", u: "Visual", tipo: "bin" }, { t: "Logotipo HONDA", u: "Legível", tipo: "bin" }, { t: "Aspecto Geral", u: "Visual", tipo: "bin" } ],
+        LPDC_PADRAO: [ { sec: "Parâmetros de Processo da Injetora" }, { t: "Temperatura do Molde", u: "330-390°C", min: 330, max: 390 }, { t: "Temperatura do Banho", u: "685-710°C", min: 685, max: 710, unico: true }, { t: "Tempo de Abertura", u: "15-20 seg", min: 15, max: 20, unico: true }, { t: "Tempo de Pressurização", u: "190-210 seg", min: 190, max: 210, unico: true }, { t: "Refrigeração Base Inferior", u: "5 ±1 Kgf/cm²", min: 4, max: 6, unico: true }, { t: "Refrigeração Base Superior", u: "3 ±1 Kgf/cm²", min: 2, max: 4, unico: true }, { t: "Mangueiras da Refrigeração", u: "Visual (Sem obstrução)", tipo: "bin", unico: true }, { t: "Gráfico de Injeção", u: "Painel da Máquina", tipo: "bin", unico: true }, { t: "Programa", u: "Painel (Ex: A-1, B-3)", tipo: "txt", unico: true }, { t: "Teste Tridimensional", u: "Visual / CNC", tipo: "bin", unico: true }, { t: "Desumidificador", u: "Tela Limpa / Área Verde", tipo: "bin", unico: true }, { t: "Checar Forno e Banho", u: "Visual", tipo: "bin", unico: true }, { sec: "Checagem Visual (Peça)" }, { t: "Guias de Fundição", u: "Sem deformações", tipo: "bin" }, { t: "Pré-Furo do Prisioneiro", u: "Sem deformações", tipo: "bin" }, { t: "Referência de Usinagem", u: "Sem falhas/aderências", tipo: "bin" }, { t: "Aloj. Guias e Sedes de Válvula", u: "Sem rebarbas", tipo: "bin" }, { t: "Canais de Admissão/Escape", u: "Sem macho quebrado", tipo: "bin" }, { t: "Câmara de Combustão", u: "Sem rechupe", tipo: "bin" }, { t: "Fechamento Molde com Macho", u: "Visual", tipo: "bin" }, { t: "Pontos Fixação Escapamento", u: "Visual", tipo: "bin" }, { t: "Machos de Areia", u: "Sem deformações", tipo: "bin" }, { t: "Código de Fabricação", u: "Registrar", tipo: "txt" }, { t: "Pintura do Massalote", u: "Visual", tipo: "bin" }, { t: "Logotipo HONDA", u: "Legível", tipo: "bin" }, { t: "Aspecto Geral", u: "Visual", tipo: "bin" } ],
         
-        LPDC_KVK: [ { sec: "Parâmetros KVK (Com Paquímetro)" }, { t: "Temperatura do Molde", u: "330-390°C", min: 330, max: 390, unico: true }, { t: "Temperatura do Banho", u: "690-710°C", min: 690, max: 710, unico: true }, { t: "Tempo de Abertura", u: "15 seg", min: 14, max: 16, unico: true }, { t: "Tempo de Pressurização", u: "230 seg", min: 220, max: 240, unico: true }, { t: "Refrigeração Base Inferior", u: "5 ±1 Kgf/cm²", min: 4, max: 6, unico: true }, { t: "Refrigeração Base Superior", u: "3 ±1 Kgf/cm²", min: 2, max: 4, unico: true }, { t: "Mangueiras e Gráfico", u: "Visual", tipo: "bin", unico: true }, { t: "Programa", u: "Ex: D2", tipo: "txt", unico: true }, { sec: "Checagem Dimensional e Visual" }, { t: "Passagem Guia e Tensor Corrente", u: "Rebarba Grossa > 0.4mm", tipo: "bin" }, { t: "Aloj. Guias e Sedes Válvula", u: "Isento excesso", tipo: "bin" }, { t: "Canais Admissão/Escape", u: "Isento macho quebrado", tipo: "bin" }, { t: "Espessura Parede Assentamento", u: "Paquímetro (6.0 ± 1mm)", min: 5.0, max: 7.0 }, { t: "Canais Passagem Óleo", u: "Uniforme", tipo: "bin" }, { t: "Canal de Arrefecimento", u: "Sem Obstrução", tipo: "bin" }, { t: "Código de Fabricação", u: "Ex: 1 D T 3", tipo: "txt" }, { t: "Aspecto Geral", u: "Visual", tipo: "bin" } ],
+        LPDC_KVK: [ { sec: "Parâmetros KVK (Com Paquímetro)" }, { t: "Temperatura do Molde", u: "330-390°C", min: 330, max: 390 }, { t: "Temperatura do Banho", u: "690-710°C", min: 690, max: 710, unico: true }, { t: "Tempo de Abertura", u: "15 seg", min: 14, max: 16, unico: true }, { t: "Tempo de Pressurização", u: "230 seg", min: 220, max: 240, unico: true }, { t: "Refrigeração Base Inferior", u: "5 ±1 Kgf/cm²", min: 4, max: 6, unico: true }, { t: "Refrigeração Base Superior", u: "3 ±1 Kgf/cm²", min: 2, max: 4, unico: true }, { t: "Mangueiras e Gráfico", u: "Visual", tipo: "bin", unico: true }, { t: "Programa", u: "Ex: D2", tipo: "txt", unico: true }, { sec: "Checagem Dimensional e Visual" }, { t: "Passagem Guia e Tensor Corrente", u: "Rebarba Grossa > 0.4mm", tipo: "bin" }, { t: "Aloj. Guias e Sedes Válvula", u: "Isento excesso", tipo: "bin" }, { t: "Canais Admissão/Escape", u: "Isento macho quebrado", tipo: "bin" }, { t: "Espessura Parede Assentamento", u: "Paquímetro (6.0 ± 1mm)", min: 5.0, max: 7.0 }, { t: "Canais Passagem Óleo", u: "Uniforme", tipo: "bin" }, { t: "Canal de Arrefecimento", u: "Sem Obstrução", tipo: "bin" }, { t: "Código de Fabricação", u: "Ex: 1 D T 3", tipo: "txt" }, { t: "Aspecto Geral", u: "Visual", tipo: "bin" } ],
         
         LPDC_K2GF: [ 
             { sec: "Parâmetros de Processo - K2GF" }, 
-            { t: "Temperatura do Molde", u: "330-390°C", min: 330, max: 390, img: "https://github.com/guxstazzin/honda-inspecao/blob/main/temp%20molde.png?raw=true", unico: true }, 
+            { t: "Temperatura do Molde", u: "330-390°C", min: 330, max: 390, img: "https://github.com/guxstazzin/honda-inspecao/blob/main/temp%20molde.png?raw=true" }, 
             { t: "Temperatura do Banho", u: "685-710°C", min: 685, max: 710, img: "https://github.com/guxstazzin/honda-inspecao/blob/main/temp%20banho.png?raw=true", unico: true }, 
             { t: "Tempo de Abertura", u: "15-20 seg", min: 15, max: 20, img: "https://github.com/guxstazzin/honda-inspecao/blob/main/temp%20de%20abertura.png?raw=true", unico: true }, 
             { t: "Tempo de Pressurização", u: "190-210 seg", min: 190, max: 210, img: "https://github.com/guxstazzin/honda-inspecao/blob/main/temp%20pressur.png?raw=true", unico: true }, 
@@ -396,7 +421,7 @@
 
         LPDC_K1SG: [ 
             { sec: "Parâmetros de Processo - K1SG" }, 
-            { t: "Temperatura do Molde", u: "330-390°C", min: 330, max: 390, img: "https://github.com/guxstazzin/honda-inspecao/blob/main/temp%20molde.png?raw=true", unico: true }, 
+            { t: "Temperatura do Molde", u: "330-390°C", min: 330, max: 390, img: "https://github.com/guxstazzin/honda-inspecao/blob/main/temp%20molde.png?raw=true" }, 
             { t: "Temperatura do Banho", u: "685-710°C", min: 685, max: 710, img: "https://github.com/guxstazzin/honda-inspecao/blob/main/temp%20banho.png?raw=true", unico: true }, 
             { t: "Tempo de Abertura", u: "15-20 seg", min: 15, max: 20, img: "https://github.com/guxstazzin/honda-inspecao/blob/main/temp%20de%20abertura.png?raw=true", unico: true }, 
             { t: "Tempo de Pressurização", u: "190-210 seg", min: 190, max: 210, img: "https://github.com/guxstazzin/honda-inspecao/blob/main/temp%20pressur.png?raw=true", unico: true }, 
@@ -427,7 +452,7 @@
 
         LPDC_K68L: [ 
             { sec: "Parâmetros de Processo - K68L" }, 
-            { t: "Temperatura do Molde", u: "330-390°C", min: 330, max: 390, img: "https://github.com/guxstazzin/honda-inspecao/blob/main/temp%20molde.png?raw=true", unico: true }, 
+            { t: "Temperatura do Molde", u: "330-390°C", min: 330, max: 390, img: "https://github.com/guxstazzin/honda-inspecao/blob/main/temp%20molde.png?raw=true" }, 
             { t: "Temperatura do Banho", u: "685-710°C", min: 685, max: 710, img: "https://github.com/guxstazzin/honda-inspecao/blob/main/temp%20banho.png?raw=true", unico: true }, 
             { t: "Tempo de Abertura", u: "15-20 seg", min: 15, max: 20, img: "https://github.com/guxstazzin/honda-inspecao/blob/main/temp%20de%20abertura.png?raw=true", unico: true }, 
             { t: "Tempo de Pressurização", u: "190-210 seg", min: 190, max: 210, img: "https://github.com/guxstazzin/honda-inspecao/blob/main/temp%20pressur.png?raw=true", unico: true }, 
@@ -458,7 +483,7 @@
 
         LPDC_KVSP: [ 
             { sec: "Parâmetros de Processo - KVSP (ASTEC)" }, 
-            { t: "Temperatura do Molde", u: "330-390°C", min: 330, max: 390, img: "https://github.com/guxstazzin/honda-inspecao/blob/main/temp%20molde.png?raw=true", unico: true }, 
+            { t: "Temperatura do Molde", u: "330-390°C", min: 330, max: 390, img: "https://github.com/guxstazzin/honda-inspecao/blob/main/temp%20molde.png?raw=true" }, 
             { t: "Temperatura do Banho", u: "685-710°C", min: 685, max: 710, img: "https://github.com/guxstazzin/honda-inspecao/blob/main/temp%20banho.png?raw=true", unico: true }, 
             { t: "Tempo de Abertura", u: "15-20 seg", min: 15, max: 20, img: "https://github.com/guxstazzin/honda-inspecao/blob/main/temp%20de%20abertura.png?raw=true", unico: true }, 
             { t: "Tempo de Pressurização", u: "190-210 seg", min: 190, max: 210, img: "https://github.com/guxstazzin/honda-inspecao/blob/main/temp%20pressur.png?raw=true", unico: true }, 
@@ -489,7 +514,7 @@
 
         LPDC_KRET: [ 
             { sec: "Parâmetros de Processo - KRET (ASTEC)" }, 
-            { t: "Temperatura do Molde", u: "330-390°C", min: 330, max: 390, img: "https://github.com/guxstazzin/honda-inspecao/blob/main/temp%20molde.png?raw=true", unico: true }, 
+            { t: "Temperatura do Molde", u: "330-390°C", min: 330, max: 390, img: "https://github.com/guxstazzin/honda-inspecao/blob/main/temp%20molde.png?raw=true" }, 
             { t: "Temperatura do Banho", u: "685-710°C", min: 685, max: 710, img: "https://github.com/guxstazzin/honda-inspecao/blob/main/temp%20banho.png?raw=true", unico: true }, 
             { t: "Tempo de Abertura", u: "15-20 seg", min: 15, max: 20, img: "https://github.com/guxstazzin/honda-inspecao/blob/main/temp%20de%20abertura.png?raw=true", unico: true }, 
             { t: "Tempo de Pressurização", u: "190-210 seg", min: 190, max: 210, img: "https://github.com/guxstazzin/honda-inspecao/blob/main/temp%20pressur.png?raw=true", unico: true }, 
@@ -669,7 +694,14 @@
                 }
             } 
             else if (it.tipo === "txt") {
-                ctrl = `<input type="text" class="input-valor" placeholder="..." style="width: 100px !important; border-radius: 8px;" oninput="res[${c}].valor=this.value; res[${c}].status='C'; verificarAutoNC(${c});">`;
+                if (it.t === "Código de Fabricação") {
+                    let autoCod = gerarCodigoLote();
+                    res[c].valor = autoCod;
+                    res[c].status = 'C';
+                    ctrl = `<input type="text" class="input-valor" value="${autoCod}" style="width: 120px !important; border-radius: 8px; border-color: var(--ok); background: #ecfdf5 !important; color: var(--ok);" oninput="res[${c}].valor=this.value; res[${c}].status='C'; verificarAutoNC(${c});">`;
+                } else {
+                    ctrl = `<input type="text" class="input-valor" placeholder="..." style="width: 100px !important; border-radius: 8px;" oninput="res[${c}].valor=this.value; res[${c}].status='C'; verificarAutoNC(${c});">`;
+                }
             } 
             else {
                 if (it.unico) {
