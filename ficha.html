@@ -369,7 +369,7 @@
     }
 
     // =======================================================================================
-    // 🔥 BANCO DE FICHAS COMPLETO (COM LINKS DE IMAGENS EM TUDO) 🔥
+    // 🔥 BANCO DE FICHAS COMPLETO (TODOS OS MODELOS EXATOS COM ATV 1 CAVIDADE E LINKS) 🔥
     // =======================================================================================
     const TEMPLATES = {
         LPDC_K1HG: [ 
@@ -526,30 +526,30 @@
 
         LPDC_ATV: [ 
             { sec: "Parâmetros ATV (HR3)" }, 
-            { t: "Temperatura do Molde", u: "330-390°C", min: 330, max: 390, img: "https://github.com/guxstazzin/honda-inspecao/blob/main/temp%20molde.png?raw=true" }, 
+            { t: "Temperatura do Molde", u: "330-390°C", min: 330, max: 390, unico: true, img: "https://github.com/guxstazzin/honda-inspecao/blob/main/temp%20molde.png?raw=true" }, 
             { t: "Temperatura do Banho", u: "690-710°C", min: 690, max: 710, unico: true, img: "https://github.com/guxstazzin/honda-inspecao/blob/main/temp%20banho.png?raw=true" }, 
             { t: "Tempo de Abertura do Molde", u: "10-30 seg", min: 10, max: 30, unico: true, img: "https://github.com/guxstazzin/honda-inspecao/blob/main/temp%20de%20abertura.png?raw=true" }, 
             { t: "Tempo de Pressurização", u: "105-115 seg", min: 105, max: 115, unico: true, img: "https://github.com/guxstazzin/honda-inspecao/blob/main/temp%20pressur.png?raw=true" }, 
-            { t: "Refrigeração Base Inferior", u: "5 ±1 Kgf/cm²", min: 4, max: 6, img: "https://github.com/guxstazzin/honda-inspecao/blob/main/REF%20INF.png?raw=true" }, 
-            { t: "Refrigeração Base Superior", u: "3 ±1 Kgf/cm²", min: 2, max: 4, img: "https://github.com/guxstazzin/honda-inspecao/blob/main/REF%20SUP.png?raw=true" }, 
-            { t: "Mangueiras da Refrigeração", u: "Visual (Sem obstrução)", tipo: "bin", img: "https://github.com/guxstazzin/honda-inspecao/blob/main/MANG.png?raw=true" }, 
+            { t: "Refrigeração Base Inferior", u: "5 ±1 Kgf/cm²", min: 4, max: 6, unico: true, img: "https://github.com/guxstazzin/honda-inspecao/blob/main/REF%20INF.png?raw=true" }, 
+            { t: "Refrigeração Base Superior", u: "3 ±1 Kgf/cm²", min: 2, max: 4, unico: true, img: "https://github.com/guxstazzin/honda-inspecao/blob/main/REF%20SUP.png?raw=true" }, 
+            { t: "Mangueiras da Refrigeração", u: "Visual (Sem obstrução)", tipo: "bin", unico: true, img: "https://github.com/guxstazzin/honda-inspecao/blob/main/MANG.png?raw=true" }, 
             { t: "Gráfico de Injeção", u: "Dentro dos Limites", tipo: "bin", unico: true, img: "https://github.com/guxstazzin/honda-inspecao/blob/main/grafico.png?raw=true" }, 
             { t: "Programa", u: "( D2 ) / INJ.04 ( A-4 )", tipo: "txt", unico: true, img: "https://github.com/guxstazzin/honda-inspecao/blob/main/programa.png?raw=true" }, 
-            { t: "Teste de Dimensional", u: "Visual (C/NC)", tipo: "bin", img: "LINK_AQUI.jpg" }, 
+            { t: "Teste de Dimensional", u: "Visual (C/NC)", tipo: "bin", unico: true, img: "LINK_AQUI.jpg" }, 
             { t: "Desumidificador", u: "Purgando / Área Verde", tipo: "bin", unico: true, img: "https://github.com/guxstazzin/honda-inspecao/blob/main/desumidificador.png?raw=true" }, 
-            { sec: "Checagem Visual (Peça)" }, 
-            { t: "Guias de Fundição", u: "Não deve haver deformações", tipo: "bin", img: "https://github.com/guxstazzin/honda-inspecao/blob/main/guia%20fundi%C3%A7%C3%A3o.png?raw=true" }, 
-            { t: "Pré-Furo do Prisioneiro", u: "Não deve haver deformações", tipo: "bin", img: "https://github.com/guxstazzin/honda-inspecao/blob/main/prisioneiro.png?raw=true" }, 
-            { t: "Referência de Usinagem (3 Pontos)", u: "Sem falhas, excessos ou aderências", tipo: "bin", img: "https://github.com/guxstazzin/honda-inspecao/blob/main/guia%20de%20usinagem.png?raw=true" }, 
-            { t: "Aloj. Guias e Sedes de Válvula", u: "Sem rebarbas ou macho quebrado", tipo: "bin", img: "https://github.com/guxstazzin/honda-inspecao/blob/main/Prancheta%201.png?raw=true" }, 
-            { t: "Canais de Admissão e Escape", u: "Sem macho quebrado ou batido", tipo: "bin", img: "https://github.com/guxstazzin/honda-inspecao/blob/main/lado%20in%20e%20lado%20ex.png?raw=true" }, 
-            { t: "Câmara de Combustão", u: "Sem deslocamento, rechupe ou deformação", tipo: "bin", img: "https://github.com/guxstazzin/honda-inspecao/blob/main/camara.png?raw=true" }, 
-            { t: "Fechamento do Molde com Macho", u: "Não deve haver macho quebrado", tipo: "bin", img: "https://github.com/guxstazzin/honda-inspecao/blob/main/fechamento.png?raw=true" }, 
-            { t: "Alojamento de Passagem das Varetas", u: "Não deve haver rebarba grossa", tipo: "bin", img: "LINK_AQUI.jpg" },
-            { t: "Pontos Fixação Escapamento (2 Pontos)", u: "Sem falhas ou excesso de material", tipo: "bin", img: "https://github.com/guxstazzin/honda-inspecao/blob/main/ponto%20de%20fixa%C3%A7%C3%A3o%20escp.png?raw=true" }, 
-            { t: "Verificar Machos de Areia", u: "Sem falhas, rebarba e deformações", tipo: "bin", img: "https://github.com/guxstazzin/honda-inspecao/blob/main/machos.png?raw=true" }, 
+            { sec: "Checagem Visual (Peça 1 Cavidade)" }, 
+            { t: "Guias de Fundição", u: "Não deve haver deformações", tipo: "bin", unico: true, img: "https://github.com/guxstazzin/honda-inspecao/blob/main/guia%20fundi%C3%A7%C3%A3o.png?raw=true" }, 
+            { t: "Pré-Furo do Prisioneiro", u: "Não deve haver deformações", tipo: "bin", unico: true, img: "https://github.com/guxstazzin/honda-inspecao/blob/main/prisioneiro.png?raw=true" }, 
+            { t: "Referência de Usinagem (3 Pontos)", u: "Sem falhas, excessos ou aderências", tipo: "bin", unico: true, img: "https://github.com/guxstazzin/honda-inspecao/blob/main/guia%20de%20usinagem.png?raw=true" }, 
+            { t: "Aloj. Guias e Sedes de Válvula", u: "Sem rebarbas ou macho quebrado", tipo: "bin", unico: true, img: "https://github.com/guxstazzin/honda-inspecao/blob/main/Prancheta%201.png?raw=true" }, 
+            { t: "Canais de Admissão e Escape", u: "Sem macho quebrado ou batido", tipo: "bin", unico: true, img: "https://github.com/guxstazzin/honda-inspecao/blob/main/lado%20in%20e%20lado%20ex.png?raw=true" }, 
+            { t: "Câmara de Combustão", u: "Sem deslocamento, rechupe ou deformação", tipo: "bin", unico: true, img: "https://github.com/guxstazzin/honda-inspecao/blob/main/camara.png?raw=true" }, 
+            { t: "Fechamento do Molde com Macho", u: "Não deve haver macho quebrado", tipo: "bin", unico: true, img: "https://github.com/guxstazzin/honda-inspecao/blob/main/fechamento.png?raw=true" }, 
+            { t: "Alojamento de Passagem das Varetas", u: "Não deve haver rebarba grossa", tipo: "bin", unico: true, img: "LINK_AQUI.jpg" },
+            { t: "Pontos Fixação Escapamento (2 Pontos)", u: "Sem falhas ou excesso de material", tipo: "bin", unico: true, img: "https://github.com/guxstazzin/honda-inspecao/blob/main/ponto%20de%20fixa%C3%A7%C3%A3o%20escp.png?raw=true" }, 
+            { t: "Verificar Machos de Areia", u: "Sem falhas, rebarba e deformações", tipo: "bin", unico: true, img: "https://github.com/guxstazzin/honda-inspecao/blob/main/machos.png?raw=true" }, 
             { t: "Código de Fabricação", u: "Conforme tabela", tipo: "txt", unico: true, img: "https://github.com/guxstazzin/honda-inspecao/blob/main/codigo.png?raw=true" }, 
-            { t: "Aspecto Geral", u: "Sem falhas/deslocamento/inclusão/rechupe", tipo: "bin", img: "LINK_AQUI.jpg" } 
+            { t: "Aspecto Geral", u: "Sem falhas/deslocamento/inclusão/rechupe", tipo: "bin", unico: true, img: "LINK_AQUI.jpg" } 
         ],
 
         LPDC_K2K: [ 
