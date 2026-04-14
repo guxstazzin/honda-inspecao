@@ -129,9 +129,16 @@
         .active-c { background: linear-gradient(135deg, var(--success), var(--success-dark)) !important; color: white !important; border-color: transparent !important; }
         .active-nc { background: linear-gradient(135deg, var(--danger), var(--danger-dark)) !important; color: white !important; border-color: transparent !important; }
 
+        /* 🔥 CAIXAS 5W2H E NC 🔥 */
         .box-nc { background: #fef2f2; border-left: 5px solid var(--danger); margin: 0 25px 20px 25px; padding: 15px 20px; border-radius: 8px; font-size: 14px; box-shadow: 0 4px 6px rgba(239, 68, 68, 0.05); }
         .box-nc-desc { margin-bottom: 10px; color: #991b1b; line-height: 1.4; }
         .box-nc-trat { color: #065f46; line-height: 1.4; }
+        
+        .providencia-box { display: none; margin: 5px 25px 20px 25px; padding: 15px; background: #fef2f2; border-radius: 8px; border: 1px solid #fecaca; }
+        .grid-5w { display: grid; grid-template-columns: 1fr; gap: 8px; }
+        .label-nc-5w { font-size: 11px; font-weight: 800; color: #b91c1c; text-transform: uppercase; margin-bottom: 2px; }
+        .input-nc { border: 1.5px solid #fca5a5 !important; background: #fff !important; margin-bottom: 5px !important; font-size: 14px !important; padding: 10px !important; border-radius: 6px; width: 100%; box-sizing: border-box; outline: none; }
+        .input-nc:focus { border-color: var(--danger) !important; }
 
         .login-input { width: 100%; padding: 12px; margin-bottom: 12px; border-radius: 8px; border: 1.5px solid #e2e8f0; font-size: 14px; box-sizing: border-box; background: #f8fafc; outline: none; }
         .login-input:focus { border-color: var(--blue); background: white; }
@@ -144,7 +151,7 @@
         @media (max-width: 768px) { .wrapper-quadro { flex-direction: column; } .grid-turnos { grid-template-columns: 1fr; } .info-ficha { grid-template-columns: 1fr; } .print-duas-colunas { flex-direction: column; } }
         
         /* =========================================================
-           🔥 MODO IMPRESSÃO (PREENCHENDO A TELA TODA COM CLASSE) 🔥
+           🔥 MODO IMPRESSÃO 🔥
            ========================================================= */
         @media print {
             @page { size: A4 portrait; margin: 8mm; } 
@@ -154,9 +161,7 @@
             
             body, #app-conteudo, .modal { background: white !important; }
             
-            /* Flex column com 100vh empurra o rodapé pro chão */
             #modalFicha { position: absolute; left: 0; top: 0; width: 100%; height: 100vh !important; display: flex !important; flex-direction: column !important; background: white !important; padding: 0 !important; }
-            
             .modal-content { width: 100%; height: 100% !important; max-width: 100%; box-shadow: none !important; margin: 0; padding: 0; border: none; border-radius: 0; display: flex !important; flex-direction: column !important; }
             
             .close, .btn-imprimir, .btn-editar, .btn-float-quadro { display: none !important; }
@@ -179,7 +184,6 @@
             .chefia-val img { max-height: 30px !important; margin-bottom: 2px !important; }
             .chefia-val span { font-size: 8px !important; color: #334155 !important; line-height: 1 !important; text-align: center !important; display: block !important; }
 
-            /* Grid preenchendo o espaço livre */
             .print-duas-colunas { display: grid !important; grid-template-columns: 1fr 1fr !important; gap: 15px !important; width: 100% !important; align-items: start !important; flex: 1 !important; }
             
             .modal-secao { padding: 6px 10px !important; margin: 8px 0 4px 0 !important; font-size: 12px !important; background: #eff6ff !important; border-left: 4px solid var(--blue) !important; color: var(--blue-dark) !important; border-radius: 0 !important; break-after: avoid !important; }
@@ -195,9 +199,9 @@
             .btn-v { width: 24px !important; height: 18px !important; font-size: 9px !important; padding: 0 !important; min-width: auto !important; border: 1px solid #cbd5e1 !important; color: #94a3b8 !important; background: #f8fafc !important; border-radius: 4px !important;}
             .botoes-visual-wrapper { gap: 3px !important; }
             
-            .box-nc { padding: 6px 10px !important; margin: 4px 0 6px 0 !important; font-size: 10px !important; border: 1px solid #fca5a5 !important; background: #fef2f2 !important; border-radius: 6px !important; border-left: 4px solid var(--danger) !important; break-inside: avoid !important; }
+            .box-nc, .providencia-box { padding: 6px 10px !important; margin: 4px 0 6px 0 !important; font-size: 10px !important; border: 1px solid #fca5a5 !important; background: #fef2f2 !important; border-radius: 6px !important; border-left: 4px solid var(--danger) !important; break-inside: avoid !important; }
+            .input-nc { border: none !important; background: transparent !important; padding: 0 !important; font-size: 9px !important; margin-bottom: 2px !important;}
             
-            /* Joga a assinatura pro rodapé absoluto da página */
             #assinaturas-container { margin-top: auto !important; width: 100%; page-break-inside: avoid !important; break-inside: avoid !important; padding-top: 10px !important;}
             #assinaturas-container > div:nth-child(2) { padding: 10px !important; margin: 5px 0 0 0 !important; border: 1.5px solid #cbd5e1 !important; background: #f8fafc !important; border-radius: 8px !important; }
             #assinaturas-container > div:nth-child(2) > div { border-right: 1.5px solid #cbd5e1 !important; }
@@ -258,37 +262,27 @@
         <div class="modal-content" style="max-width: 400px; padding: 25px; margin: 10% auto; text-align: center;">
             <span class="close" onclick="fecharModalChefe()" style="top: 10px; right: 15px; color: #94a3b8;">&times;</span>
             <h3 id="tit-assina-chefe" style="color: var(--blue-dark); margin-top: 0; text-transform: uppercase;">Autorizar Ficha</h3>
-            
             <div id="box-login-chefe">
-                <p style="font-size: 13px; color: #64748b; margin-bottom: 15px;">Insira suas credenciais para assinar eletronicamente.</p>
                 <input type="number" id="mat-chefe" class="login-input" placeholder="Sua Matrícula">
                 <input type="password" id="senha-chefe" class="login-input" placeholder="Sua Senha">
                 <button class="btn-acao" onclick="validarChefe()">AUTENTICAR</button>
                 <div style="margin-top: 15px; font-size: 11px; color: #10b981; cursor: pointer; font-weight: bold;" onclick="mostrarCadastroChefe()">Primeiro acesso? Cadastre-se aqui</div>
             </div>
-
             <div id="box-cad-chefe" style="display: none;">
-                <p style="font-size: 13px; color: #64748b; margin-bottom: 15px;">Crie seu acesso de Chefia/Analista.</p>
                 <input type="text" id="cad-nome-chefe" class="login-input" placeholder="Nome Completo">
                 <input type="number" id="cad-mat-chefe" class="login-input" placeholder="Nova Matrícula">
                 <input type="password" id="cad-senha-chefe" class="login-input" placeholder="Crie uma Senha">
                 <button class="btn-acao" style="background: var(--success);" onclick="cadastrarChefe()">CRIAR ACESSO</button>
                 <div style="margin-top: 15px; font-size: 11px; color: var(--blue); cursor: pointer; font-weight: bold;" onclick="mostrarLoginChefe()">⬅ Voltar para Login</div>
             </div>
-
             <div id="box-canvas-chefe" style="display: none;">
-                <p style="font-size: 12px; color: #ef4444; font-weight: bold;">Primeiro acesso detectado!</p>
-                <p style="font-size: 11px; color: #64748b;">Desenhe sua assinatura abaixo. Ela será vinculada à sua matrícula permanentemente.</p>
                 <canvas id="pad-chefe" width="300" height="120" style="border: 2px dashed #cbd5e1; border-radius: 8px; width: 100%; background: #f8fafc; touch-action: none; cursor: crosshair;"></canvas>
                 <div style="display: flex; gap: 10px; margin-top: 15px;">
                     <button class="btn-acao" style="background: #94a3b8; flex: 1;" onclick="limparCanvasChefe()">Limpar</button>
                     <button class="btn-acao" style="background: var(--success); flex: 2;" onclick="gravarEAssinarChefe()">SALVAR E ASSINAR</button>
                 </div>
             </div>
-
             <div id="box-confirma-chefe" style="display: none;">
-                <p style="font-size: 12px; color: #10b981; font-weight: bold;">Identidade Confirmada!</p>
-                <p style="font-size: 11px; color: #64748b;">Sua assinatura vinculada será aplicada na ficha:</p>
                 <img id="preview-img-chefe" style="max-height: 80px; mix-blend-mode: multiply; border: 1px solid #e2e8f0; padding: 10px; border-radius: 8px; margin: 10px 0;">
                 <button class="btn-acao" style="background: var(--success);" onclick="aplicarAssinaturaExistente()">CONFIRMAR ASSINATURA</button>
             </div>
@@ -305,7 +299,7 @@
             <div style="padding: 0 20px 20px 20px;">
                 <div class="q-legenda-box">
                     <span style="color:black">LEGENDA:</span><br>
-                    <span style="display:inline-block; font-family:'Inter', sans-serif; font-size:18px; font-weight:900; color:#10b981;">O</span> : PRODUÇÃO NORMAL | 
+                    <span style="display:inline-block; font-family:'Inter', sans-serif; font-size:18px; font-weight:900; color:#10b981;">O</span> : NORMAL | 
                     <span style="display:inline-block; font-family:'Inter', sans-serif; font-size:24px; font-weight:900; color:#facc15; position:relative; top:2px;">□</span> : SETUP | 
                     <span style="display:inline-block; font-family:'Inter', sans-serif; font-size:18px; font-weight:900; color:#3b82f6;">△</span> : TRY OUT | 
                     <span style="display:inline-block; font-family:'Inter', sans-serif; font-size:18px; font-weight:900; color:#ef4444;">X</span> : STAND BY
@@ -351,67 +345,43 @@
     const API_URL = "https://gestao-a-vista-r9uv.onrender.com"; 
     // =====================================================================
 
-    // Ping para acordar o servidor
     fetch(API_URL + "/ping").catch(e => console.log("Acordando servidor..."));
-
     const headers = { "ngrok-skip-browser-warning": "69420", 'Cache-Control': 'no-cache', 'Content-Type': 'application/json' };
-    
     function getUrlLimpa(url) { return API_URL + url + '?nocache=' + new Date().getTime(); }
 
     const maqLpdcLista = [4, 5, 6, 7, 9, 11, 12, 13, 14, 15, 16]; 
     const maqMachLista = ["H-TOP 2", "H-TOP 3", "H-TOP 4", "H-TOP 5", "H-TOP 6", "H-TOP 7", "V-TOP 1", "V-TOP 2", "V-TOP 3"];
     const maqHpdcLista = [2, 7, 8, 9, 12, 13, 15, 16, 17, 18, 19, 20, 21, 22];
 
-    let setorAtivo = ""; 
-    let telaAtual = "HOME"; 
-    let turnoDoSistemaVisualizacao = 3;
-    
-    // VARIÁVEIS DO MODO DE EDIÇÃO
-    let isEditModo = false;
-    let fichaEmExibicao = null;
+    let setorAtivo = ""; let telaAtual = "HOME"; let turnoDoSistemaVisualizacao = 3;
+    let isEditModo = false; let fichaEmExibicao = null;
 
-    // 🔥 FUNÇÕES DO LOADER 🔥
     function mostrarLoader() { document.getElementById('loader-geral').style.display = 'flex'; }
     function esconderLoader() { document.getElementById('loader-geral').style.display = 'none'; }
 
     function definirTurnoParaVisualizacao() {
-        const agora = new Date();
-        const horaAtual = agora.getHours();
-        if (horaAtual >= 7 && horaAtual < 15) turnoDoSistemaVisualizacao = 1;
-        else if (horaAtual >= 15 && horaAtual < 23) turnoDoSistemaVisualizacao = 2;
-        else turnoDoSistemaVisualizacao = 3;
+        const h = new Date().getHours();
+        if (h >= 7 && h < 15) turnoDoSistemaVisualizacao = 1; else if (h >= 15 && h < 23) turnoDoSistemaVisualizacao = 2; else turnoDoSistemaVisualizacao = 3;
     }
 
     function abrirSetor(setor) {
         setorAtivo = setor; telaAtual = "DASHBOARD";
-        document.getElementById('tela-home').style.display = "none";
-        document.getElementById('area-dashboard').style.display = "block";
-        document.getElementById('btnV').style.display = "block";
-
+        document.getElementById('tela-home').style.display = "none"; document.getElementById('area-dashboard').style.display = "block"; document.getElementById('btnV').style.display = "block";
         if(setor === "LPDC") {
-            document.getElementById('h1').textContent = "VISÃO GERAL";
-            document.getElementById('sub').innerHTML = `<span class="inicial-maior">L</span>OW <span class="inicial-maior">P</span>RESS <span class="inicial-maior">D</span>IE <span class="inicial-maior">C</span>AST`;
-            document.getElementById('col-dir').style.display = "block"; 
-            document.getElementById('tit-col-esq').textContent = "LPDC";
-            document.getElementById('col-esq').style.display = "block";
+            document.getElementById('h1').textContent = "VISÃO GERAL"; document.getElementById('sub').innerHTML = `<span class="inicial-maior">L</span>OW <span class="inicial-maior">P</span>RESS <span class="inicial-maior">D</span>IE <span class="inicial-maior">C</span>AST`;
+            document.getElementById('col-dir').style.display = "block"; document.getElementById('tit-col-esq').textContent = "LPDC"; document.getElementById('col-esq').style.display = "block";
         } else {
-            document.getElementById('h1').textContent = "VISÃO GERAL";
-            document.getElementById('sub').innerHTML = `<span class="inicial-maior">H</span>IGH <span class="inicial-maior">P</span>RESSURE <span class="inicial-maior">D</span>IE <span class="inicial-maior">C</span>AST`;
-            document.getElementById('col-dir').style.display = "none"; 
-            document.getElementById('col-esq').style.display = "block";
-            document.getElementById('tit-col-esq').textContent = "HPDC";
+            document.getElementById('h1').textContent = "VISÃO GERAL"; document.getElementById('sub').innerHTML = `<span class="inicial-maior">H</span>IGH <span class="inicial-maior">P</span>RESSURE <span class="inicial-maior">D</span>IE <span class="inicial-maior">C</span>AST`;
+            document.getElementById('col-dir').style.display = "none"; document.getElementById('tit-col-esq').textContent = "HPDC"; document.getElementById('col-esq').style.display = "block";
         }
-        definirTurnoParaVisualizacao(); 
-        
-        carregarMaquinas(true); 
+        definirTurnoParaVisualizacao(); carregarMaquinas(true); 
     }
 
     function voltarTela() {
         if(telaAtual === "HISTORICO") { abrirSetor(setorAtivo); } 
         else if(telaAtual === "DASHBOARD") {
             telaAtual = "HOME"; setorAtivo = "";
-            document.getElementById('h1').textContent = "HONDA";
-            document.getElementById('sub').innerHTML = "GESTÃO À VISTA";
+            document.getElementById('h1').textContent = "HONDA"; document.getElementById('sub').innerHTML = "GESTÃO À VISTA";
             document.getElementById('area-dashboard').style.display = "none"; document.getElementById('tela-home').style.display = "flex";
         }
     }
@@ -426,41 +396,25 @@
     }
 
     function getCorStatus(status) {
-        if (status === 'O') return '#10b981';
-        if (status === 'X') return '#ef4444';
-        if (status === '□') return '#eab308';
-        if (status === '△') return '#3b82f6';
-        return '#1e3a8a';
+        if (status === 'O') return '#10b981'; if (status === 'X') return '#ef4444'; if (status === '□') return '#eab308'; if (status === '△') return '#3b82f6'; return '#1e3a8a';
     }
 
     function carregarMaquinas(isInitialLoad = false) {
         if (isInitialLoad) mostrarLoader();
-
         let mesHoje = new Date().getMonth() + 1; let diaHoje = new Date().getDate();
-
         Promise.all([ fetch(getUrlLimpa('/maquinas'), {headers}).then(r=>r.json()), fetch(getUrlLimpa('/obter-quadro'), {headers}).then(r=>r.json()) ]).then(([maquinas, quadroSalvo]) => {
-            
             document.getElementById('wrapper-quadro').style.display = "flex"; document.getElementById('painel-unico').style.display = "none";
             document.getElementById('painel-esq').innerHTML = ""; document.getElementById('painel-dir').innerHTML = "";
-            
             if (isInitialLoad) esconderLoader();
-
             maquinas.forEach(m => {
-                if (setorAtivo === "LPDC" && m.setor === "HPDC") return;
-                if (setorAtivo === "HPDC" && m.setor !== "HPDC") return;
-
+                if (setorAtivo === "LPDC" && m.setor === "HPDC") return; if (setorAtivo === "HPDC" && m.setor !== "HPDC") return;
                 const div = document.createElement('div'); div.className = "card-grande"; 
                 const status1 = m.insp1 ? `<div class="s-ok"><span>✅ 1ª INSP OK</span></div>` : `<div class="s-nc"><span>❌ 1ª INSP PEND</span></div>`;
                 const status2 = m.insp2 ? `<div class="s-ok"><span>✅ 2ª INSP OK</span></div>` : `<div class="s-nc"><span>❌ 2ª INSP PEND</span></div>`;
-                
                 let chave = m.id; if (m.setor === "LPDC") chave = `MAQ${m.id}`; 
-                
                 let qMod = (quadroSalvo[chave] && quadroSalvo[chave].modelo) ? quadroSalvo[chave].modelo.toUpperCase() : '---';
-                let qStat = (quadroSalvo[chave] && quadroSalvo[chave].status) ? quadroSalvo[chave].status : 'O';
-                if (qStat === '⬜') qStat = '□'; 
-
+                let qStat = (quadroSalvo[chave] && quadroSalvo[chave].status) ? quadroSalvo[chave].status : 'O'; if (qStat === '⬜') qStat = '□'; 
                 let iconHtml = getIconHTML(qStat);
-
                 div.innerHTML = `
                     <div class="nome-maq">${m.nome}</div>
                     <div style="display: flex; align-items: center; justify-content: center; gap: 8px; margin-bottom: 12px; width: 90%;">
@@ -472,7 +426,6 @@
                     <div class="status-container">${status1}${status2}</div>
                 `;
                 div.onclick=()=>carregarMeses(m.id,m.nome); 
-                
                 if(m.setor === "LPDC" || m.setor === "HPDC") document.getElementById('painel-esq').appendChild(div);
                 else if(m.setor === "MACHEIRA") document.getElementById('painel-dir').appendChild(div);
 
@@ -488,8 +441,7 @@
             })
         }).catch(err => {
             if (isInitialLoad) esconderLoader();
-            console.error("Erro ao carregar máquinas:", err);
-            alert("⚠️ Erro de conexão! O site não conseguiu encontrar o motor no Render. Verifique se o link do Render foi colocado corretamente no código.");
+            alert("⚠️ Erro de conexão com o banco de dados.");
         });
     }
 
@@ -569,8 +521,8 @@
         });
     }
 
+    // Modal Assinaturas Chefia
     let chefiaAcao = { chave: "", cargo: "", titulo: "", mat: "", senha: "", base64: "" };
-
     const canvasC = document.getElementById('pad-chefe'); const ctxC = canvasC.getContext('2d'); let desenhandoC = false; ctxC.lineWidth = 3; ctxC.lineCap = 'round'; ctxC.strokeStyle = '#003d82';
     function getPosC(e) { const rect = canvasC.getBoundingClientRect(); const scaleX = canvasC.width / rect.width; const scaleY = canvasC.height / rect.height; const clientX = e.touches ? e.touches[0].clientX : e.clientX; const clientY = e.touches ? e.touches[0].clientY : e.clientY; return { x: (clientX - rect.left) * scaleX, y: (clientY - rect.top) * scaleY }; }
     canvasC.addEventListener('mousedown', (e) => { desenhandoC = true; ctxC.beginPath(); ctxC.moveTo(getPosC(e).x, getPosC(e).y); }); canvasC.addEventListener('mousemove', (e) => { if(desenhandoC){ ctxC.lineTo(getPosC(e).x, getPosC(e).y); ctxC.stroke(); }}); canvasC.addEventListener('mouseup', () => desenhandoC = false); canvasC.addEventListener('mouseout', () => desenhandoC = false);
@@ -581,7 +533,6 @@
         chefiaAcao = { chave: chave, cargo: cargo, titulo: titulo, mat: "", senha: "", base64: "" }; document.getElementById('tit-assina-chefe').textContent = `Acesso: ${titulo}`; document.getElementById('mat-chefe').value = ""; document.getElementById('senha-chefe').value = "";
         mostrarLoginChefe(); document.getElementById('modalAssinaChefe').style.display = 'block';
     }
-
     function mostrarLoginChefe() { document.getElementById('box-login-chefe').style.display = 'block'; document.getElementById('box-cad-chefe').style.display = 'none'; document.getElementById('box-canvas-chefe').style.display = 'none'; document.getElementById('box-confirma-chefe').style.display = 'none'; }
     function mostrarCadastroChefe() { document.getElementById('box-login-chefe').style.display = 'none'; document.getElementById('box-cad-chefe').style.display = 'block'; }
     function fecharModalChefe() { document.getElementById('modalAssinaChefe').style.display = 'none'; }
@@ -639,7 +590,7 @@
     }
 
     // =====================================================================
-    // 🔥 SISTEMA DE EDIÇÃO DE FICHA (CHEFIA) 🔥
+    // 🔥 SISTEMA DE EDIÇÃO DE FICHA (CHEFIA COM CAIXAS 5W2H) 🔥
     // =====================================================================
     
     function buscarEabrirFicha(idM, idMes, dia, turno, insp) {
@@ -650,39 +601,25 @@
             if(f.erro || f.detail) { alert("❌ Erro ao buscar a ficha."); } 
             else if (!f.modelo) { alert("⚠️ Ficha corrompida."); } 
             else { 
-                // Faz uma cópia profunda da ficha e joga no modo visualização padrão
                 fichaEmExibicao = JSON.parse(JSON.stringify(f));
                 isEditModo = false;
                 renderizarFichaModal();
             } 
-        }).catch(e => {
-            esconderLoader();
-            alert("❌ Erro ao buscar a ficha.");
-        });
+        }).catch(e => { esconderLoader(); alert("❌ Erro ao buscar a ficha."); });
     }
 
     function editarFichaChefe() {
-        if(isEditModo) {
-            isEditModo = false;
-            renderizarFichaModal();
-            return;
-        }
+        if(isEditModo) { isEditModo = false; renderizarFichaModal(); return; }
         let senha = prompt("🔒 Área Restrita\nInsira a senha da Chefia para editar esta ficha:");
         if (senha === 'admin' || senha === 'chefe') {
-            isEditModo = true;
-            renderizarFichaModal();
-            alert("✅ Acesso Liberado!\nA interface de edição foi ativada. Você já pode alterar os valores da ficha.");
-        } else if (senha) {
-            alert("❌ Senha incorreta.");
-        }
+            isEditModo = true; renderizarFichaModal();
+            alert("✅ Acesso Liberado!\nA interface de edição foi ativada. Você já pode alterar os valores e justificar as NCs da ficha.");
+        } else if (senha) { alert("❌ Senha incorreta."); }
     }
 
-    function fecharFichaModal() {
-        isEditModo = false;
-        document.getElementById('modalFicha').style.display = 'none';
-    }
+    function fecharFichaModal() { isEditModo = false; document.getElementById('modalFicha').style.display = 'none'; }
 
-    // Funcões auxiliares para atualizar o JSON local enquanto digita/clica no modo edição
+    // 🔥 ATUALIZA A TELA QUANDO O CHEFE APERTA "NC" 🔥
     function editBin(k, lado, st) {
         if(lado === 'unico') {
             fichaEmExibicao.itens_detalhados[k].valor = st;
@@ -699,47 +636,60 @@
             let sD = fichaEmExibicao.itens_detalhados[k].lados.dir.status;
             fichaEmExibicao.itens_detalhados[k].status = (sE==='NC'||sD==='NC') ? 'NC' : 'C';
         }
+        
+        // Mágica do 5W2H: Mostra ou esconde a caixa ao clicar em C ou NC
+        let stGeral = fichaEmExibicao.itens_detalhados[k].status;
+        let boxProv = document.getElementById(`prov-box-${k}`);
+        if(boxProv) { boxProv.style.display = (stGeral === 'NC') ? 'block' : 'none'; }
     }
 
-    function editNum(k, lado, val) {
-        if(lado === 'unico') {
-            fichaEmExibicao.itens_detalhados[k].valor = val;
-        } else {
-            fichaEmExibicao.itens_detalhados[k].lados[lado].valor = val;
-        }
+    function editNum(k, lado, valStr) {
+        if(lado === 'unico') fichaEmExibicao.itens_detalhados[k].valor = valStr;
+        else fichaEmExibicao.itens_detalhados[k].lados[lado].valor = valStr;
     }
 
+    // SALVAR DADOS DA EDIÇÃO E DO 5W2H
     function salvarEdicaoFicha() {
         fichaEmExibicao.matriz = document.getElementById('edit-matriz').value;
         fichaEmExibicao.operador1 = document.getElementById('edit-op1').value;
         fichaEmExibicao.operador2 = document.getElementById('edit-op2').value;
         
+        // Empacota os textos do 5W2H se o item for NC
+        for(let k in fichaEmExibicao.itens_detalhados) {
+            let dado = fichaEmExibicao.itens_detalhados[k];
+            if(dado.status === 'NC') {
+                let oq = document.getElementById(`oq-${k}`) ? document.getElementById(`oq-${k}`).value : "";
+                let pq = document.getElementById(`pq-${k}`) ? document.getElementById(`pq-${k}`).value : "";
+                let cm = document.getElementById(`cm-${k}`) ? document.getElementById(`cm-${k}`).value : "";
+                let qm = document.getElementById(`qm-${k}`) ? document.getElementById(`qm-${k}`).value : "";
+                dado.descricao = `O QUE: ${oq} | POR QUE: ${pq}`;
+                dado.tratativa = `COMO: ${cm} | QUEM: ${qm}`;
+            } else {
+                dado.descricao = ""; dado.tratativa = ""; // Limpa se mudou de NC para C
+            }
+        }
+        
         mostrarLoader();
         fetch(API_URL + '/atualizar-inspecao', {
-            method: 'POST', // Python costuma aceitar POST para gravar/sobrescrever se não houver PUT
-            headers: headers,
-            body: JSON.stringify(fichaEmExibicao)
+            method: 'POST', headers: headers, body: JSON.stringify(fichaEmExibicao)
         }).then(r => r.json()).then(res => {
             esconderLoader();
             alert("✅ Edição enviada!\n\n(Aviso: Certifique-se de que o backend possui a rota de atualizar configurada para receber essas mudanças.)");
-            isEditModo = false;
-            document.getElementById('modalFicha').style.display='none';
+            isEditModo = false; document.getElementById('modalFicha').style.display='none';
         }).catch(e => {
             esconderLoader();
             alert("✅ Edição finalizada!\n\n(Erro de rota detectado: O Python precisa da rota /atualizar-inspecao para efetivar isso no banco de dados!)");
-            isEditModo = false;
-            document.getElementById('modalFicha').style.display='none';
+            isEditModo = false; document.getElementById('modalFicha').style.display='none';
         });
     }
 
-    // O "Coração" que desenha a ficha (agora adaptado para modo Visualização OU modo Edição)
+    // MODO EXIBIÇÃO / MODO EDIÇÃO
     function renderizarFichaModal() {
         const f = fichaEmExibicao;
         document.getElementById('m-tit').textContent = `Inspeção ${f.modelo} - ${f.turno}º Turno (${f.inspecao}ª Insp.)`;
         const horarioSalvo = f.horario ? f.horario : "Não registrado";
         const chaveFicha = `${f.injetora}-${f.mes}-${f.dia}-${f.turno}-${f.inspecao}`;
         
-        // TOPO: Edição ou Estático
         const matrizDisp = isEditModo ? `<input type="text" id="edit-matriz" value="${f.matriz || ''}" style="width:60px; padding:2px; font-weight:bold; color:#ef4444; border:1px solid #cbd5e1; border-radius:4px; text-align:center;">` : `<span style="color:#ef4444; font-weight:900;">${f.matriz || '---'}</span>`;
 
         document.getElementById('bloco-topo-ficha').innerHTML = `
@@ -839,8 +789,37 @@
                 }
             }
 
-            // Exibir box de problema se for visualização. Na edição, ele pode ignorar o 5W2H e só consertar o valor
-            if (dado.status === "NC" && !isEditModo) { boxNcHtml = `<div class="box-nc"><div class="box-nc-desc"><b>❌ PROBLEMA:</b> ${dado.descricao}</div><div class="box-nc-trat"><b>✅ SOLUÇÃO:</b> ${dado.tratativa}</div></div>`; }
+            // 🔥 A MÁGICA DA CAIXA 5W2H NA EDIÇÃO 🔥
+            if (isEditModo) {
+                let valOq = "", valPq = "", valCm = "", valQm = "";
+                if (dado.descricao) {
+                    let partesDesc = dado.descricao.split(' | ');
+                    valOq = partesDesc[0] ? partesDesc[0].replace('O QUE: ', '').trim() : "";
+                    valPq = partesDesc[1] ? partesDesc[1].replace('POR QUE: ', '').trim() : "";
+                }
+                if (dado.tratativa) {
+                    let partesTrat = dado.tratativa.split(' | ');
+                    valCm = partesTrat[0] ? partesTrat[0].replace('COMO: ', '').trim() : "";
+                    valQm = partesTrat[1] ? partesTrat[1].replace('QUEM: ', '').trim() : "";
+                }
+                
+                boxNcHtml = `
+                <div class="providencia-box" id="prov-box-${key}" style="display: ${dado.status === 'NC' ? 'block' : 'none'};">
+                    <div class="grid-5w">
+                        <label class="label-nc-5w">O QUE? (Problema)</label>
+                        <input type="text" class="input-nc" id="oq-${key}" value="${valOq}" placeholder="Descreva o defeito...">
+                        <label class="label-nc-5w">POR QUE? (Causa Raiz)</label>
+                        <input type="text" class="input-nc" id="pq-${key}" value="${valPq}" placeholder="Qual o motivo aparente?">
+                        <label class="label-nc-5w" style="color:#059669; margin-top:5px;">COMO? (Ação de Correção)</label>
+                        <input type="text" class="input-nc" id="cm-${key}" value="${valCm}" style="border-color:#10b981!important;" placeholder="O que foi feito...">
+                        <label class="label-nc-5w" style="color:#059669;">QUEM? (Responsável)</label>
+                        <input type="text" class="input-nc" id="qm-${key}" value="${valQm}" style="border-color:#10b981!important;" placeholder="Nome do responsável...">
+                    </div>
+                </div>`;
+            } 
+            else if (dado.status === "NC") { 
+                boxNcHtml = `<div class="box-nc"><div class="box-nc-desc"><b>❌ PROBLEMA:</b> ${dado.descricao || ''}</div><div class="box-nc-trat"><b>✅ SOLUÇÃO:</b> ${dado.tratativa || ''}</div></div>`; 
+            }
             
             const html = `<div class="item-view-container"><div class="item-main"><span class="texto-item"><b>${index+1}.</b> ${nomeExibicao}</span><div class="modal-controle-container">${controleHtml}</div></div>${boxNcHtml}</div>`;
             if(index < metade) p1.innerHTML += html; else p2.innerHTML += html;
