@@ -111,11 +111,24 @@
         .item-main { display: flex; justify-content: space-between; align-items: center; padding: 15px 25px; }
         .texto-item { font-size: 15px; color: var(--text-main); flex: 1; padding-right: 20px; font-weight: 500; }
         .modal-controle-container { display: flex; justify-content: center; align-items: center; min-width: 120px; }
+        
+        /* Controles Edit e Visualização */
         .valor-lido { background: #f3f4f6; color: #4b5563; padding: 8px 20px; border-radius: 8px; font-weight: 700; font-size: 16px; min-width: 60px; text-align: center; border: 1px solid rgba(0,0,0,0.05); }
         .v-ok { background: linear-gradient(135deg, var(--success), var(--success-dark)) !important; color: white !important; border: none; box-shadow: 0 4px 10px rgba(16, 185, 129, 0.3); }
         .v-nc { background: linear-gradient(135deg, var(--danger), var(--danger-dark)) !important; color: white !important; border: none; box-shadow: 0 4px 10px rgba(239, 68, 68, 0.3); }
+        
         .botoes-visual-wrapper { display: flex; gap: 8px; }
         .btn-v { width: 48px; height: 40px; border-radius: 8px; border: 1px solid #e2e8f0; font-weight: 700; background: #f8fafc; color: #cbd5e1; display: flex; align-items: center; justify-content: center; pointer-events: none; }
+        
+        /* Controles de MODO EDIÇÃO */
+        .input-valor { text-align: center; font-weight: 800; border: 2px solid #e2e8f0; border-radius: 6px; outline: none; }
+        .input-valor:focus { border-color: var(--blue); }
+        .fora-tolerancia { border-color: var(--danger) !important; color: var(--danger); background: #fef2f2; }
+        .dentro-tolerancia { border-color: var(--success) !important; color: var(--success-dark); background: #ecfdf5; }
+        .btn-status { border: 2px solid #e2e8f0; font-weight: 800; background: #f8fafc; cursor: pointer; color: #94a3b8; transition: all 0.2s; font-family: 'Inter', sans-serif; font-size: 13px; border-radius: 6px; width: 38px; height: 28px; padding:0; display:flex; align-items:center; justify-content:center;}
+        .active-c { background: linear-gradient(135deg, var(--success), var(--success-dark)) !important; color: white !important; border-color: transparent !important; }
+        .active-nc { background: linear-gradient(135deg, var(--danger), var(--danger-dark)) !important; color: white !important; border-color: transparent !important; }
+
         .box-nc { background: #fef2f2; border-left: 5px solid var(--danger); margin: 0 25px 20px 25px; padding: 15px 20px; border-radius: 8px; font-size: 14px; box-shadow: 0 4px 6px rgba(239, 68, 68, 0.05); }
         .box-nc-desc { margin-bottom: 10px; color: #991b1b; line-height: 1.4; }
         .box-nc-trat { color: #065f46; line-height: 1.4; }
@@ -141,7 +154,7 @@
             
             body, #app-conteudo, .modal { background: white !important; }
             
-            /* PULO DO GATO: Flex column com 100vh empurra o rodapé pro chão */
+            /* Flex column com 100vh empurra o rodapé pro chão */
             #modalFicha { position: absolute; left: 0; top: 0; width: 100%; height: 100vh !important; display: flex !important; flex-direction: column !important; background: white !important; padding: 0 !important; }
             
             .modal-content { width: 100%; height: 100% !important; max-width: 100%; box-shadow: none !important; margin: 0; padding: 0; border: none; border-radius: 0; display: flex !important; flex-direction: column !important; }
@@ -154,7 +167,8 @@
             
             .bloco-topo { margin: 12px 0 !important; gap: 12px !important; display: flex !important; flex-wrap: nowrap !important; align-items: stretch !important;}
             .info-ficha { padding: 8px 12px !important; font-size: 11px !important; grid-template-columns: 1fr 1fr 1fr !important; gap: 6px !important; border: 1.5px solid #cbd5e1 !important; border-radius: 8px !important; background: #f8fafc !important; flex: 2 !important;}
-            
+            .info-ficha input { font-size: 11px !important; border: none !important; background: transparent !important; color: #ef4444 !important; }
+
             .chefia-container { flex: 1 !important; min-width: auto !important; border: 1.5px solid #cbd5e1 !important; border-radius: 8px !important; background: white !important; display: flex !important;}
             .chefia-tit { font-size: 9px !important; padding: 4px !important; height: auto !important; background: #e2e8f0 !important; border-bottom: 1.5px solid #cbd5e1 !important; color: var(--blue-dark) !important; font-weight: bold !important; }
             .chefia-box { border-right: 1.5px solid #cbd5e1 !important; flex: 1 !important;}
@@ -190,8 +204,11 @@
             #assinaturas-container > div:nth-child(2) > div:last-child { border-right: none !important; }
             #assinaturas-container > div:nth-child(2) > div > div:nth-child(2) { font-size: 11px !important; color: #1e293b !important; font-weight: bold !important; }
             #assinaturas-container > div:nth-child(2) > div > div:nth-child(1) { font-size: 9px !important; color: #64748b !important; margin-bottom: 4px !important;}
+            #assinaturas-container input { font-size: 11px !important; border: none !important; background: transparent !important; }
 
             .rodape-auditoria { margin: 10px 0 0 0 !important; padding-top: 5px !important; font-size: 9px !important; color: #64748b !important; border-top: 1.5px solid #cbd5e1 !important; page-break-inside: avoid !important; display: flex !important; justify-content: space-between !important;}
+            
+            #bloco-botao-salvar-edicao { display: none !important; }
         }
     </style>
 </head>
@@ -311,7 +328,7 @@
     <div id="modalFicha" class="modal">
         <div class="modal-content">
             <div class="modal-header">
-                <span class="close" onclick="document.getElementById('modalFicha').style.display='none'">&times;</span>
+                <span class="close" onclick="fecharFichaModal()">&times;</span>
                 <span class="btn-imprimir" onclick="window.print()" title="Imprimir Ficha">🖨️</span>
                 <span class="btn-editar" onclick="editarFichaChefe()" title="Editar Ficha">✏️</span>
                 <h2 id="m-tit">Ficha de Inspeção</h2>
@@ -325,6 +342,7 @@
             </div>
             
             <div id="assinaturas-container"></div>
+            <div id="bloco-botao-salvar-edicao"></div>
         </div>
     </div>
 
@@ -332,6 +350,9 @@
     // =====================================================================
     const API_URL = "https://gestao-a-vista-r9uv.onrender.com"; 
     // =====================================================================
+
+    // Ping para acordar o servidor
+    fetch(API_URL + "/ping").catch(e => console.log("Acordando servidor..."));
 
     const headers = { "ngrok-skip-browser-warning": "69420", 'Cache-Control': 'no-cache', 'Content-Type': 'application/json' };
     
@@ -344,6 +365,10 @@
     let setorAtivo = ""; 
     let telaAtual = "HOME"; 
     let turnoDoSistemaVisualizacao = 3;
+    
+    // VARIÁVEIS DO MODO DE EDIÇÃO
+    let isEditModo = false;
+    let fichaEmExibicao = null;
 
     // 🔥 FUNÇÕES DO LOADER 🔥
     function mostrarLoader() { document.getElementById('loader-geral').style.display = 'flex'; }
@@ -378,7 +403,6 @@
         }
         definirTurnoParaVisualizacao(); 
         
-        // Passa "true" para mostrar o loading no primeiro clique
         carregarMaquinas(true); 
     }
 
@@ -608,50 +632,131 @@
         } else {
             if (cargo === 'chefe_cq') {
                 let assinaturaSalva = localStorage.getItem('assinatura_chefe_mes_' + mes);
-                if(assinaturaSalva) return `<div style="display:flex; flex-direction:column; align-items:center; justify-content:center; padding: 5px;"><img src="${assinaturaSalva}" style="max-height: 45px; mix-blend-mode: multiply;"><span style="font-size: 10px; font-weight: bold; color: var(--success-dark); margin-top: 2px;">CHEFE CQ (AUTO)</span></div>`;
+                if(assinaturaSalva && !isEditModo) return `<div style="display:flex; flex-direction:column; align-items:center; justify-content:center; padding: 5px;"><img src="${assinaturaSalva}" style="max-height: 45px; mix-blend-mode: multiply;"><span style="font-size: 10px; font-weight: bold; color: var(--success-dark); margin-top: 2px;">CHEFE CQ (AUTO)</span></div>`;
             }
             return `<button class="btn-assinar" onclick="iniciarAssinaturaChefe('${chaveFicha}', '${cargo}', '${titulo}')">🔒 ASSINAR</button>`;
         }
     }
 
+    // =====================================================================
+    // 🔥 SISTEMA DE EDIÇÃO DE FICHA (CHEFIA) 🔥
+    // =====================================================================
+    
     function buscarEabrirFicha(idM, idMes, dia, turno, insp) {
-        mostrarLoader(); // 🔥 LIGA O CARREGAMENTO AO CLICAR EM "VER FICHA"
+        mostrarLoader();
         fetch(getUrlLimpa(`/ver-ficha/${idM}/${idMes}/${dia}/${turno}/${insp}`), {headers})
         .then(r=>r.json()).then(f=>{ 
-            esconderLoader(); // 🔥 DESLIGA QUANDO RESPONDER
+            esconderLoader();
             if(f.erro || f.detail) { alert("❌ Erro ao buscar a ficha."); } 
             else if (!f.modelo) { alert("⚠️ Ficha corrompida."); } 
-            else { abrirModal(f); } 
+            else { 
+                // Faz uma cópia profunda da ficha e joga no modo visualização padrão
+                fichaEmExibicao = JSON.parse(JSON.stringify(f));
+                isEditModo = false;
+                renderizarFichaModal();
+            } 
         }).catch(e => {
             esconderLoader();
             alert("❌ Erro ao buscar a ficha.");
         });
     }
 
-    function abrirModal(f) {
+    function editarFichaChefe() {
+        if(isEditModo) {
+            isEditModo = false;
+            renderizarFichaModal();
+            return;
+        }
+        let senha = prompt("🔒 Área Restrita\nInsira a senha da Chefia para editar esta ficha:");
+        if (senha === 'admin' || senha === 'chefe') {
+            isEditModo = true;
+            renderizarFichaModal();
+            alert("✅ Acesso Liberado!\nA interface de edição foi ativada. Você já pode alterar os valores da ficha.");
+        } else if (senha) {
+            alert("❌ Senha incorreta.");
+        }
+    }
+
+    function fecharFichaModal() {
+        isEditModo = false;
+        document.getElementById('modalFicha').style.display = 'none';
+    }
+
+    // Funcões auxiliares para atualizar o JSON local enquanto digita/clica no modo edição
+    function editBin(k, lado, st) {
+        if(lado === 'unico') {
+            fichaEmExibicao.itens_detalhados[k].valor = st;
+            fichaEmExibicao.itens_detalhados[k].status = st;
+            document.getElementById(`e-c-uni-${k}`).className = 'btn-status' + (st==='C'?' active-c':'');
+            document.getElementById(`e-nc-uni-${k}`).className = 'btn-status' + (st==='NC'?' active-nc':'');
+        } else {
+            fichaEmExibicao.itens_detalhados[k].lados[lado].valor = st;
+            fichaEmExibicao.itens_detalhados[k].lados[lado].status = st;
+            document.getElementById(`e-c-${lado}-${k}`).className = 'btn-status' + (st==='C'?' active-c':'');
+            document.getElementById(`e-nc-${lado}-${k}`).className = 'btn-status' + (st==='NC'?' active-nc':'');
+            
+            let sE = fichaEmExibicao.itens_detalhados[k].lados.esq.status;
+            let sD = fichaEmExibicao.itens_detalhados[k].lados.dir.status;
+            fichaEmExibicao.itens_detalhados[k].status = (sE==='NC'||sD==='NC') ? 'NC' : 'C';
+        }
+    }
+
+    function editNum(k, lado, val) {
+        if(lado === 'unico') {
+            fichaEmExibicao.itens_detalhados[k].valor = val;
+        } else {
+            fichaEmExibicao.itens_detalhados[k].lados[lado].valor = val;
+        }
+    }
+
+    function salvarEdicaoFicha() {
+        fichaEmExibicao.matriz = document.getElementById('edit-matriz').value;
+        fichaEmExibicao.operador1 = document.getElementById('edit-op1').value;
+        fichaEmExibicao.operador2 = document.getElementById('edit-op2').value;
+        
+        mostrarLoader();
+        fetch(API_URL + '/atualizar-inspecao', {
+            method: 'POST', // Python costuma aceitar POST para gravar/sobrescrever se não houver PUT
+            headers: headers,
+            body: JSON.stringify(fichaEmExibicao)
+        }).then(r => r.json()).then(res => {
+            esconderLoader();
+            alert("✅ Edição enviada!\n\n(Aviso: Certifique-se de que o backend possui a rota de atualizar configurada para receber essas mudanças.)");
+            isEditModo = false;
+            document.getElementById('modalFicha').style.display='none';
+        }).catch(e => {
+            esconderLoader();
+            alert("✅ Edição finalizada!\n\n(Erro de rota detectado: O Python precisa da rota /atualizar-inspecao para efetivar isso no banco de dados!)");
+            isEditModo = false;
+            document.getElementById('modalFicha').style.display='none';
+        });
+    }
+
+    // O "Coração" que desenha a ficha (agora adaptado para modo Visualização OU modo Edição)
+    function renderizarFichaModal() {
+        const f = fichaEmExibicao;
         document.getElementById('m-tit').textContent = `Inspeção ${f.modelo} - ${f.turno}º Turno (${f.inspecao}ª Insp.)`;
         const horarioSalvo = f.horario ? f.horario : "Não registrado";
         const chaveFicha = `${f.injetora}-${f.mes}-${f.dia}-${f.turno}-${f.inspecao}`;
         
-        const objInspetor = f.assinatura_inspetor ? { nome: f.inspetor, assinatura: f.assinatura_inspetor } : f.inspetor;
-        const b_insp = renderAssinaturaCaixa(objInspetor, 'inspetor', 'Inspetor', chaveFicha, f.mes);
-        const b_ana = renderAssinaturaCaixa(f.analista, 'analista', 'Analista', chaveFicha, f.mes);
-        const b_cq = renderAssinaturaCaixa(f.chefe_cq, 'chefe_cq', 'Chefe C.Q.', chaveFicha, f.mes);
+        // TOPO: Edição ou Estático
+        const matrizDisp = isEditModo ? `<input type="text" id="edit-matriz" value="${f.matriz || ''}" style="width:60px; padding:2px; font-weight:bold; color:#ef4444; border:1px solid #cbd5e1; border-radius:4px; text-align:center;">` : `<span style="color:#ef4444; font-weight:900;">${f.matriz || '---'}</span>`;
 
         document.getElementById('bloco-topo-ficha').innerHTML = `
             <div class="info-ficha">
                 <div><b>Modelo:</b> ${f.modelo}</div>
-                <div><b>Matriz/Cav:</b> <span style="color:#ef4444; font-weight:900;">${f.matriz || '---'}</span></div>
+                <div><b>Matriz/Cav:</b> ${matrizDisp}</div>
                 <div><b>Máquina:</b> ${f.injetora.includes('TOP') ? f.injetora.replace('HTOP', 'H-TOP ').replace('VTOP', 'V-TOP ') : 'INJ ' + f.injetora.replace('HPDC','')}</div>
                 <div><b>Data:</b> ${f.dia}/${f.mes}/2026</div>
                 <div><b>Horário:</b> ${horarioSalvo}</div>
                 <div><b>Inspeção:</b> ${f.inspecao}ª do ${f.turno}º Turno</div>
             </div>
+            ${!isEditModo ? `
             <div class="chefia-container">
-                <div class="chefia-box"><div class="chefia-tit">INSPETOR</div><div class="chefia-val" style="padding:0;">${b_insp}</div></div>
-                <div class="chefia-box"><div class="chefia-tit">ANALISTA</div><div class="chefia-val" style="padding:0;">${b_ana}</div></div>
-                <div class="chefia-box"><div class="chefia-tit">CHEFE C.Q.</div><div class="chefia-val" style="padding:0;">${b_cq}</div></div>
-            </div>
+                <div class="chefia-box"><div class="chefia-tit">INSPETOR</div><div class="chefia-val" style="padding:0;">${renderAssinaturaCaixa(f.assinatura_inspetor ? { nome: f.inspetor, assinatura: f.assinatura_inspetor } : f.inspetor, 'inspetor', 'Inspetor', chaveFicha, f.mes)}</div></div>
+                <div class="chefia-box"><div class="chefia-tit">ANALISTA</div><div class="chefia-val" style="padding:0;">${renderAssinaturaCaixa(f.analista, 'analista', 'Analista', chaveFicha, f.mes)}</div></div>
+                <div class="chefia-box"><div class="chefia-tit">CHEFE C.Q.</div><div class="chefia-val" style="padding:0;">${renderAssinaturaCaixa(f.chefe_cq, 'chefe_cq', 'Chefe C.Q.', chaveFicha, f.mes)}</div></div>
+            </div>` : ''}
         `;
 
         const p1=document.getElementById('p1'); const p2=document.getElementById('p2'); p1.innerHTML=""; p2.innerHTML="";
@@ -668,65 +773,111 @@
             let controleHtml = ""; let boxNcHtml = "";
             
             if (dado.lados) {
-                const renderLado = (ladoInfo, label) => {
+                const renderLado = (ladoInfo, label, ladoKey) => {
                     const cor = ladoInfo.status === 'C' ? 'v-ok' : (ladoInfo.status === 'NC' ? 'v-nc' : '');
-                    return `
-                    <div style="display:flex; flex-direction:column; align-items:center;">
-                        <span style="font-size:9px; color:#64748b; font-weight:900; letter-spacing:0.5px; margin-bottom:2px;">${label}</span>
-                        <div class="valor-lido ${cor}" style="padding: 4px 10px; min-width: 40px;">${ladoInfo.valor}</div>
-                    </div>`;
+                    if(isEditModo) {
+                        if(dado.isVisual || ladoInfo.status === 'C' || ladoInfo.status === 'NC' || ladoInfo.valor === 'C' || ladoInfo.valor === 'NC') {
+                            return `
+                            <div style="display:flex; flex-direction:column; align-items:center; gap:2px;">
+                                <span style="font-size:9px; color:#64748b; font-weight:900;">${label}</span>
+                                <div style="display:flex; gap:2px;">
+                                    <button class="btn-status ${ladoInfo.status==='C'?'active-c':''}" onclick="editBin('${key}','${ladoKey}','C')" id="e-c-${ladoKey}-${key}">C</button>
+                                    <button class="btn-status ${ladoInfo.status==='NC'?'active-nc':''}" onclick="editBin('${key}','${ladoKey}','NC')" id="e-nc-${ladoKey}-${key}">NC</button>
+                                </div>
+                            </div>`;
+                        } else {
+                            return `
+                            <div style="display:flex; flex-direction:column; align-items:center; gap:2px;">
+                                <span style="font-size:9px; color:#64748b; font-weight:900;">${label}</span>
+                                <input type="text" class="input-valor ${cor}" value="${ladoInfo.valor==='-'?'':ladoInfo.valor}" onchange="editNum('${key}','${ladoKey}',this.value)" style="width:40px; height:22px; font-size:11px; padding:2px;">
+                            </div>`;
+                        }
+                    } else {
+                        return `
+                        <div style="display:flex; flex-direction:column; align-items:center;">
+                            <span style="font-size:9px; color:#64748b; font-weight:900; letter-spacing:0.5px; margin-bottom:2px;">${label}</span>
+                            <div class="valor-lido ${cor}" style="padding: 4px 10px; min-width: 40px;">${ladoInfo.valor}</div>
+                        </div>`;
+                    }
                 };
                 controleHtml = `
                 <div style="display:flex; gap: 15px; align-items: center; justify-content: center;">
-                    ${renderLado(dado.lados.esq, 'ESQ')}
-                    ${renderLado(dado.lados.dir, 'DIR')}
+                    ${renderLado(dado.lados.esq, 'ESQ', 'esq')}
+                    ${renderLado(dado.lados.dir, 'DIR', 'dir')}
                 </div>`;
             } 
             else {
                 if (dado.valor !== undefined && dado.valor !== null && !String(dado.valor).includes('Esq:')) {
                     const cor = (dado.status === "C") ? "v-ok" : "v-nc";
-                    controleHtml = `<div class="valor-lido ${cor}">${dado.valor}</div>`;
-                } else if (String(dado.valor).includes('Esq:')) {
+                    if(isEditModo) {
+                        let isBin = (dado.isVisual || dado.status === 'C' || dado.status === 'NC' || dado.valor === 'C' || dado.valor === 'NC') && isNaN(parseFloat(dado.valor));
+                        if(isBin) {
+                            controleHtml = `
+                            <div style="display:flex; justify-content:center; gap:4px;">
+                                <button class="btn-status ${dado.status==='C'?'active-c':''}" onclick="editBin('${key}','unico','C')" id="e-c-uni-${key}">C</button>
+                                <button class="btn-status ${dado.status==='NC'?'active-nc':''}" onclick="editBin('${key}','unico','NC')" id="e-nc-uni-${key}">NC</button>
+                            </div>`;
+                        } else {
+                            controleHtml = `<input type="text" class="input-valor ${cor}" value="${dado.valor==='-'?'':dado.valor}" onchange="editNum('${key}','unico',this.value)" style="width:60px; height:22px; font-size:11px; padding:2px;">`;
+                        }
+                    } else {
+                        controleHtml = `<div class="valor-lido ${cor}">${dado.valor}</div>`;
+                    }
+                } else if (String(dado.valor).includes('Esq:')) { // Prevenção antiga
                     const cor = (dado.status === "C") ? "v-ok" : "v-nc";
                     controleHtml = `<div class="valor-lido ${cor}" style="font-size: 11px;">${dado.valor}</div>`;
                 } else { 
-                    controleHtml = `<div class="botoes-visual-wrapper"><div class="btn-v ${dado.status=='C'?'v-ok':''}">C</div><div class="btn-v ${dado.status=='NC'?'v-nc':''}">NC</div></div>`; 
+                    if(isEditModo) {
+                        controleHtml = `
+                        <div style="display:flex; justify-content:center; gap:4px;">
+                            <button class="btn-status ${dado.status==='C'?'active-c':''}" onclick="editBin('${key}','unico','C')" id="e-c-uni-${key}">C</button>
+                            <button class="btn-status ${dado.status==='NC'?'active-nc':''}" onclick="editBin('${key}','unico','NC')" id="e-nc-uni-${key}">NC</button>
+                        </div>`;
+                    } else {
+                        controleHtml = `<div class="botoes-visual-wrapper"><div class="btn-v ${dado.status=='C'?'v-ok':''}">C</div><div class="btn-v ${dado.status=='NC'?'v-nc':''}">NC</div></div>`; 
+                    }
                 }
             }
 
-            if (dado.status === "NC") { boxNcHtml = `<div class="box-nc"><div class="box-nc-desc"><b>❌ PROBLEMA:</b> ${dado.descricao}</div><div class="box-nc-trat"><b>✅ SOLUÇÃO:</b> ${dado.tratativa}</div></div>`; }
+            // Exibir box de problema se for visualização. Na edição, ele pode ignorar o 5W2H e só consertar o valor
+            if (dado.status === "NC" && !isEditModo) { boxNcHtml = `<div class="box-nc"><div class="box-nc-desc"><b>❌ PROBLEMA:</b> ${dado.descricao}</div><div class="box-nc-trat"><b>✅ SOLUÇÃO:</b> ${dado.tratativa}</div></div>`; }
             
             const html = `<div class="item-view-container"><div class="item-main"><span class="texto-item"><b>${index+1}.</b> ${nomeExibicao}</span><div class="modal-controle-container">${controleHtml}</div></div>${boxNcHtml}</div>`;
             if(index < metade) p1.innerHTML += html; else p2.innerHTML += html;
         });
 
-        const op1 = (f.operador1 && f.operador1.trim() !== "") ? f.operador1 : "Não Informado"; const op2 = (f.operador2 && f.operador2.trim() !== "") ? f.operador2 : "---";
+        // Operadores e Botão Salvar
+        const op1Disp = isEditModo ? `<input type="text" id="edit-op1" value="${f.operador1 || ''}" style="width:90%; padding:4px; text-align:center; font-weight:700; border:1px solid #cbd5e1; border-radius:4px;">` : `<div style="font-weight: 700; color: #334155; font-size: 16px;">${f.operador1 || "Não Informado"}</div>`;
+        const op2Disp = isEditModo ? `<input type="text" id="edit-op2" value="${f.operador2 || ''}" style="width:90%; padding:4px; text-align:center; font-weight:700; border:1px solid #cbd5e1; border-radius:4px;">` : `<div style="font-weight: 700; color: #334155; font-size: 16px;">${f.operador2 || "---"}</div>`;
         
         document.getElementById('assinaturas-container').innerHTML = `
             <div class="modal-secao">Operadores do Processo</div>
             <div style="display: flex; gap: 15px; padding: 20px 25px; text-align: center; background: #f8fafc; margin: 15px 25px; border-radius: 12px; border: 1px solid #cbd5e1; box-shadow: inset 0 2px 4px rgba(0,0,0,0.02);">
-                <div style="flex: 1; border-right: 1px solid #cbd5e1; padding-right: 10px;"><div style="font-size: 11px; color: #64748b; font-weight: bold; text-transform: uppercase; margin-bottom: 8px;">Operador Principal</div><div style="font-weight: 700; color: #334155; font-size: 16px;">${op1}</div></div>
-                <div style="flex: 1;"><div style="font-size: 11px; color: #64748b; font-weight: bold; text-transform: uppercase; margin-bottom: 8px;">Operador Auxiliar</div><div style="font-weight: 700; color: #334155; font-size: 16px;">${op2}</div></div>
+                <div style="flex: 1; border-right: 1px solid #cbd5e1; padding-right: 10px;"><div style="font-size: 11px; color: #64748b; font-weight: bold; text-transform: uppercase; margin-bottom: 8px;">Operador Principal</div>${op1Disp}</div>
+                <div style="flex: 1;"><div style="font-size: 11px; color: #64748b; font-weight: bold; text-transform: uppercase; margin-bottom: 8px;">Operador Auxiliar</div>${op2Disp}</div>
             </div>
-            <div class="rodape-auditoria" style="display: flex; justify-content: space-between; font-size: 11px; color: #64748b; margin: 25px 35px 15px 35px; padding-top: 15px; border-top: 1px solid #cbd5e1; font-family: monospace; font-weight: bold;">
-                <span>PERÍODO DE RETENÇÃO: 5 ANOS</span><span>FD 15010 R17-00</span>
-            </div>
+            ${!isEditModo ? `<div class="rodape-auditoria" style="display: flex; justify-content: space-between; font-size: 11px; color: #64748b; margin: 25px 35px 15px 35px; padding-top: 15px; border-top: 1px solid #cbd5e1; font-family: monospace; font-weight: bold;"><span>PERÍODO DE RETENÇÃO: 5 ANOS</span><span>FD 15010 R17-00</span></div>` : ''}
         `;
-        document.getElementById('modalFicha').style.display="block";
-    }
 
-    function editarFichaChefe() {
-        let senha = prompt("🔒 Área Restrita\nInsira a senha da Chefia para editar esta ficha:");
-        if (senha === 'admin' || senha === 'chefe') alert("✅ Acesso Liberado!\n\nA interface de edição foi ativada.\n\n(Nota da Engenharia: A gravação no banco de dados será plugada na próxima atualização do Cérebro Python!)");
-        else if (senha) alert("❌ Senha incorreta.");
+        if(isEditModo) {
+            document.getElementById('bloco-botao-salvar-edicao').innerHTML = `
+                <div style="text-align: center; margin: 20px 0; padding-bottom: 20px;">
+                    <button class="btn-salvar-quadro" style="width: 80%; max-width: 400px; font-size: 16px; padding: 18px;" onclick="salvarEdicaoFicha()">💾 SALVAR ALTERAÇÕES DA FICHA</button>
+                </div>
+            `;
+            document.getElementById('bloco-botao-salvar-edicao').style.display = 'block';
+        } else {
+            document.getElementById('bloco-botao-salvar-edicao').style.display = 'none';
+        }
+
+        document.getElementById('modalFicha').style.display="block";
     }
 
     // =====================================================================
     // 📡 RADAR DO JARVIS: ATUALIZAÇÃO AUTOMÁTICA DO PAINEL (A CADA 30s)
     // =====================================================================
     setInterval(() => {
-        if (telaAtual === "DASHBOARD") {
-            // Passa "false" para não mostrar a tela preta e não piscar a tela da chefia
+        if (telaAtual === "DASHBOARD" && !isEditModo) {
             carregarMaquinas(false);
         }
     }, 30000); 
