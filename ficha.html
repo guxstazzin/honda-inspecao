@@ -882,11 +882,17 @@
                 const erroData = await resposta.json();
                 if(resposta.ok) { 
                     alert("✅ Inspeção e Assinatura Gravadas com Sucesso!"); 
+                    
+                    // 👇 ADICIONE ESTAS 3 LINHAS AQUI 👇
+                    if(document.getElementById('area-canvas').style.display !== 'none') {
+                        assinaturaBase64 = assFinal; // O app decora a assinatura para não pedir de novo hoje!
+                    }
+
                     document.getElementById('op1').value = ""; document.getElementById('op2').value = ""; 
                     document.getElementById('matriz').value = ""; limparCanvas(); 
                     btn.textContent = "SALVAR INSPEÇÃO"; btn.style.opacity = "1"; btn.disabled = false;
                     voltarParaHome(); 
-                } 
+                }
                 else { alert("❌ Erro: " + (erroData.erro || erroData.detail || JSON.stringify(erroData))); btn.textContent = "SALVAR INSPEÇÃO"; btn.style.opacity = "1"; btn.disabled = false; }
             }).catch(erro => { alert("❌ ERRO DE CONEXÃO. O servidor no Render pode estar dormindo."); btn.textContent = "SALVAR INSPEÇÃO"; btn.style.opacity = "1"; btn.disabled = false; });
         } catch(e) { alert("❌ Erro interno: " + e.message); }
