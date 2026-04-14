@@ -101,6 +101,7 @@
             <select id="cad-setor" class="login-input" required style="font-weight: bold; color: var(--blue-dark);">
                 <option value="" disabled selected>Selecione sua Área...</option>
                 <option value="LPDC">Setor: LPDC</option>
+                <option value="MACHARIA">Setor: MACHARIA</option>
                 <option value="HPDC">Setor: HPDC</option>
             </select>
             <button class="btn-logar" onclick="fazerCadastro()" style="background: var(--ok);">Criar Acesso</button>
@@ -117,6 +118,10 @@
         <div class="btn-setor" onclick="entrarNoSetor('LPDC')">
             <h2>LPDC</h2>
             <p>Low Press Die Cast</p>
+        </div>
+        <div class="btn-setor" onclick="entrarNoSetor('MACHARIA')">
+            <h2>MACHARIA</h2>
+            <p>Macho de Areia (H-TOP / V-TOP)</p>
         </div>
         <div class="btn-setor" onclick="entrarNoSetor('HPDC')">
             <h2>HPDC</h2>
@@ -137,17 +142,7 @@
 
             <label>Modelo da Peça</label>
             <select id="mod" onchange="atualizarTemplate()">
-                <option value="K1HG">K1HG</option>
-                <option value="K2GF">K2GF</option>
-                <option value="K1SG">K1SG</option>
-                <option value="K68L">K68L</option>
-                <option value="KVK">KVK</option>
-                <option value="KPF">KPF</option>
-                <option value="ATV">ATV (HR3)</option>
-                <option value="K2K">K2K (1 CAVIDADE)</option>
-                <option value="KVSP">KVSP (ASTEC)</option>
-                <option value="KRET">KRET (ASTEC)</option>
-            </select>
+                </select>
 
             <label style="color: var(--blue-dark);">Matriz / Cavidade *</label>
             <input type="text" id="matriz" placeholder="Ex: #1, #2..." style="font-weight: bold; color: var(--blue-dark); text-transform: uppercase;">
@@ -211,8 +206,8 @@
 <script>
     const API_URL = "https://gestao-a-vista-r9uv.onrender.com"; 
 
-    // 🔥 PING ADICIONADO AQUI: Acorda o motor do Render em background
-    fetch(API_URL + "/ping").catch(e => console.log("Acordando motor silenciosamente..."));
+    // 🔥 PING PARA ACORDAR O SERVIDOR AO ABRIR O APLICATIVO
+    fetch(API_URL + "/ping").catch(e => console.log("Acordando servidor silenciosamente..."));
 
     const headersConfig = { 'ngrok-skip-browser-warning': '69420', 'Content-Type': 'application/json' };
     
@@ -312,13 +307,25 @@
     function entrarNoSetor(setorClicado) {
         if(setorAutorizadoDoInspetor !== setorClicado) { alert(`⛔ ACESSO NEGADO!\n\nVocê está cadastrado exclusivamente na área de ${setorAutorizadoDoInspetor}.`); return; }
         document.getElementById('tela-home-inspetor').style.display = 'none'; document.getElementById('app-conteudo').style.display = 'block'; document.getElementById('titulo-ficha-header').textContent = `Ficha - ${setorClicado}`;
+        
         const selectInj = document.getElementById('inj'); selectInj.innerHTML = "";
+        const selectMod = document.getElementById('mod'); selectMod.innerHTML = "";
         
         if(setorClicado === "LPDC") {
             let optLpdc = '<optgroup label="LPDC">'; const lpdcs = [4, 5, 6, 7, 9, 11, 12, 13, 14, 15, 16]; lpdcs.forEach(i => optLpdc += `<option value="${i}">LPDC - MAQ ${i}</option>`); optLpdc += '</optgroup>';
+            selectInj.innerHTML = optLpdc;
+            
+            const mods = ["K1HG", "K2GF", "K1SG", "K68L", "KVK", "KPF", "ATV", "K2K", "KVSP", "KRET"];
+            mods.forEach(m => selectMod.innerHTML += `<option value="${m}">${m}${m==='K2K'?' (1 CAV)':''}</option>`);
+        } 
+        else if (setorClicado === "MACHARIA") {
             let optMach = '<optgroup label="MACHEIRA (H-TOP / V-TOP)">'; const machs = ['HTOP2','HTOP3','HTOP4','HTOP5','HTOP6','HTOP7','VTOP1','VTOP2','VTOP3']; machs.forEach(m => optMach += `<option value="${m}">${m.replace('HTOP','H-TOP ').replace('VTOP','V-TOP ')} (Macheira)</option>`); optMach += '</optgroup>';
-            selectInj.innerHTML = optLpdc + optMach;
-        } else {
+            selectInj.innerHTML = optMach;
+
+            const mods = ["K68L JACKET", "K2GF JACKET", "K1HG JACKET", "KWTM JACKET", "K1HG POTTON", "K2GF/K1SG/K68L POTTON"];
+            mods.forEach(m => selectMod.innerHTML += `<option value="${m}">${m}</option>`);
+        }
+        else {
             let optHpdc = '<optgroup label="HPDC">'; const hpdcs = [2,7,8,9,12,13,15,16,17,18,19,20,21,22]; hpdcs.forEach(i => optHpdc += `<option value="HPDC${i}">INJ. ${i}</option>`); optHpdc += '</optgroup>';
             selectInj.innerHTML = optHpdc;
         }
@@ -372,9 +379,10 @@
     }
 
     // =======================================================================================
-    // 🔥 BANCO DE FICHAS COMPLETO (TODOS OS MODELOS EXATOS COM ATV 1 CAVIDADE E LINKS) 🔥
+    // 🔥 BANCO DE FICHAS COMPLETO (TODOS OS MODELOS: LPDC + MACHERIA) 🔥
     // =======================================================================================
     const TEMPLATES = {
+        // ------------------------- LPDC -------------------------
         LPDC_K1HG: [ 
             { sec: "Parâmetros de Processo da Injetora" }, 
             { t: "Temperatura do Molde", u: "330-390°C", min: 330, max: 390, img: "https://github.com/guxstazzin/honda-inspecao/blob/main/temp%20molde.png?raw=true" }, 
@@ -583,6 +591,136 @@
             { t: "Pintura do Massalote", u: "Sem deslocamento", tipo: "bin", unico: true, img: "https://github.com/guxstazzin/honda-inspecao/blob/main/massalote.png?raw=true" }, 
             { t: "Logotipo HONDA", u: "Legível e correto", tipo: "bin", unico: true, img: "https://github.com/guxstazzin/honda-inspecao/blob/main/logotipo.png?raw=true" },
             { t: "Aspecto Geral", u: "Sem falhas/deslocamento/inclusão/rechupe", tipo: "bin", unico: true, img: "LINK_AQUI.jpg" } 
+        ],
+
+        // ------------------------- MACHARIA (H-TOP e V-TOP) -------------------------
+        "MACHEIRA_K68L JACKET": [ 
+            { sec: "Parâmetros H-TOP" }, 
+            { t: "Temperatura do Molde Fixo", u: "240-280°C", min: 240, max: 280, unico: true, img: "LINK_AQUI.jpg" }, 
+            { t: "Temperatura do Molde Móvel", u: "240-280°C", min: 240, max: 280, unico: true, img: "LINK_AQUI.jpg" }, 
+            { t: "Tempo de Cozimento", u: "25-35 Seg.", min: 25, max: 35, unico: true, img: "LINK_AQUI.jpg" }, 
+            { t: "Tempo de Sopro", u: "2-4 Seg.", min: 2, max: 4, unico: true, img: "LINK_AQUI.jpg" }, 
+            { t: "Pressão do Sopro", u: "0.4-0.6 Mpa", min: 0.4, max: 0.6, unico: true, img: "LINK_AQUI.jpg" }, 
+            { t: "Pressão do Ar", u: "0.4-0.6 Mpa", min: 0.4, max: 0.6, unico: true, img: "LINK_AQUI.jpg" }, 
+            { sec: "Inspeção e Qualidade" }, 
+            { t: "Área de Rebarbação", u: "Isento na junção", tipo: "bin", unico: true, img: "LINK_AQUI.jpg" }, 
+            { t: "Coloração da Peça", u: "Marrom e Uniforme", tipo: "bin", unico: true, img: "LINK_AQUI.jpg" }, 
+            { t: "Canal do Sopro", u: "Não haver excessos", tipo: "bin", unico: true, img: "LINK_AQUI.jpg" }, 
+            { t: "Marca de Extração na Peça", u: "0.0 - 0.2mm", min: 0.0, max: 0.2, unico: true, img: "LINK_AQUI.jpg" }, 
+            { t: "Altura do Inserto Região Comando", u: "48.6 - 48.8mm", min: 48.6, max: 48.8, unico: true, img: "LINK_AQUI.jpg" }, 
+            { t: "Aspecto Geral", u: "Sem desencontro/falha", tipo: "bin", unico: true, img: "LINK_AQUI.jpg" } 
+        ],
+
+        "MACHEIRA_K2GF JACKET": [ 
+            { sec: "Parâmetros H-TOP" }, 
+            { t: "Temperatura do Molde Fixo", u: "240-280°C", min: 240, max: 280, unico: true, img: "LINK_AQUI.jpg" }, 
+            { t: "Temperatura do Molde Móvel", u: "240-280°C", min: 240, max: 280, unico: true, img: "LINK_AQUI.jpg" }, 
+            { t: "Tempo de Cozimento", u: "25-35 Seg.", min: 25, max: 35, unico: true, img: "LINK_AQUI.jpg" }, 
+            { t: "Tempo de Sopro", u: "2-4 Seg.", min: 2, max: 4, unico: true, img: "LINK_AQUI.jpg" }, 
+            { t: "Pressão do Sopro", u: "0.4-0.6 Mpa", min: 0.4, max: 0.6, unico: true, img: "LINK_AQUI.jpg" }, 
+            { t: "Pressão do Ar", u: "0.4-0.6 Mpa", min: 0.4, max: 0.6, unico: true, img: "LINK_AQUI.jpg" }, 
+            { sec: "Inspeção e Qualidade" }, 
+            { t: "Área de Rebarbação", u: "Isento na junção", tipo: "bin", unico: true, img: "LINK_AQUI.jpg" }, 
+            { t: "Coloração da Peça", u: "Marrom e Uniforme", tipo: "bin", unico: true, img: "LINK_AQUI.jpg" }, 
+            { t: "Canal do Sopro", u: "Não haver excessos", tipo: "bin", unico: true, img: "LINK_AQUI.jpg" }, 
+            { t: "Marca de Extração na Peça", u: "0.0 - 0.2mm", min: 0.0, max: 0.2, unico: true, img: "LINK_AQUI.jpg" }, 
+            { t: "Altura do Inserto Região Comando", u: "48.6 - 48.8mm", min: 48.6, max: 48.8, unico: true, img: "LINK_AQUI.jpg" }, 
+            { t: "Aspecto Geral", u: "Sem desencontro/falha", tipo: "bin", unico: true, img: "LINK_AQUI.jpg" } 
+        ],
+
+        "MACHEIRA_K1HG JACKET": [ 
+            { sec: "Parâmetros H-TOP" }, 
+            { t: "Temperatura do Molde Fixo", u: "240-280°C", min: 240, max: 280, unico: true, img: "LINK_AQUI.jpg" }, 
+            { t: "Temperatura do Molde Móvel", u: "240-280°C", min: 240, max: 280, unico: true, img: "LINK_AQUI.jpg" }, 
+            { t: "Tempo de Cozimento", u: "25-45 Seg.", min: 25, max: 45, unico: true, img: "LINK_AQUI.jpg" }, 
+            { t: "Tempo de Sopro", u: "2-4 Seg.", min: 2, max: 4, unico: true, img: "LINK_AQUI.jpg" }, 
+            { t: "Pressão do Sopro", u: "0.4-0.6 Mpa", min: 0.4, max: 0.6, unico: true, img: "LINK_AQUI.jpg" }, 
+            { t: "Pressão do Ar", u: "0.4-0.6 Mpa", min: 0.4, max: 0.6, unico: true, img: "LINK_AQUI.jpg" }, 
+            { sec: "Inspeção e Qualidade" }, 
+            { t: "Área de Rebarbação", u: "Isento na junção", tipo: "bin", unico: true, img: "LINK_AQUI.jpg" }, 
+            { t: "Coloração da Peça", u: "Marrom e Uniforme", tipo: "bin", unico: true, img: "LINK_AQUI.jpg" }, 
+            { t: "Canal do Sopro", u: "Não haver excessos", tipo: "bin", unico: true, img: "LINK_AQUI.jpg" }, 
+            { t: "Marca de Extração na Peça", u: "0.0 - 0.2mm", min: 0.0, max: 0.2, unico: true, img: "LINK_AQUI.jpg" }, 
+            { t: "Medida do Macho Jacket", u: "42.80 -0.2mm", min: 42.60, max: 42.80, unico: true, img: "LINK_AQUI.jpg" }, 
+            { t: "Aspecto Geral", u: "Sem desencontro/falha", tipo: "bin", unico: true, img: "LINK_AQUI.jpg" } 
+        ],
+
+        "MACHEIRA_KWTM JACKET": [ 
+            { sec: "Parâmetros H-TOP" }, 
+            { t: "Temperatura do Molde Fixo", u: "280 ±10°C", min: 270, max: 290, unico: true, img: "LINK_AQUI.jpg" }, 
+            { t: "Temperatura do Molde Móvel", u: "280 ±10°C", min: 270, max: 290, unico: true, img: "LINK_AQUI.jpg" }, 
+            { t: "Tempo de Sopro", u: "4 Seg +1/-0", min: 4, max: 5, unico: true, img: "LINK_AQUI.jpg" }, 
+            { t: "Tempo de Cozimento", u: "50 Seg ±5", min: 45, max: 55, unico: true, img: "LINK_AQUI.jpg" }, 
+            { t: "Pressão do Ar", u: "6 Bar ±2", min: 4, max: 8, unico: true, img: "LINK_AQUI.jpg" }, 
+            { t: "Pressão de Sopro", u: "2.5 Bar ±2", min: 0.5, max: 4.5, unico: true, img: "LINK_AQUI.jpg" }, 
+            { sec: "Inspeção e Qualidade" }, 
+            { t: "Junção do Macho", u: "Sem desencontros", tipo: "bin", unico: true, img: "LINK_AQUI.jpg" }, 
+            { t: "Coloração da Peça", u: "Marrom e Uniforme", tipo: "bin", unico: true, img: "LINK_AQUI.jpg" }, 
+            { t: "Canal do Sopro", u: "Não haver excessos", tipo: "bin", unico: true, img: "LINK_AQUI.jpg" }, 
+            { t: "Marca de Extração na Peça", u: "0.0 - 0.2mm", min: 0.0, max: 0.2, unico: true, img: "LINK_AQUI.jpg" }, 
+            { t: "Altura do Pino da Vela", u: "29.6 -0.1mm", min: 29.5, max: 29.6, unico: true, img: "LINK_AQUI.jpg" }, 
+            { t: "Aspecto Geral", u: "Visual / Isento", tipo: "bin", unico: true, img: "LINK_AQUI.jpg" } 
+        ],
+
+        "MACHEIRA_K1HG POTTON": [ 
+            { sec: "Parâmetros V-TOP" }, 
+            { t: "Temperatura do Molde Fixo", u: "290-310°C", min: 290, max: 310, unico: true, img: "LINK_AQUI.jpg" }, 
+            { t: "Temperatura do Molde Móvel", u: "290-310°C", min: 290, max: 310, unico: true, img: "LINK_AQUI.jpg" }, 
+            { t: "Pressão Operação do Ar", u: "0.4-0.6 Mpa", min: 0.4, max: 0.6, unico: true, img: "LINK_AQUI.jpg" }, 
+            { t: "Pressão do Sopro", u: "0.2-0.4 Mpa", min: 0.2, max: 0.4, unico: true, img: "LINK_AQUI.jpg" }, 
+            { t: "Tempo de Sopro", u: "2-4 Seg.", min: 2, max: 4, unico: true, img: "LINK_AQUI.jpg" }, 
+            { t: "Tempo de Cozimento", u: "25-45 Seg.", min: 25, max: 45, unico: true, img: "LINK_AQUI.jpg" }, 
+            { sec: "Inspeção Dimensional (Paquímetro)" }, 
+            { t: "Junção Lado Fixo/Móvel", u: "Isento desencontro", tipo: "bin", unico: true, img: "LINK_AQUI.jpg" }, 
+            { t: "Coloração da Peça", u: "Marrom e Uniforme", tipo: "bin", unico: true, img: "LINK_AQUI.jpg" }, 
+            { t: "Marca Extração", u: "0.0 - 0.2mm", min: 0.0, max: 0.2, unico: true, img: "LINK_AQUI.jpg" }, 
+            { t: "Região das Sedes (IN/EX)", u: "Isento deformação", tipo: "bin", unico: true, img: "LINK_AQUI.jpg" }, 
+            { t: "Armazenagem do Macho", u: "Máx 14 jogos/Bandeja", tipo: "bin", unico: true, img: "LINK_AQUI.jpg" }, 
+            { t: "Medida Macho Potton IN", u: "25.2 +0.3/-0.2", min: 25.0, max: 25.5, unico: true, img: "LINK_AQUI.jpg" }, 
+            { t: "Diâmetro Potton IN (A)", u: "24.1 +0.3/-0.2", min: 23.9, max: 24.4, unico: true, img: "LINK_AQUI.jpg" }, 
+            { t: "Diâmetro Potton IN (B)", u: "24.1 +0.3/-0.2", min: 23.9, max: 24.4, unico: true, img: "LINK_AQUI.jpg" }, 
+            { t: "Apoio Macho IN (1)", u: "8.0 +0.3/-0.2", min: 7.8, max: 8.3, unico: true, img: "LINK_AQUI.jpg" }, 
+            { t: "Apoio Macho IN (2)", u: "8.0 +0.3/-0.2", min: 7.8, max: 8.3, unico: true, img: "LINK_AQUI.jpg" }, 
+            { t: "Apoio Macho IN (3)", u: "10.1 +0.3/-0.2", min: 9.9, max: 10.4, unico: true, img: "LINK_AQUI.jpg" }, 
+            { t: "Apoio Macho IN (4)", u: "10.1 +0.3/-0.2", min: 9.9, max: 10.4, unico: true, img: "LINK_AQUI.jpg" }, 
+            { t: "Medida Macho Potton EX", u: "23.1 +0.3/-0.2", min: 22.9, max: 23.4, unico: true, img: "LINK_AQUI.jpg" }, 
+            { t: "Diâmetro Potton EX (A)", u: "21.1 +0.3/-0.2", min: 20.9, max: 21.4, unico: true, img: "LINK_AQUI.jpg" }, 
+            { t: "Diâmetro Potton EX (B)", u: "21.1 +0.3/-0.2", min: 20.9, max: 21.4, unico: true, img: "LINK_AQUI.jpg" }, 
+            { t: "Apoio Macho EX (1)", u: "6.0 +0.3/-0.2", min: 5.8, max: 6.3, unico: true, img: "LINK_AQUI.jpg" }, 
+            { t: "Apoio Macho EX (2)", u: "6.0 +0.3/-0.2", min: 5.8, max: 6.3, unico: true, img: "LINK_AQUI.jpg" }, 
+            { t: "Apoio Macho EX (3)", u: "10.1 +0.3/-0.2", min: 9.9, max: 10.4, unico: true, img: "LINK_AQUI.jpg" }, 
+            { t: "Apoio Macho EX (4)", u: "10.1 +0.3/-0.2", min: 9.9, max: 10.4, unico: true, img: "LINK_AQUI.jpg" }, 
+            { t: "Aspecto Geral", u: "Isento falha enchimento", tipo: "bin", unico: true, img: "LINK_AQUI.jpg" } 
+        ],
+
+        "MACHEIRA_K2GF/K1SG/K68L POTTON": [ 
+            { sec: "Parâmetros V-TOP" }, 
+            { t: "Temperatura do Molde Fixo", u: "290-330°C", min: 290, max: 330, unico: true, img: "LINK_AQUI.jpg" }, 
+            { t: "Temperatura do Molde Móvel", u: "290-330°C", min: 290, max: 330, unico: true, img: "LINK_AQUI.jpg" }, 
+            { t: "Pressão Operação do Ar", u: "0.4-0.6 Mpa", min: 0.4, max: 0.6, unico: true, img: "LINK_AQUI.jpg" }, 
+            { t: "Pressão do Sopro", u: "0.2-0.4 Mpa", min: 0.2, max: 0.4, unico: true, img: "LINK_AQUI.jpg" }, 
+            { t: "Tempo de Sopro", u: "2-4 Seg.", min: 2, max: 4, unico: true, img: "LINK_AQUI.jpg" }, 
+            { t: "Tempo de Cozimento", u: "25-35 Seg.", min: 25, max: 35, unico: true, img: "LINK_AQUI.jpg" }, 
+            { sec: "Inspeção Dimensional (Paquímetro)" }, 
+            { t: "Junção Lado Fixo/Móvel", u: "Isento desencontro", tipo: "bin", unico: true, img: "LINK_AQUI.jpg" }, 
+            { t: "Coloração da Peça", u: "Marrom e Uniforme", tipo: "bin", unico: true, img: "LINK_AQUI.jpg" }, 
+            { t: "Marca Extração", u: "0.0 - 0.2mm", min: 0.0, max: 0.2, unico: true, img: "LINK_AQUI.jpg" }, 
+            { t: "Armazenagem do Macho", u: "Máx 14 jogos/Bandeja", tipo: "bin", unico: true, img: "LINK_AQUI.jpg" }, 
+            { t: "Medida Macho Potton IN", u: "27.8 +0.3/-0.2", min: 27.6, max: 28.1, unico: true, img: "LINK_AQUI.jpg" }, 
+            { t: "Diâmetro Potton IN (A)", u: "25.2 +0.3/-0.2", min: 25.0, max: 25.5, unico: true, img: "LINK_AQUI.jpg" }, 
+            { t: "Diâmetro Potton IN (B)", u: "25.2 +0.3/-0.2", min: 25.0, max: 25.5, unico: true, img: "LINK_AQUI.jpg" }, 
+            { t: "Apoio Macho IN (1)", u: "10.2 +0.3/-0.2", min: 10.0, max: 10.5, unico: true, img: "LINK_AQUI.jpg" }, 
+            { t: "Apoio Macho IN (2)", u: "10.2 +0.3/-0.2", min: 10.0, max: 10.5, unico: true, img: "LINK_AQUI.jpg" }, 
+            { t: "Apoio Macho IN (3)", u: "8.3 +0.3/-0.2", min: 8.1, max: 8.6, unico: true, img: "LINK_AQUI.jpg" }, 
+            { t: "Apoio Macho IN (4)", u: "12.3 +0.3/-0.2", min: 12.1, max: 12.6, unico: true, img: "LINK_AQUI.jpg" }, 
+            { t: "Medida Macho Potton EX", u: "25.8 +0.3/-0.2", min: 25.6, max: 26.1, unico: true, img: "LINK_AQUI.jpg" }, 
+            { t: "Diâmetro Potton EX (A)", u: "26.2 +0.3/-0.2", min: 26.0, max: 26.5, unico: true, img: "LINK_AQUI.jpg" }, 
+            { t: "Diâmetro Potton EX (B)", u: "26.2 +0.3/-0.2", min: 26.0, max: 26.5, unico: true, img: "LINK_AQUI.jpg" }, 
+            { t: "Apoio Macho EX (1)", u: "8.2 +0.3/-0.2", min: 8.0, max: 8.5, unico: true, img: "LINK_AQUI.jpg" }, 
+            { t: "Apoio Macho EX (2)", u: "8.2 +0.3/-0.2", min: 8.0, max: 8.5, unico: true, img: "LINK_AQUI.jpg" }, 
+            { t: "Apoio Macho EX (3)", u: "12.2 +0.3/-0.2", min: 12.0, max: 12.5, unico: true, img: "LINK_AQUI.jpg" }, 
+            { t: "Apoio Macho EX (4)", u: "10.1 +0.3/-0.2", min: 9.9, max: 10.4, unico: true, img: "LINK_AQUI.jpg" }, 
+            { t: "Aspecto Geral", u: "Isento falha enchimento", tipo: "bin", unico: true, img: "LINK_AQUI.jpg" } 
         ]
     };
 
@@ -593,15 +731,14 @@
         const mod = document.getElementById('mod').value; 
         const corpo = document.getElementById('lista-corpo');
         
-        // Seleção Mestre de Fichas
-        if (mod === 'K1HG') templateAtivo = TEMPLATES.LPDC_K1HG;
-        else if (mod === 'K2GF') templateAtivo = TEMPLATES.LPDC_K2GF;
-        else if (mod === 'K68L') templateAtivo = TEMPLATES.LPDC_K68L;
-        else if (mod === 'KVK') templateAtivo = TEMPLATES.LPDC_KVK;
-        else if (mod === 'KPF') templateAtivo = TEMPLATES.LPDC_KPF;
-        else if (mod === 'ATV') templateAtivo = TEMPLATES.LPDC_ATV;
-        else if (mod === 'K2K') templateAtivo = TEMPLATES.LPDC_K2K;
-        else templateAtivo = TEMPLATES.LPDC_K2GF; // Fallback
+        let chave = "";
+        if (mod.includes("JACKET") || mod.includes("POTTON")) {
+            chave = "MACHEIRA_" + mod;
+        } else {
+            chave = "LPDC_" + mod;
+        }
+        
+        templateAtivo = TEMPLATES[chave] || TEMPLATES.LPDC_K2GF; // Fallback preventivo
         
         corpo.innerHTML = ""; res = {}; let c = 0;
         let isVisual = false;
@@ -609,7 +746,7 @@
         templateAtivo.forEach((it) => {
             if (it.sec) { 
                 corpo.innerHTML += `<div class="titulo-secao">${it.sec}</div>`; 
-                if (!it.sec.includes("Parâmetros")) isVisual = true;
+                if (!it.sec.includes("Parâmetros") && !it.sec.includes("H-TOP") && !it.sec.includes("V-TOP")) isVisual = true;
                 return; 
             }
             
@@ -683,11 +820,11 @@
                 <div class="item" id="card-${c}">
                     <div class="item-header">
                         <div style="flex:1;">
-                            <div class="item-texto" onclick="abrirFotoItem('${it.t}', '${it.img}')">
+                            <div class="item-texto" onclick="abrirFotoItem('${it.t}', '${it.img || 'LINK_AQUI.jpg'}')">
                                 ${c+1}. ${it.t}
                                 <span style="font-size:16px;">📷</span>
                             </div>
-                            <span class="item-unidade">${it.u}</span>
+                            <span class="item-unidade">${it.u || 'Visual'}</span>
                         </div>
                         ${ctrl}
                     </div>
@@ -883,16 +1020,15 @@
                 if(resposta.ok) { 
                     alert("✅ Inspeção e Assinatura Gravadas com Sucesso!"); 
                     
-                    // 👇 ADICIONE ESTAS 3 LINHAS AQUI 👇
                     if(document.getElementById('area-canvas').style.display !== 'none') {
-                        assinaturaBase64 = assFinal; // O app decora a assinatura para não pedir de novo hoje!
+                        assinaturaBase64 = assFinal;
                     }
 
                     document.getElementById('op1').value = ""; document.getElementById('op2').value = ""; 
                     document.getElementById('matriz').value = ""; limparCanvas(); 
                     btn.textContent = "SALVAR INSPEÇÃO"; btn.style.opacity = "1"; btn.disabled = false;
                     voltarParaHome(); 
-                }
+                } 
                 else { alert("❌ Erro: " + (erroData.erro || erroData.detail || JSON.stringify(erroData))); btn.textContent = "SALVAR INSPEÇÃO"; btn.style.opacity = "1"; btn.disabled = false; }
             }).catch(erro => { alert("❌ ERRO DE CONEXÃO. O servidor no Render pode estar dormindo."); btn.textContent = "SALVAR INSPEÇÃO"; btn.style.opacity = "1"; btn.disabled = false; });
         } catch(e) { alert("❌ Erro interno: " + e.message); }
