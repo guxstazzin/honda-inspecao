@@ -130,63 +130,76 @@
 
         @media (max-width: 768px) { .wrapper-quadro { flex-direction: column; } .grid-turnos { grid-template-columns: 1fr; } .info-ficha { grid-template-columns: 1fr; } .print-duas-colunas { flex-direction: column; } }
         
+        /* =========================================================
+           🔥 MODO IMPRESSÃO (PERFECCIONISTA EM 1 FOLHA) 🔥
+           ========================================================= */
         @media print {
-            @page { size: A4 portrait; margin: 1cm; }
-            body * { visibility: hidden; }
+            @page { size: A4 portrait; margin: 5mm; } /* Reduz a margem para caber tudo */
+            
+            body * { visibility: hidden; } /* Esconde o fundo e outras coisas */
             #modalFicha, #modalFicha * { visibility: visible; }
             
-            #modalFicha { position: absolute; left: 0; top: 0; width: 100%; background: white; display: block !important; overflow: visible !important; }
-            .modal-content { width: 100%; max-width: 100%; box-shadow: none; margin: 0; padding: 0; border: none; border-radius: 0; display: flex !important; flex-direction: column !important; min-height: 25.5cm !important; }
+            /* Remove fundos e centraliza na tela para impressão */
+            body, #app-conteudo, .modal { background: white !important; }
+            #modalFicha { position: absolute; left: 0; top: 0; width: 100%; display: block !important; overflow: visible !important; background: white !important; padding: 0 !important; }
             
-            .close, .btn-imprimir, .btn-editar { display: none !important; }
+            .modal-content { width: 100%; max-width: 100%; box-shadow: none !important; margin: 0; padding: 0; border: none; border-radius: 0; display: block !important; }
+            
+            .close, .btn-imprimir, .btn-editar, .btn-float-quadro { display: none !important; }
             * { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
-            .btn-float-quadro { display: none !important; }
 
-            .modal-header { padding: 12px !important; background: linear-gradient(135deg, var(--blue-dark), var(--blue)) !important; color: white !important; border-radius: 8px 8px 0 0 !important; }
-            .modal-header h2 { font-size: 15px !important; margin: 0 !important; font-weight: bold !important; }
+            /* Cabeçalho compacto */
+            .modal-header { padding: 8px !important; background: var(--blue-dark) !important; color: white !important; border-radius: 0 !important; text-align: center !important;}
+            .modal-header h2 { font-size: 14px !important; margin: 0 !important; font-weight: bold !important; text-transform: uppercase;}
             
-            .bloco-topo { margin: 15px 0 !important; gap: 15px !important; align-items: stretch !important;}
-            .info-ficha { padding: 10px 15px !important; font-size: 10px !important; grid-template-columns: 1fr 1fr 1fr !important; gap: 8px !important; border: 1.5px solid #cbd5e1 !important; border-radius: 8px !important; background: #f8fafc !important; }
+            /* Bloco de cima compacto */
+            .bloco-topo { margin: 10px 0 !important; gap: 10px !important; display: flex !important; flex-wrap: nowrap !important; align-items: stretch !important;}
+            .info-ficha { padding: 6px 10px !important; font-size: 9px !important; grid-template-columns: 1fr 1fr 1fr !important; gap: 4px !important; border: 1px solid #cbd5e1 !important; border-radius: 6px !important; background: #f8fafc !important; flex: 2 !important;}
             
-            .chefia-container { min-width: auto !important; border: 1.5px solid #cbd5e1 !important; border-radius: 8px !important; background: white !important; }
-            .chefia-tit { font-size: 8px !important; padding: 5px !important; height: auto !important; background: #e2e8f0 !important; border-bottom: 1.5px solid #cbd5e1 !important; color: var(--blue-dark) !important; font-weight: bold !important; }
-            .chefia-box { border-right: 1.5px solid #cbd5e1 !important; }
+            .chefia-container { flex: 1 !important; min-width: auto !important; border: 1px solid #cbd5e1 !important; border-radius: 6px !important; background: white !important; display: flex !important;}
+            .chefia-tit { font-size: 8px !important; padding: 3px !important; height: auto !important; background: #e2e8f0 !important; border-bottom: 1px solid #cbd5e1 !important; color: var(--blue-dark) !important; font-weight: bold !important; }
+            .chefia-box { border-right: 1px solid #cbd5e1 !important; flex: 1 !important;}
             .chefia-box:last-child { border-right: none !important; }
-            .chefia-val { min-height: 45px !important; padding: 5px !important; display: flex !important; flex-direction: column !important; justify-content: center !important; align-items: center !important;}
+            .chefia-val { min-height: 35px !important; padding: 2px !important; display: flex !important; flex-direction: column !important; justify-content: center !important; align-items: center !important;}
             .btn-assinar { display: none !important; } 
             
-            .chefia-val img { max-height: 35px !important; margin-bottom: 3px !important; }
-            .chefia-val span { font-size: 8px !important; color: #334155 !important; line-height: 1.1 !important; text-align: center !important; display: block !important; word-wrap: break-word !important; }
+            .chefia-val img { max-height: 25px !important; margin-bottom: 1px !important; }
+            .chefia-val span { font-size: 7px !important; color: #334155 !important; line-height: 1 !important; text-align: center !important; display: block !important; }
 
-            .print-duas-colunas { display: flex !important; gap: 15px !important; width: 100% !important; align-items: flex-start; flex: 1 !important; }
+            /* Grade de 2 colunas para os itens caberem */
+            .print-duas-colunas { display: grid !important; grid-template-columns: 1fr 1fr !important; gap: 10px !important; width: 100% !important; align-items: start !important; }
             
-            .modal-secao { padding: 6px 12px !important; margin-top: 5px !important; font-size: 10px !important; background: #eff6ff !important; border-left: 4px solid var(--blue) !important; color: var(--blue-dark) !important; border-radius: 0 4px 4px 0 !important; }
-            .item-view-container { border-bottom: 1px solid #e2e8f0 !important; padding-bottom: 4px !important; margin-bottom: 0 !important; } 
-            .item-main { padding: 4px 8px !important; }
-            .texto-item { font-size: 10px !important; color: #1e293b !important; }
+            .modal-secao { padding: 4px 8px !important; margin: 4px 0 !important; font-size: 10px !important; background: #eff6ff !important; border-left: 3px solid var(--blue) !important; color: var(--blue-dark) !important; border-radius: 0 !important; break-after: avoid !important; }
             
-            .valor-lido { width: auto !important; height: auto !important; font-size: 9px !important; padding: 2px 8px !important; min-width: 30px !important; border-radius: 4px !important; font-weight: bold !important; border: none !important; }
+            /* Itens da inspeção minúsculos e sem quebra */
+            .item-view-container { border-bottom: 1px solid #e2e8f0 !important; padding: 2px 0 !important; margin-bottom: 0 !important; break-inside: avoid !important; page-break-inside: avoid !important; } 
+            .item-main { padding: 2px 4px !important; }
+            .texto-item { font-size: 9px !important; color: #1e293b !important; padding-right: 5px !important;}
+            
+            .valor-lido { font-size: 8px !important; padding: 2px 6px !important; min-width: 25px !important; border-radius: 3px !important; font-weight: bold !important; border: none !important; }
             .v-ok { background: var(--success) !important; color: white !important; }
             .v-nc { background: var(--danger) !important; color: white !important; }
             
-            .btn-v { width: 24px !important; height: 18px !important; font-size: 9px !important; padding: 0 !important; min-width: auto !important; box-shadow: none !important; border: 1px solid #cbd5e1 !important; color: #94a3b8 !important; background: #f8fafc !important; border-radius: 4px !important;}
-            .botoes-visual-wrapper { gap: 4px !important; }
-            .box-nc { padding: 6px 10px !important; margin: 2px 5px 6px 5px !important; font-size: 9px !important; border: 1px solid #fca5a5 !important; background: #fef2f2 !important; border-radius: 6px !important; border-left: 4px solid var(--danger) !important; }
+            .btn-v { width: 20px !important; height: 16px !important; font-size: 8px !important; padding: 0 !important; min-width: auto !important; border: 1px solid #cbd5e1 !important; color: #94a3b8 !important; background: #f8fafc !important; border-radius: 3px !important;}
+            .botoes-visual-wrapper { gap: 2px !important; }
             
-            #assinaturas-container { margin-top: auto !important; width: 100%; page-break-inside: avoid !important; }
-            #assinaturas-container > div:nth-child(2) { padding: 10px !important; margin: 10px 0 0 0 !important; border: 1.5px solid #cbd5e1 !important; background: #f8fafc !important; border-radius: 8px !important; }
-            #assinaturas-container > div:nth-child(2) > div { border-right: 1.5px solid #cbd5e1 !important; }
+            /* Box de Não Conformidade (NC) na impressão */
+            .box-nc { padding: 4px 8px !important; margin: 2px 0 4px 0 !important; font-size: 8px !important; border: 1px solid #fca5a5 !important; background: #fef2f2 !important; border-radius: 4px !important; border-left: 3px solid var(--danger) !important; break-inside: avoid !important; }
+            
+            /* Rodapé - Assinaturas e Auditoria no final da página 1 */
+            #assinaturas-container { margin-top: 10px !important; width: 100%; page-break-inside: avoid !important; break-inside: avoid !important;}
+            #assinaturas-container > div:nth-child(2) { padding: 5px !important; margin: 5px 0 0 0 !important; border: 1px solid #cbd5e1 !important; background: #f8fafc !important; border-radius: 6px !important; }
+            #assinaturas-container > div:nth-child(2) > div { border-right: 1px solid #cbd5e1 !important; }
             #assinaturas-container > div:nth-child(2) > div:last-child { border-right: none !important; }
-            #assinaturas-container > div:nth-child(2) > div > div:nth-child(2) { font-size: 11px !important; color: #1e293b !important; font-weight: bold !important; }
-            #assinaturas-container > div:nth-child(2) > div > div:nth-child(1) { font-size: 8px !important; color: #64748b !important; }
+            #assinaturas-container > div:nth-child(2) > div > div:nth-child(2) { font-size: 9px !important; color: #1e293b !important; font-weight: bold !important; }
+            #assinaturas-container > div:nth-child(2) > div > div:nth-child(1) { font-size: 7px !important; color: #64748b !important; margin-bottom: 2px !important;}
 
-            .rodape-auditoria { margin: 10px 5px 0 5px !important; padding-top: 5px !important; font-size: 9px !important; color: #64748b !important; border-top-color: #cbd5e1 !important; page-break-inside: avoid !important; }
+            .rodape-auditoria { margin: 5px 0 0 0 !important; padding-top: 5px !important; font-size: 8px !important; color: #64748b !important; border-top: 1px solid #cbd5e1 !important; page-break-inside: avoid !important; display: flex !important; justify-content: space-between !important;}
         }
     </style>
 </head>
 <body>
     
-    <!-- 🔥 TELA DE CARREGAMENTO (AMNÉSIA) 🔥 -->
     <div id="loader-geral" class="tela-loading">
         <div class="spinner"></div>
         <p class="loading-tit">ACORDANDO SERVIDOR...</p>
