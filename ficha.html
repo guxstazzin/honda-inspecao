@@ -211,6 +211,9 @@
 <script>
     const API_URL = "https://gestao-a-vista-r9uv.onrender.com"; 
 
+    // 🔥 PING ADICIONADO AQUI: Acorda o motor do Render em background
+    fetch(API_URL + "/ping").catch(e => console.log("Acordando motor silenciosamente..."));
+
     const headersConfig = { 'ngrok-skip-browser-warning': '69420', 'Content-Type': 'application/json' };
     
     function getUrlLimpa(url) { 
